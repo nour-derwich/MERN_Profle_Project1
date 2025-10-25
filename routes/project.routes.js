@@ -1,48 +1,151 @@
+const express = require("express");
+const router = express.Router();
+const projectController = require("../controllers/projects.controller");
+const { protect, authorize } = require("../middleware/auth");
+const { body } = require("express-validator");
+const { upload } = require("../utils/uploadImage");
 
-const { v4: uuidv4 } = require('uuid');
-const { getAllProjects, getOneProject, addProject, updateProject, deleteProject } = require('../controllers/projects.controllers');
+// Validation middleware
+const projectValidation = [
+  body("title")
+    .trim()
+    .notEmpty()
+    .withMessage("Title is required")
+    .isLength({ min: 3, max: 200 })
+    .withMessage("Title must be between 3 and 200 characters"),
+  body("description").trim().notEmpty().withMessage("Description is required"),
+  body("short_description")
+    .optional()
+    .trim()
+    .isLength({ max: 500 })
+    .withMessage("Short description must not exceed 500 characters"),
+  body("category").trim().notEmpty().withMessage("Category is required"),
+  body("technologies")
+    .optional()
+    .isArray()
+    .withMessage("Technologies must be an array"),
+  body("demo_url")
+    .optional()
+    .isURL()
+    .withMessage("Demo URL must be a valid URL"),
+  body("github_url")
+    .optional()
+    .isURL()
+    .withMessage("GitHub URL must be a valid URL"),
+];
 
+// Public routes
+// @route   GET /api/projects
+// @desc    Get all published projects
+// @access  Public
+router.get("/", projectController.getAllProjects);
 
-const multer = require('multer');
-const DIR = './public/';
+// @route   GET /api/projects/featured
+// @desc    Get featured projects
+// @access  Public
+router.get("/featured", projectController.getFeaturedProjects);
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, DIR);
-  },
-  filename: (req, file, cb) => {
-    const fileName = file.originalname.toLowerCase().split(' ').join('-');
-    cb(null, uuidv4() + '-' + fileName);
-  }
-});
+// @route   GET /api/projects/categories
+// @desc    Get all project categories
+// @access  Public
+router.get("/categories", projectController.getCategories);
 
-const upload = multer({
-  storage: storage,
-  fileFilter: (req, file, cb) => {
-    if (
-      file.mimetype == 'image/png' ||
-      file.mimetype == 'image/jpg' ||
-      file.mimetype == 'image/jpeg'
-    ) {
-      cb(null, true);
-    } else {
-      cb(null, false);
-      return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
-    }
-  }
-});
+// @route   GET /api/projects/search
+// @desc    Search projects
+// @access  Public
+router.get("/search", projectController.searchProjects);
 
+// @route   GET /api/projects/:id
+// @desc    Get single project by ID
+// @access  Public
+router.get("/:id", projectController.getProjectById);
 
+// @route   POST /api/projects/:id/view
+// @desc    Increment project view count
+// @access  Public
+router.post("/:id/view", projectController.incrementViews);
 
+// Protected routes (Admin only)
+// @route   POST /api/projects
+// @desc    Create new project
+// @access  Private/Admin
+router.post(
+  "/",
+  protect,
+  authorize("admin"),
+  projectValidation,
+  projectController.createProject
+);
 
+// @route   POST /api/projects/upload-image
+// @desc    Upload project image
+// @access  Private/Admin
+router.post(
+  "/upload-image",
+  protect,
+  authorize("admin"),
+  upload.single("image"),
+  projectController.uploadImage
+);
 
- 
-  module.exports = (app) => {
-    app.get('/api/projects', getAllProjects);
-    app.get('/api/projects/:id', getOneProject);
-    app.post('/api/projects',upload.single('picturePath'), addProject);
-    app.put('/api/projects/:id', upload.single('picturePath'), updateProject);
-    app.delete('/api/projects/:id', deleteProject);
-    
-  };
-  
+// @route   PUT /api/projects/:id
+// @desc    Update project
+// @access  Private/Admin
+router.put(
+  "/:id",
+  protect,
+  authorize("admin"),
+  projectController.updateProject
+);
+
+// @route   PATCH /api/projects/:id/status
+// @desc    Update project status
+// @access  Private/Admin
+router.patch(
+  "/:id/status",
+  protect,
+  authorize("admin"),
+  projectController.updateStatus
+);
+
+// @route   PATCH /api/projects/:id/featured
+// @desc    Toggle project featured status
+// @access  Private/Admin
+router.patch(
+  "/:id/featured",
+  protect,
+  authorize("admin"),
+  projectController.toggleFeatured
+);
+
+// @route   PUT /api/projects/reorder
+// @desc    Reorder projects
+// @access  Private/Admin
+router.put(
+  "/reorder",
+  protect,
+  authorize("admin"),
+  projectController.reorderProjects
+);
+
+// @route   DELETE /api/projects/:id
+// @desc    Delete project
+// @access  Private/Admin
+router.delete(
+  "/:id",
+  protect,
+  authorize("admin"),
+  projectController.deleteProject
+);
+
+// @route   GET /api/projects/admin/all
+// @desc    Get all projects (including drafts) for admin
+// @access  Private/Admin
+router.get(
+  "/admin/all",
+  protect,
+  authorize("admin"),
+  projectController.getAllProjectsAdmin
+);
+
+module.exports = router;
