@@ -8,7 +8,7 @@ import RecentProjects from '../../components/home/RecentProjects';
 import CallToAction from '../../components/home/CallToAction';
 const Home = () => {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen">
       <Hero />
       <About/>
       <LatestFormations />
