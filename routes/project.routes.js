@@ -34,7 +34,18 @@ const projectValidation = [
     .withMessage("GitHub URL must be a valid URL"),
 ];
 
-// Public routes
+// ===== PUBLIC ROUTES =====
+
+// Health check - MUST come before parameterized routes
+router.get("/health", (req, res) => {
+  res.json({
+    success: true,
+    status: "OK",
+    message: "Projects API is working",
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // @route   GET /api/projects
 // @desc    Get all published projects
 // @access  Public
@@ -55,6 +66,9 @@ router.get("/categories", projectController.getCategories);
 // @access  Public
 router.get("/search", projectController.searchProjects);
 
+// ===== PARAMETERIZED ROUTES =====
+// These should come AFTER all specific routes
+
 // @route   GET /api/projects/:id
 // @desc    Get single project by ID
 // @access  Public
@@ -65,7 +79,8 @@ router.get("/:id", projectController.getProjectById);
 // @access  Public
 router.post("/:id/view", projectController.incrementViews);
 
-// Protected routes (Admin only)
+// ===== PROTECTED ROUTES (Admin only) =====
+
 // @route   POST /api/projects
 // @desc    Create new project
 // @access  Private/Admin

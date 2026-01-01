@@ -86,11 +86,7 @@ exports.deleteProject = asyncHandler(async (req, res, next) => {
 
 // @desc    Get project categories
 exports.getCategories = asyncHandler(async (req, res) => {
-  const text =
-    "SELECT DISTINCT category FROM projects WHERE status = $1 ORDER BY category";
-  const result = await query(text, ["published"]);
-
-  const categories = result.rows.map((row) => row.category);
+  const categories = await Project.getCategories();
 
   res.status(200).json({
     success: true,
@@ -102,28 +98,18 @@ exports.getCategories = asyncHandler(async (req, res) => {
 exports.searchProjects = asyncHandler(async (req, res) => {
   const { q } = req.query;
 
-  const text = `
-    SELECT * FROM projects 
-    WHERE status = 'published' 
-    AND (title ILIKE $1 OR description ILIKE $1)
-    ORDER BY created_at DESC
-  `;
-
-  const result = await query(text, [`%${q}%`]);
+  const projects = await Project.search(q);
 
   res.status(200).json({
     success: true,
-    count: result.rows.length,
-    data: result.rows,
+    count: projects.length,
+    data: projects,
   });
 });
 
 // @desc    Increment project views
 exports.incrementViews = asyncHandler(async (req, res) => {
-  await query(
-    "UPDATE projects SET views_count = views_count + 1 WHERE id = $1",
-    [req.params.id]
-  );
+  await Project.incrementViews(req.params.id);
 
   res.status(200).json({
     success: true,
@@ -131,77 +117,83 @@ exports.incrementViews = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc    Upload project image
-exports.uploadImage = asyncHandler(async (req, res, next) => {
-  if (!req.file) {
-    return next(new ErrorResponse("Please upload an image", 400));
-  }
 
-  res.status(200).json({
-    success: true,
-    data: {
-      url: req.file.path,
-      public_id: req.file.filename,
-    },
-  });
-});
+// @desc    Upload project image
+// @route   POST /api/projects/upload-image
+// @access  Private/Admin
+exports.uploadImage = async (req, res) => {
+  try {
+    console.log('📤 Upload request received');
+    console.log('🔐 User:', req.user); // Check if user is authenticated
+    console.log('📁 File:', req.file); // Check if file is received
+    
+    if (!req.file) {
+      console.log('❌ No file received');
+      return res.status(400).json({
+        success: false,
+        message: "No image file provided",
+      });
+    }
+
+    console.log('✅ File uploaded to Cloudinary:', {
+      path: req.file.path,
+      filename: req.file.filename,
+      size: req.file.size
+    });
+
+    res.json({
+      success: true,
+      message: "Image uploaded successfully",
+      url: req.file.path, // Cloudinary URL
+      public_id: req.file.filename, // Cloudinary public ID
+    });
+  } catch (error) {
+    console.error("❌ Upload error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error uploading image",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
 
 // @desc    Update project status
 exports.updateStatus = asyncHandler(async (req, res, next) => {
   const { status } = req.body;
 
-  const text = `
-    UPDATE projects 
-    SET status = $1, updated_at = CURRENT_TIMESTAMP
-    WHERE id = $2
-    RETURNING *
-  `;
+  const project = await Project.updateStatus(req.params.id, status);
 
-  const result = await query(text, [status, req.params.id]);
-
-  if (result.rows.length === 0) {
+  if (!project) {
     return next(new ErrorResponse("Project not found", 404));
   }
 
   res.status(200).json({
     success: true,
     message: "Project status updated",
-    data: result.rows[0],
+    data: project,
   });
 });
 
 // @desc    Toggle featured status
 exports.toggleFeatured = asyncHandler(async (req, res, next) => {
-  const text = `
-    UPDATE projects 
-    SET featured = NOT featured, updated_at = CURRENT_TIMESTAMP
-    WHERE id = $1
-    RETURNING *
-  `;
+  const project = await Project.toggleFeatured(req.params.id);
 
-  const result = await query(text, [req.params.id]);
-
-  if (result.rows.length === 0) {
+  if (!project) {
     return next(new ErrorResponse("Project not found", 404));
   }
 
   res.status(200).json({
     success: true,
     message: "Featured status toggled",
-    data: result.rows[0],
+    data: project,
   });
 });
 
 // @desc    Reorder projects
 exports.reorderProjects = asyncHandler(async (req, res) => {
-  const { projects } = req.body; // Array of { id, display_order }
+  const { projects } = req.body;
 
-  for (const project of projects) {
-    await query("UPDATE projects SET display_order = $1 WHERE id = $2", [
-      project.display_order,
-      project.id,
-    ]);
-  }
+  await Project.reorder(projects);
 
   res.status(200).json({
     success: true,
@@ -211,16 +203,15 @@ exports.reorderProjects = asyncHandler(async (req, res) => {
 
 // @desc    Get all projects for admin (including drafts)
 exports.getAllProjectsAdmin = asyncHandler(async (req, res) => {
-  const text =
-    "SELECT * FROM projects ORDER BY display_order ASC, created_at DESC";
-  const result = await query(text);
+  const projects = await Project.findAllAdmin();
 
   res.status(200).json({
     success: true,
-    count: result.rows.length,
-    data: result.rows,
+    count: projects.length,
+    data: projects,
   });
 });
+
 // @desc    Get featured projects
 exports.getFeaturedProjects = asyncHandler(async (req, res) => {
   const projects = await Project.findAll({ featured: true });
@@ -228,11 +219,6 @@ exports.getFeaturedProjects = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     count: projects.length,
-    data: projects
+    data: projects,
   });
 });
-
-
-
-
-

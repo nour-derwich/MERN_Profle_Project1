@@ -74,13 +74,22 @@ class Course {
     const values = [];
     let paramCount = 1;
 
+    // List of fields that should not be updated manually
+    const excludedFields = ["id", "created_at", "updated_at"];
+
     Object.keys(courseData).forEach((key) => {
-      if (courseData[key] !== undefined) {
+      // Skip undefined values and excluded fields
+      if (courseData[key] !== undefined && !excludedFields.includes(key)) {
         fields.push(`${key} = $${paramCount}`);
         values.push(courseData[key]);
         paramCount++;
       }
     });
+
+    // If no fields to update, return the current record
+    if (fields.length === 0) {
+      return await this.findById(id);
+    }
 
     values.push(id);
     const text = `
@@ -102,8 +111,44 @@ class Course {
 
   static async incrementClicks(id) {
     const text =
-      "UPDATE courses SET clicks_count = clicks_count + 1 WHERE id = $1";
+      "UPDATE courses SET clicks_count = clicks_count + 1, updated_at = CURRENT_TIMESTAMP WHERE id = $1";
     await query(text, [id]);
+  }
+
+  static async findFeatured() {
+    const text =
+      "SELECT * FROM courses WHERE featured = true ORDER BY created_at DESC";
+    const result = await query(text);
+    return result.rows;
+  }
+
+  static async findCategories() {
+    const text = "SELECT DISTINCT category FROM courses ORDER BY category";
+    const result = await query(text);
+    return result.rows.map((row) => row.category);
+  }
+
+  static async search(searchQuery) {
+    const text = `
+      SELECT * FROM courses 
+      WHERE title ILIKE $1 OR author ILIKE $1 OR description ILIKE $1
+      ORDER BY created_at DESC
+    `;
+    const result = await query(text, [`%${searchQuery}%`]);
+    return result.rows;
+  }
+
+  static async getStats() {
+    const text = `
+      SELECT 
+        COUNT(*) as total,
+        COUNT(*) FILTER (WHERE featured = true) as featured,
+        COALESCE(SUM(clicks_count), 0) as total_clicks,
+        COUNT(DISTINCT category) as categories
+      FROM courses
+    `;
+    const result = await query(text);
+    return result.rows[0];
   }
 }
 
