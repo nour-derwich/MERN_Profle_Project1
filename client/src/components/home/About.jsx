@@ -207,8 +207,8 @@ const About = () => {
                         </div>
                       </div>
                       
-                      <div className={`inline-flex p-3 bg-gradient-to-br ${pillar.color}/20 rounded-xl mb-4`}>
-                        <Icon className={`text-2xl bg-gradient-to-br ${pillar.color} bg-clip-text text-transparent`} />
+                     <div className={`inline-flex p-3 rounded-xl mb-4 ${pillar.color.replace('from-', 'bg-gradient-to-br ')}`}>
+                        <Icon className="text-2xl text-white" />
                       </div>
                       
                       <h3 className="text-xl font-bold text-white mb-2">{pillar.title}</h3>

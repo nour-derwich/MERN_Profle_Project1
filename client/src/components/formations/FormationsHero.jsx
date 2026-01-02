@@ -114,7 +114,7 @@ const FormationsHero = ({ isVisible = true }) => {
           
           {/* Icon */}
           <div className={`relative p-3 bg-gradient-to-br ${program.color}/20 rounded-lg w-fit mb-4`}>
-            <Icon className={`text-2xl bg-gradient-to-r ${program.color} bg-clip-text text-transparent`} />
+            <Icon className="text-2xl text-white" />
           </div>
           
           {/* Content */}
@@ -268,7 +268,7 @@ const FormationsHero = ({ isVisible = true }) => {
                     <div className="relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6 hover:border-primary-500/30 transition-all duration-300 group-hover:scale-105">
                       <div className="flex flex-col items-center gap-3">
                         <div className={`p-3 bg-gradient-to-br ${stat.color}/20 rounded-xl`}>
-                          <Icon className={`text-xl bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`} />
+                          <Icon className="text-xl text-white" />
                         </div>
                         <div className="text-3xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
                           {stat.value}

@@ -51,8 +51,8 @@ const Nav = () => {
       highlight: false 
     },
     { 
-      path: '/services', 
-      label: 'Services', 
+      path: '/formations', 
+      label: 'Training', 
       icon: FiBriefcase,
       highlight: false 
     },
@@ -60,16 +60,11 @@ const Nav = () => {
       path: '/projects', 
       label: 'Projects', 
       icon: FiCode,
-      highlight: true,
-      dropdown: [
-        { path: '/projects/ai', label: 'AI Projects', icon: FiTarget },
-        { path: '/projects/ml', label: 'ML Models', icon: FiZap },
-        { path: '/projects/web', label: 'Web Apps', icon: FaReact }
-      ]
+      highlight: true
     },
     { 
-      path: '/formations', 
-      label: 'Training', 
+      path: '/courses', 
+      label: 'Courses', 
       icon: FiBookOpen,
       highlight: false 
     },

@@ -1,23 +1,569 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Naceur Keraani</title>
-    <script type="text/javascript">
-     
-      var pathSegmentsToKeep = 1;
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naceur Keraani | AI & ML Engineer Portfolio</title>
+    <meta name="description" content="AI & Machine Learning Engineer specializing in deep learning, computer vision, and data science. Portfolio showcasing projects, formations, and expertise.">
+    <meta name="keywords" content="AI Engineer, Machine Learning, Deep Learning, Data Science, Python, TensorFlow, PyTorch, Computer Vision, NLP">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://naceurkeraani.com/">
+    <meta property="og:title" content="Naceur Keraani | AI & ML Engineer">
+    <meta property="og:description" content="AI & Machine Learning Engineer specializing in deep learning, computer vision, and data science.">
+    <meta property="og:image" content="https://naceurkeraani.com/og-image.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://naceurkeraani.com/">
+    <meta property="twitter:title" content="Naceur Keraani | AI & ML Engineer">
+    <meta property="twitter:description" content="AI & Machine Learning Engineer specializing in deep learning, computer vision, and data science.">
+    <meta property="twitter:image" content="https://naceurkeraani.com/og-image.jpg">
 
-      var l = window.location;
-      l.replace(
-        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
-        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
-        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-        l.hash
-      );
-
-    </script>
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#000000">
+    
+    <!-- Preconnect for faster loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Global CSS Variables -->
+    <style>
+      :root {
+        --primary-50: #eff6ff;
+        --primary-100: #dbeafe;
+        --primary-200: #bfdbfe;
+        --primary-300: #93c5fd;
+        --primary-400: #60a5fa;
+        --primary-500: #3b82f6;
+        --primary-600: #2563eb;
+        --primary-700: #1d4ed8;
+        --primary-800: #1e40af;
+        --primary-900: #1e3a8a;
+        
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-800: #1f2937;
+        --gray-900: #111827;
+        
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        
+        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        
+        --animate-gradient: gradient 3s ease infinite;
+        --animate-float: float 6s ease-in-out infinite;
+        --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+      
+      @keyframes gradient {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+      }
+      
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+      }
+      
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: .5; }
+      }
+      
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+    </style>
+    
+    <!-- Loading Styles -->
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: var(--font-sans);
+        background: linear-gradient(to bottom, var(--gray-900), black);
+        color: white;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+      
+      /* Loading Screen */
+      #loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, var(--gray-900), black);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+      }
+      
+      .loading-logo {
+        position: relative;
+        margin-bottom: 2rem;
+      }
+      
+      .logo-glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(45deg, var(--primary-500), var(--primary-700));
+        border-radius: 50%;
+        filter: blur(40px);
+        opacity: 0.3;
+        animation: pulse 2s infinite;
+      }
+      
+      .logo-letter {
+        font-size: 3.5rem;
+        font-weight: 800;
+        background: linear-gradient(45deg, var(--primary-400), var(--primary-300));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        position: relative;
+        z-index: 1;
+      }
+      
+      .loading-progress {
+        width: 200px;
+        height: 4px;
+        background: var(--gray-800);
+        border-radius: 2px;
+        overflow: hidden;
+        margin-top: 1rem;
+      }
+      
+      .loading-progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary-500), var(--primary-400));
+        border-radius: 2px;
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+      
+      .loading-text {
+        margin-top: 1rem;
+        color: var(--gray-400);
+        font-size: 0.875rem;
+        text-align: center;
+        max-width: 300px;
+      }
+      
+      /* Main App Container */
+      #app {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+      
+      /* Navigation */
+      .nav-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        padding: 1rem 2rem;
+        backdrop-filter: blur(10px);
+        background: rgba(0, 0, 0, 0.8);
+        border-bottom: 1px solid var(--gray-800);
+      }
+      
+      /* Content */
+      .page-content {
+        padding-top: 80px;
+        min-height: 100vh;
+      }
+      
+      /* 404 Error Page Styles */
+      .error-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        text-align: center;
+        padding: 2rem;
+      }
+      
+      .error-code {
+        font-size: 8rem;
+        font-weight: 800;
+        background: linear-gradient(45deg, var(--primary-400), var(--primary-300));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        line-height: 1;
+        margin-bottom: 1rem;
+      }
+      
+      .error-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+      
+      .error-message {
+        color: var(--gray-400);
+        max-width: 600px;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+      }
+      
+      .error-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .error-btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: none;
+        text-decoration: none;
+        display: inline-block;
+      }
+      
+      .error-btn-primary {
+        background: linear-gradient(45deg, var(--primary-500), var(--primary-600));
+        color: white;
+      }
+      
+      .error-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+      }
+      
+      .error-btn-secondary {
+        background: var(--gray-800);
+        color: var(--gray-300);
+        border: 1px solid var(--gray-700);
+      }
+      
+      .error-btn-secondary:hover {
+        background: var(--gray-700);
+      }
+      
+      @media (max-width: 768px) {
+        .error-code {
+          font-size: 6rem;
+        }
+        
+        .error-title {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
   </head>
   <body>
+    <!-- Loading Screen -->
+    <div id="loading">
+      <div class="loading-logo">
+        <div class="logo-glow"></div>
+        <div class="logo-letter">NK</div>
+      </div>
+      
+      <div class="loading-progress">
+        <div class="loading-progress-bar" id="progressBar"></div>
+      </div>
+      
+      <div class="loading-text" id="loadingText">
+        Loading portfolio...
+      </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app">
+      <!-- Navigation will be injected here -->
+      <nav class="nav-container" id="nav"></nav>
+      
+      <!-- Main Content -->
+      <main class="page-content" id="content">
+        <!-- Content will be injected here by React -->
+      </main>
+      
+      <!-- Footer -->
+      <footer id="footer"></footer>
+    </div>
+
+    <!-- Client-side routing for GitHub Pages -->
+    <script type="text/javascript">
+      // Handle routing for GitHub Pages - Fixed version
+      (function() {
+        var l = window.location;
+        var path = l.pathname;
+        var search = l.search;
+        var hash = l.hash;
+        
+        console.log('Current path:', path);
+        
+        // List of static file extensions to ignore
+        var staticExtensions = /\.(html|css|js|json|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|pdf|txt|xml)$/i;
+        
+        // If we're on the 404 page but not requesting a static file
+        if (path === '/404.html' || (!staticExtensions.test(path) && path !== '/')) {
+          console.log('SPA routing detected, handling redirect...');
+          
+          // Get the original path from the URL or localStorage
+          var originalPath = path === '/404.html' ? 
+            (new URLSearchParams(search).get('q') || '/') :
+            path;
+          
+          // Remove trailing slash for consistency
+          originalPath = originalPath.replace(/\/$/, '');
+          
+          // Store in sessionStorage for React app to use
+          sessionStorage.setItem('spaRedirectPath', originalPath);
+          sessionStorage.setItem('spaRedirectSearch', search);
+          sessionStorage.setItem('spaRedirectHash', hash);
+          
+          // If we're not already on index.html, redirect to it
+          if (path !== '/' && path !== '/index.html') {
+            var redirectUrl = l.protocol + '//' + l.host + '/index.html';
+            console.log('Redirecting to:', redirectUrl);
+            window.location.replace(redirectUrl);
+            return;
+          }
+        }
+        
+        // On index.html load, check if we need to restore the path
+        if (path === '/' || path === '/index.html') {
+          var storedPath = sessionStorage.getItem('spaRedirectPath');
+          var storedSearch = sessionStorage.getItem('spaRedirectSearch');
+          var storedHash = sessionStorage.getItem('spaRedirectHash');
+          
+          if (storedPath) {
+            console.log('Restoring path:', storedPath);
+            
+            // Clean up storage
+            sessionStorage.removeItem('spaRedirectPath');
+            sessionStorage.removeItem('spaRedirectSearch');
+            sessionStorage.removeItem('spaRedirectHash');
+            
+            // Build the full URL to restore
+            var restoredUrl = storedPath;
+            if (storedSearch) restoredUrl += storedSearch;
+            if (storedHash) restoredUrl += storedHash;
+            
+            // Update browser URL without reloading
+            try {
+              window.history.replaceState({}, '', restoredUrl);
+            } catch (e) {
+              console.warn('Could not restore URL:', e);
+            }
+          }
+        }
+        
+        // For direct access to admin routes
+        if (path.startsWith('/admin/') && path !== '/admin/login') {
+          sessionStorage.setItem('spaRedirectPath', path);
+          if (path !== '/' && path !== '/index.html') {
+            window.location.replace(l.protocol + '//' + l.host + '/index.html');
+          }
+        }
+      })();
+      
+      // Loading progress simulation
+      (function simulateLoading() {
+        var progress = 0;
+        var progressBar = document.getElementById('progressBar');
+        var loadingText = document.getElementById('loadingText');
+        var texts = [
+          'Loading portfolio...',
+          'Initializing components...',
+          'Loading projects...',
+          'Preparing animations...',
+          'Almost ready...'
+        ];
+        var textIndex = 0;
+        
+        var interval = setInterval(function() {
+          progress += Math.random() * 15;
+          if (progress > 100) progress = 100;
+          
+          progressBar.style.width = progress + '%';
+          
+          // Update text every 25% progress
+          if (progress >= (textIndex + 1) * 20 && textIndex < texts.length - 1) {
+            textIndex++;
+            loadingText.textContent = texts[textIndex];
+          }
+          
+          if (progress >= 100) {
+            clearInterval(interval);
+            
+            // Hide loading screen
+            setTimeout(function() {
+              var loading = document.getElementById('loading');
+              loading.style.opacity = '0';
+              setTimeout(function() {
+                loading.style.display = 'none';
+                
+                // Show main app
+                var app = document.getElementById('app');
+                app.style.opacity = '1';
+                
+                // Check if we need to show 404 page
+                var currentPath = window.location.pathname;
+                var storedPath = sessionStorage.getItem('spaRedirectPath') || currentPath;
+                
+                // If path doesn't match any known route, show 404
+                var knownRoutes = [
+                  '/', '/skills', '/qualification', '/services', '/projects',
+                  '/formations', '/courses', '/contact', '/admin/login',
+                  '/admin/dashboard', '/admin/projects', '/admin/formations',
+                  '/admin/courses', '/admin/registrations', '/admin/messages',
+                  '/admin/reports', '/admin/settings'
+                ];
+                
+                var isKnownRoute = knownRoutes.some(function(route) {
+                  return storedPath === route || storedPath.startsWith(route + '/');
+                });
+                
+                if (!isKnownRoute && !storedPath.match(/\.(js|css|png|jpg|svg|ico)$/)) {
+                  console.log('Unknown route, showing 404:', storedPath);
+                  show404Page();
+                } else {
+                  // Load React app for known routes
+                  loadReactApp();
+                }
+              }, 500);
+            }, 500);
+          }
+        }, 200);
+      })();
+      
+      // Function to show 404 page
+      function show404Page() {
+        var content = document.getElementById('content');
+        if (!content) return;
+        
+        content.innerHTML = `
+          <div class="error-container">
+            <div class="error-code">404</div>
+            <h1 class="error-title">Page Not Found</h1>
+            <p class="error-message">
+              The page you're looking for doesn't exist or has been moved.
+              Please check the URL or navigate back to the homepage.
+            </p>
+            <div class="error-actions">
+              <a href="/" class="error-btn error-btn-primary">Go to Homepage</a>
+              <button onclick="window.history.back()" class="error-btn error-btn-secondary">Go Back</button>
+            </div>
+          </div>
+        `;
+        
+        // Update document title
+        document.title = '404 - Page Not Found | Naceur Keraani';
+        
+        // Hide nav and footer for 404 page
+        var nav = document.getElementById('nav');
+        var footer = document.getElementById('footer');
+        if (nav) nav.style.display = 'none';
+        if (footer) footer.style.display = 'none';
+      }
+      
+      // Load React application
+      function loadReactApp() {
+        // Create script tag for React app
+        var script = document.createElement('script');
+        script.src = '/static/js/main.js';
+        script.async = true;
+        
+        // Create link tag for CSS
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = '/static/css/main.css';
+        
+        // Add to document
+        document.head.appendChild(link);
+        document.body.appendChild(script);
+        
+        // Add loading error handling
+        script.onerror = function() {
+          showError('Failed to load application. Please refresh the page.');
+        };
+      }
+      
+      function showError(message) {
+        var errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(239, 68, 68, 0.9);
+          color: white;
+          padding: 2rem;
+          border-radius: 1rem;
+          text-align: center;
+          max-width: 400px;
+          z-index: 10000;
+        `;
+        
+        errorDiv.innerHTML = `
+          <h3 style="margin-bottom: 1rem; font-size: 1.25rem;">⚠️ Application Error</h3>
+          <p style="margin-bottom: 1.5rem; color: rgba(255,255,255,0.9);">${message}</p>
+          <button onclick="window.location.reload()" style="
+            background: white;
+            color: #ef4444;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+          " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            Refresh Page
+          </button>
+        `;
+        
+        document.body.appendChild(errorDiv);
+      }
+    </script>
+    
+    <!-- Analytics (Optional) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
   </body>
 </html>

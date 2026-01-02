@@ -2,5 +2,8 @@
   "css.customData": [".vscode/tailwind.json"],
   "files.associations": {
     "*.css": "tailwindcss"
-  }
+  },
+   "js/ts.implicitProjectConfig.checkJs": false,
+  "typescript.validate.enable": false,
+  "javascript.validate.enable": true
 }

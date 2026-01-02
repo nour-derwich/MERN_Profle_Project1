@@ -173,7 +173,7 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
           <div className="relative">
             <div className="absolute -inset-4 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full blur-xl opacity-20 animate-pulse" />
             <div className="relative p-6 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-2xl backdrop-blur-sm">
-              <FiCode className="text-4xl bg-gradient-to-r from-primary-400 to-blue-400 bg-clip-text text-transparent" />
+              <FiCode className="text-4xl text-white" />
             </div>
           </div>
         </div>
