@@ -330,6 +330,7 @@ const Footer = () => {
           </div>
           
           <div className="flex items-center gap-1 text-gray-500 text-sm">
+            <span>Crafted with passion</span>
             <div className="w-1 h-1 bg-gray-600 rounded-full mx-2" />
             <FiTerminal className="text-primary-400" />
             <span>Powered by Nourderouich159@gmail.com</span>

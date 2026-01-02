@@ -26,7 +26,7 @@ import Services from "./pages/public/Services";
 import Projects from "./pages/public/Projects";
 import ProjectDetail from "./pages/public/ProjectDetail";
 import Formations from "./pages/public/Formations";
-import FormationDetail from "./pages/public/FormationDetail";
+// import FormationDetail from "./pages/public/FormationDetail";
 import Courses from "./pages/public/Courses";
 import Contact from "./pages/public/Contact";
 
@@ -81,10 +81,10 @@ function App() {
                             element={<ProjectDetail />}
                           />
                           <Route path="/formations" element={<Formations />} />
-                          <Route
+                          {/* <Route
                             path="/formations/:id"
                             element={<FormationDetail />}
-                          />
+                          /> */}
                           <Route path="/courses" element={<Courses />} />
                           <Route path="/contact" element={<Contact />} />
 

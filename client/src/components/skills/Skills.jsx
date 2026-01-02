@@ -5,11 +5,7 @@ import React, { useState, useEffect } from 'react';
 import SkillsHero from './SkillsHero';           // Correct for default export
 import ProgrammingSkills from './ProgrammingSkills';
 import ToolsLibraries from './ToolsLibraries';
-import BackendSkills from './BackendSkills';
-import SoftSkills from './SoftSkills';
 import Certifications from './Certifications';
-import SkillsCTA from './SkillsCTA';
-
 const Skills = () => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -22,10 +18,7 @@ const Skills = () => {
       <SkillsHero isVisible={isVisible} />
       <ProgrammingSkills isVisible={isVisible} />
       <ToolsLibraries isVisible={isVisible} />
-      <BackendSkills isVisible={isVisible} />
-      <SoftSkills isVisible={isVisible} />
       <Certifications />
-      <SkillsCTA />
     </div>
   );
 };
