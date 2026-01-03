@@ -22,7 +22,9 @@ const courseRoutes = require("./routes/course.routes");
 const registrationRoutes = require("./routes/registration.routes");
 const messageRoutes = require("./routes/message.routes");
 const analyticsRoutes = require("./routes/analytics.routes");
-
+// Import content routes
+const contentRoutes = require("./routes/content.routes");
+// Initialize Express app
 const app = express();
 
 // ============================================
@@ -67,6 +69,11 @@ if (process.env.NODE_ENV === "development") {
 
 // Static files
 app.use("/uploads", express.static("public/uploads"));
+// ============================================
+// VIEW ENGINE SETUP
+// ============================================
+app.set("view engine", "ejs");
+app.set("views", "views");
 
 // ============================================
 // ROUTES
@@ -97,6 +104,8 @@ app.get("/health", async (req, res) => {
     });
   }
 });
+// Content Routes
+app.use("/api/content", contentRoutes);
 
 // API Routes
 app.use("/api/auth", authRoutes);

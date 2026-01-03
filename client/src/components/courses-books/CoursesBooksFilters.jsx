@@ -3,9 +3,10 @@ import {
   FiSearch, FiFilter, FiChevronDown, FiX, 
   FiStar, FiTrendingUp, FiClock, FiDollarSign,
   FiBookOpen, FiCheck, FiGrid, FiList,
-  FiRefreshCw, FiHash
+  FiRefreshCw, FiHash, FiLoader
 } from 'react-icons/fi';
 import { FaSortAmountDown, FaSortAmountUpAlt } from 'react-icons/fa';
+import axios from 'axios';
 
 const CoursesBooksFilters = ({
   searchQuery = '',
@@ -27,14 +28,68 @@ const CoursesBooksFilters = ({
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
   const [activeFilter, setActiveFilter] = useState(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [loadingCategories, setLoadingCategories] = useState(false);
+  const [levels, setLevels] = useState([]);
+  const [loadingLevels, setLoadingLevels] = useState(false);
 
-  const levels = [
-    { id: 'all', label: 'All Levels', color: 'from-gray-600 to-gray-800' },
-    { id: 'Beginner', label: 'Beginner', color: 'from-green-500 to-emerald-600' },
-    { id: 'Intermediate', label: 'Intermediate', color: 'from-blue-500 to-cyan-600' },
-    { id: 'Advanced', label: 'Advanced', color: 'from-purple-500 to-pink-600' },
-    { id: 'Expert', label: 'Expert', color: 'from-red-500 to-orange-600' }
-  ];
+  // Fetch levels from backend on component mount
+  useEffect(() => {
+    fetchLevels();
+  }, []);
+
+  const fetchLevels = async () => {
+    try {
+      setLoadingLevels(true);
+      const response = await axios.get('/api/courses/levels');
+      const levelsData = response.data.data || [];
+      
+      // Format levels for frontend
+      const formattedLevels = [
+        { id: 'all', label: 'All Levels', color: 'from-gray-600 to-gray-800' },
+        ...levelsData.map(level => {
+          const levelLower = level.toLowerCase();
+          let color = 'from-gray-600 to-gray-800';
+          
+          switch(levelLower) {
+            case 'beginner':
+              color = 'from-green-500 to-emerald-600';
+              break;
+            case 'intermediate':
+              color = 'from-blue-500 to-cyan-600';
+              break;
+            case 'advanced':
+              color = 'from-purple-500 to-pink-600';
+              break;
+            case 'expert':
+              color = 'from-red-500 to-orange-600';
+              break;
+            default:
+              color = 'from-gray-600 to-gray-800';
+          }
+          
+          return {
+            id: level,
+            label: level.charAt(0).toUpperCase() + level.slice(1),
+            color: color
+          };
+        })
+      ];
+      
+      setLevels(formattedLevels);
+    } catch (error) {
+      console.error('Error fetching levels:', error);
+      // Fallback to default levels
+      setLevels([
+        { id: 'all', label: 'All Levels', color: 'from-gray-600 to-gray-800' },
+        { id: 'beginner', label: 'Beginner', color: 'from-green-500 to-emerald-600' },
+        { id: 'intermediate', label: 'Intermediate', color: 'from-blue-500 to-cyan-600' },
+        { id: 'advanced', label: 'Advanced', color: 'from-purple-500 to-pink-600' },
+        { id: 'expert', label: 'Expert', color: 'from-red-500 to-orange-600' }
+      ]);
+    } finally {
+      setLoadingLevels(false);
+    }
+  };
 
   const priceRanges = [
     { id: 'all', label: 'All Prices', range: 'Any price' },
@@ -66,6 +121,13 @@ const CoursesBooksFilters = ({
     { id: 'recommended', label: 'Personal Recommendation' }
   ];
 
+  // Handle quick filter suggestions
+  const handleQuickFilter = (filter) => {
+    setSearchQuery(filter);
+    // Optionally trigger search immediately
+    // You might want to add a debounce or handle this in parent
+  };
+
   return (
     <section className="relative py-6 bg-gradient-to-b from-gray-800 to-gray-900 border-b border-gray-700/50 sticky top-0 z-40 backdrop-blur-xl">
       <div className="container mx-auto px-4">
@@ -74,12 +136,12 @@ const CoursesBooksFilters = ({
         <div className="relative max-w-2xl mx-auto mb-6">
           <div className="relative group">
             {/* Search Glow Effect */}
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
             
             {/* Search Container */}
-            <div className="relative flex items-center bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl overflow-hidden backdrop-blur-sm group-hover:border-primary-500/30 transition-all duration-300">
+            <div className="relative flex items-center bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl overflow-hidden backdrop-blur-sm group-hover:border-blue-500/30 transition-all duration-300">
               <div className="pl-4 pr-3">
-                <FiSearch className="text-gray-400 group-hover:text-primary-400 transition-colors duration-300" />
+                <FiSearch className="text-gray-400 group-hover:text-blue-400 transition-colors duration-300" />
               </div>
               
               <input
@@ -100,21 +162,33 @@ const CoursesBooksFilters = ({
               )}
               
               {/* Search Suggestions */}
-              <div className="absolute top-full left-0 right-0 mt-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl shadow-2xl opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-300">
+              <div className="absolute top-full left-0 right-0 mt-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl shadow-2xl opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-300 z-50">
                 <div className="p-3">
                   <div className="text-xs text-gray-500 mb-2 px-2">Quick filters</div>
                   <div className="flex flex-wrap gap-2">
-                    <button className="px-3 py-1.5 bg-gradient-to-br from-gray-700 to-gray-800 text-gray-300 text-xs rounded-lg hover:text-white hover:border-primary-500/30 border border-gray-700/50 transition-all duration-300">
+                    <button 
+                      onClick={() => handleQuickFilter('Machine Learning')}
+                      className="px-3 py-1.5 bg-gradient-to-br from-gray-700 to-gray-800 text-gray-300 text-xs rounded-lg hover:text-white hover:border-blue-500/30 border border-gray-700/50 transition-all duration-300"
+                    >
                       Machine Learning
                     </button>
-                    <button className="px-3 py-1.5 bg-gradient-to-br from-gray-700 to-gray-800 text-gray-300 text-xs rounded-lg hover:text-white hover:border-primary-500/30 border border-gray-700/50 transition-all duration-300">
+                    <button 
+                      onClick={() => handleQuickFilter('Python')}
+                      className="px-3 py-1.5 bg-gradient-to-br from-gray-700 to-gray-800 text-gray-300 text-xs rounded-lg hover:text-white hover:border-blue-500/30 border border-gray-700/50 transition-all duration-300"
+                    >
                       Python
                     </button>
-                    <button className="px-3 py-1.5 bg-gradient-to-br from-gray-700 to-gray-800 text-gray-300 text-xs rounded-lg hover:text-white hover:border-primary-500/30 border border-gray-700/50 transition-all duration-300">
+                    <button 
+                      onClick={() => handleQuickFilter('Deep Learning')}
+                      className="px-3 py-1.5 bg-gradient-to-br from-gray-700 to-gray-800 text-gray-300 text-xs rounded-lg hover:text-white hover:border-blue-500/30 border border-gray-700/50 transition-all duration-300"
+                    >
                       Deep Learning
                     </button>
-                    <button className="px-3 py-1.5 bg-gradient-to-br from-gray-700 to-gray-800 text-gray-300 text-xs rounded-lg hover:text-white hover:border-primary-500/30 border border-gray-700/50 transition-all duration-300">
-                      Free Resources
+                    <button 
+                      onClick={() => handleQuickFilter('Data Science')}
+                      className="px-3 py-1.5 bg-gradient-to-br from-gray-700 to-gray-800 text-gray-300 text-xs rounded-lg hover:text-white hover:border-blue-500/30 border border-gray-700/50 transition-all duration-300"
+                    >
+                      Data Science
                     </button>
                   </div>
                 </div>
@@ -133,8 +207,8 @@ const CoursesBooksFilters = ({
               onClick={() => setIsFiltersExpanded(!isFiltersExpanded)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl backdrop-blur-sm transition-all duration-300 ${
                 isFiltersExpanded
-                  ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white'
-                  : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
+                  ? 'bg-gradient-to-r from-blue-500 to-cyan-600 text-white'
+                  : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-blue-500/30'
               }`}
             >
               <FiFilter className={isFiltersExpanded ? 'text-white' : 'text-gray-400'} />
@@ -156,7 +230,7 @@ const CoursesBooksFilters = ({
                     onClick={() => setViewMode(mode.id)}
                     className={`p-2 rounded-lg transition-all duration-300 ${
                       isActive
-                        ? 'bg-gradient-to-r from-primary-500/20 to-blue-500/20 text-primary-400'
+                        ? 'bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-400'
                         : 'text-gray-400 hover:text-white'
                     }`}
                     title={mode.label}
@@ -181,13 +255,13 @@ const CoursesBooksFilters = ({
           <div className="flex items-center gap-4">
             {/* Sort Dropdown */}
             <div className="relative group">
-              <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30 rounded-xl backdrop-blur-sm transition-all duration-300">
+              <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-blue-500/30 rounded-xl backdrop-blur-sm transition-all duration-300">
                 {(() => {
                   const sortOption = sortOptions.find(opt => opt.id === sortBy);
                   const Icon = sortOption?.icon || FiStar;
                   return (
                     <>
-                      <Icon className="text-primary-400" />
+                      <Icon className="text-blue-400" />
                       <span>{sortOption?.label || 'Sort'}</span>
                       <FiChevronDown className="text-xs" />
                     </>
@@ -207,13 +281,13 @@ const CoursesBooksFilters = ({
                       onClick={() => setSortBy(option.id)}
                       className={`w-full flex items-center gap-3 px-4 py-3 text-sm border-b border-gray-700/50 last:border-b-0 transition-all duration-300 ${
                         isActive
-                          ? 'text-primary-400 bg-primary-500/10'
+                          ? 'text-blue-400 bg-blue-500/10'
                           : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
                       }`}
                     >
-                      <Icon className={isActive ? 'text-primary-400' : 'text-gray-500'} />
+                      <Icon className={isActive ? 'text-blue-400' : 'text-gray-500'} />
                       <span className="flex-1 text-left">{option.label}</span>
-                      {isActive && <FiCheck className="text-primary-400" />}
+                      {isActive && <FiCheck className="text-blue-400" />}
                     </button>
                   );
                 })}
@@ -253,7 +327,12 @@ const CoursesBooksFilters = ({
               
               {/* Category Filter */}
               <div>
-                <div className="text-sm font-semibold text-gray-400 mb-3">Category</div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-sm font-semibold text-gray-400">Category</div>
+                  {loadingCategories && (
+                    <FiLoader className="text-gray-500 animate-spin text-sm" />
+                  )}
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {categories.map((category) => (
                     <button
@@ -263,22 +342,30 @@ const CoursesBooksFilters = ({
                       onMouseLeave={() => setActiveFilter(null)}
                       className={`group relative px-3 py-2 rounded-lg transition-all duration-300 ${
                         selectedCategory === category.value
-                          ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white'
-                          : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
+                          ? 'bg-gradient-to-r from-blue-500 to-cyan-600 text-white'
+                          : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-blue-500/30'
                       }`}
                     >
                       <span className="text-sm">{category.label}</span>
-                      <div className={`absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-lg blur opacity-0 ${
+                      <div className={`absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg blur opacity-0 ${
                         selectedCategory === category.value ? 'opacity-20' : 'group-hover:opacity-10'
                       } transition-opacity duration-500`} />
                     </button>
                   ))}
+                  {categories.length === 0 && !loadingCategories && (
+                    <p className="text-sm text-gray-500">No categories available</p>
+                  )}
                 </div>
               </div>
 
               {/* Level Filter */}
               <div>
-                <div className="text-sm font-semibold text-gray-400 mb-3">Level</div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-sm font-semibold text-gray-400">Level</div>
+                  {loadingLevels && (
+                    <FiLoader className="text-gray-500 animate-spin text-sm" />
+                  )}
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {levels.map((level) => (
                     <button
@@ -298,6 +385,9 @@ const CoursesBooksFilters = ({
                       } transition-opacity duration-500`} />
                     </button>
                   ))}
+                  {levels.length === 0 && !loadingLevels && (
+                    <p className="text-sm text-gray-500">Loading levels...</p>
+                  )}
                 </div>
               </div>
 
@@ -364,16 +454,16 @@ const CoursesBooksFilters = ({
         )}
 
         {/* Active Filters Display */}
-        {(selectedCategory !== 'all' || selectedLevel !== 'all' || priceRange !== 'all') && (
+        {(selectedCategory !== 'all' || selectedLevel !== 'all' || priceRange !== 'all' || searchQuery) && (
           <div className="mt-4">
             <div className="text-xs text-gray-500 mb-2">Active Filters:</div>
             <div className="flex flex-wrap gap-2">
               {selectedCategory !== 'all' && (
-                <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-br from-primary-500/20 to-blue-500/20 border border-primary-500/30 text-primary-300 rounded-lg text-sm">
-                  <span>{categories.find(c => c.value === selectedCategory)?.label}</span>
+                <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 text-blue-300 rounded-lg text-sm">
+                  <span>{categories.find(c => c.value === selectedCategory)?.label || selectedCategory}</span>
                   <button
                     onClick={() => setSelectedCategory('all')}
-                    className="ml-1 text-primary-400 hover:text-white"
+                    className="ml-1 text-blue-400 hover:text-white"
                   >
                     <FiX className="text-xs" />
                   </button>
@@ -382,7 +472,7 @@ const CoursesBooksFilters = ({
               
               {selectedLevel !== 'all' && (
                 <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-600/50 text-gray-300 rounded-lg text-sm">
-                  <span>{levels.find(l => l.id === selectedLevel)?.label}</span>
+                  <span>{levels.find(l => l.id === selectedLevel)?.label || selectedLevel}</span>
                   <button
                     onClick={() => setSelectedLevel('all')}
                     className="ml-1 text-gray-400 hover:text-white"
@@ -399,6 +489,19 @@ const CoursesBooksFilters = ({
                   <button
                     onClick={() => setPriceRange('all')}
                     className="ml-1 text-green-400 hover:text-white"
+                  >
+                    <FiX className="text-xs" />
+                  </button>
+                </div>
+              )}
+              
+              {searchQuery && (
+                <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-purple-300 rounded-lg text-sm">
+                  <FiSearch className="text-xs" />
+                  <span>"{searchQuery}"</span>
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="ml-1 text-purple-400 hover:text-white"
                   >
                     <FiX className="text-xs" />
                   </button>

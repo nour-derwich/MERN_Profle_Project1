@@ -16,6 +16,9 @@ import {
   FiCloud 
 } from 'react-icons/fi';
 
+// Import your API service
+import api from '../../services/api';
+
 const Projects = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -28,17 +31,12 @@ const Projects = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [favorites, setFavorites] = useState([]);
   const [bookmarks, setBookmarks] = useState([]);
+  const [projects, setProjects] = useState([]); // Initialize as empty array
+  const [loading, setLoading] = useState(true); // Start with loading true
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    setIsVisible(true);
-    
-    // Simulate loading
-    const timer = setTimeout(() => setIsVisible(true), 300);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Enhanced Projects Data
-  const projects = [
+  // Mock data for fallback
+  const mockProjects = [
     {
       id: 1,
       title: 'AI-Powered Trading Algorithm',
@@ -99,357 +97,159 @@ const Projects = () => {
       documentationUrl: 'https://docs-trading.example.com',
       articleUrl: 'https://blog.example.com/ai-trading-algorithm'
     },
-    {
-      id: 2,
-      title: 'Advanced Image Recognition System',
-      shortDescription: 'State-of-the-art deep learning models for medical image analysis.',
-      fullDescription: 'Built a comprehensive computer vision system for medical image analysis using advanced deep learning techniques. The system assists radiologists in detecting abnormalities in X-ray and MRI images.',
-      category: 'Deep Learning',
-      complexity: 'Advanced',
-      status: 'completed',
-      technologies: ['PyTorch', 'TensorFlow', 'OpenCV', 'Python', 'CUDA', 'FastAPI', 'Docker', 'MongoDB'],
-      image: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=1200&q=80',
-      demoUrl: 'https://demo-medical.example.com',
-      githubUrl: 'https://github.com/username/medical-cv',
-      date: 'November 2023',
-      lastUpdated: '2023-11-20',
-      featured: true,
-      stars: 512,
-      forks: 128,
-      views: '5.1K',
-      contributors: 3,
-      developmentTime: '4 months',
-      datasetSize: '50K medical images',
-      features: [
-        'Multi-model ensemble for improved accuracy',
-        'Real-time inference with GPU acceleration',
-        'Interactive visualization dashboard',
-        'Automated report generation',
-        'HIPAA compliant data handling'
-      ],
-      challenges: [
-        {
-          description: 'Limited annotated medical data for rare conditions',
-          solution: 'Implemented advanced data augmentation and synthetic data generation using GANs'
-        },
-        {
-          description: 'Model interpretability for medical professionals',
-          solution: 'Integrated Grad-CAM visualization and attention mechanisms to highlight regions of interest'
-        }
-      ],
-      results: [
-        'Achieved 94% accuracy on test dataset',
-        'Reduced false positives by 35%',
-        'Decreased radiologist review time by 60%',
-        'Successfully deployed in 3 medical facilities'
-      ],
-      metrics: {
-        'Accuracy': '94%',
-        'False Positives': 'Reduced 35%',
-        'Review Time': 'Reduced 60%',
-        'Deployments': '3 facilities'
-      },
-      goals: [
-        'Achieve >90% accuracy on medical images',
-        'Provide explainable AI for medical professionals',
-        'Ensure HIPAA compliance',
-        'Enable real-time inference'
-      ],
-      architecture: 'Client-server architecture with model serving via TorchServe, FastAPI backend, and React frontend. Containerized deployment with health monitoring.',
-      documentationUrl: 'https://docs-medical.example.com',
-      articleUrl: 'https://blog.example.com/medical-ai'
-    },
-    {
-      id: 3,
-      title: 'Real-time Anomaly Detection Engine',
-      shortDescription: 'Scalable system for detecting anomalies in IoT sensor data.',
-      fullDescription: 'Developed a real-time anomaly detection system for IoT sensor networks using streaming data processing and machine learning.',
-      category: 'Data Science',
-      complexity: 'Advanced',
-      status: 'in-progress',
-      technologies: ['Python', 'Kafka', 'Spark', 'Scikit-learn', 'InfluxDB', 'Grafana', 'AWS'],
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80',
-      demoUrl: 'https://demo-iot.example.com',
-      githubUrl: 'https://github.com/username/anomaly-detection',
-      date: 'March 2024',
-      lastUpdated: '2024-03-10',
-      featured: false,
-      stars: 187,
-      forks: 42,
-      views: '1.8K',
-      contributors: 2,
-      developmentTime: '3 months',
-      datasetSize: '100M+ sensor readings',
-      features: [
-        'Real-time streaming data processing',
-        'Adaptive threshold algorithms',
-        'Interactive alert dashboard',
-        'Historical anomaly analysis',
-        'Multi-tenant architecture'
-      ],
-      challenges: [
-        {
-          description: 'Processing high-volume streaming data with low latency',
-          solution: 'Implemented Apache Kafka for data ingestion and Spark Streaming for real-time processing'
-        },
-        {
-          description: 'Handling concept drift in evolving sensor data',
-          solution: 'Used online learning algorithms with adaptive model retraining'
-        }
-      ],
-      results: [
-        'Processed 1M+ events per second',
-        'Detected anomalies with 99.9% recall',
-        'Reduced false alerts by 75%',
-        'Achieved <100ms processing latency'
-      ],
-      metrics: {
-        'Events/Sec': '1M+',
-        'Recall': '99.9%',
-        'False Alerts': 'Reduced 75%',
-        'Latency': '100ms'
-      },
-      goals: [
-        'Process 1M+ events per second',
-        'Achieve >99% anomaly detection accuracy',
-        'Maintain sub-100ms processing latency',
-        'Support 1000+ concurrent devices'
-      ]
-    },
-    {
-      id: 4,
-      title: 'AutoML Platform',
-      shortDescription: 'Automated machine learning platform for business users.',
-      fullDescription: 'Built an end-to-end AutoML platform that automates the entire machine learning pipeline from data preprocessing to model deployment.',
-      category: 'Machine Learning',
-      complexity: 'Expert',
-      status: 'completed',
-      technologies: ['Python', 'FastAPI', 'React', 'PostgreSQL', 'Docker', 'Kubernetes', 'AWS Sagemaker'],
-      image: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=1200&q=80',
-      demoUrl: 'https://demo-automl.example.com',
-      githubUrl: 'https://github.com/username/automl-platform',
-      date: 'December 2023',
-      lastUpdated: '2023-12-15',
-      featured: true,
-      stars: 423,
-      forks: 89,
-      views: '3.2K',
-      contributors: 4,
-      developmentTime: '8 months',
-      datasetSize: 'N/A',
-      features: [
-        'Automated feature engineering',
-        'Hyperparameter optimization',
-        'Model interpretability tools',
-        'One-click deployment',
-        'Performance monitoring'
-      ],
-      challenges: [
-        {
-          description: 'Making complex ML accessible to non-technical users',
-          solution: 'Created intuitive UI with guided workflows and natural language explanations'
-        },
-        {
-          description: 'Optimizing search space for hyperparameter tuning',
-          solution: 'Implemented Bayesian optimization with early stopping and parallel execution'
-        }
-      ],
-      results: [
-        'Reduced model development time from weeks to hours',
-        'Achieved 95% accuracy on benchmark datasets',
-        'Served 100+ enterprise customers',
-        'Reduced infrastructure costs by 40%'
-      ],
-      metrics: {
-        'Development Time': 'Weeks to Hours',
-        'Accuracy': '95%',
-        'Customers': '100+',
-        'Cost Reduction': '40%'
-      }
-    },
-    {
-      id: 5,
-      title: 'Predictive Maintenance Dashboard',
-      shortDescription: 'Real-time dashboard for industrial equipment monitoring.',
-      fullDescription: 'Built a predictive maintenance system that monitors industrial equipment and predicts failures before they occur.',
-      category: 'Web Apps',
-      complexity: 'Intermediate',
-      status: 'completed',
-      technologies: ['React', 'Node.js', 'WebSocket', 'TensorFlow.js', 'MongoDB', 'Docker'],
-      image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&q=80',
-      demoUrl: 'https://demo-maintenance.example.com',
-      githubUrl: 'https://github.com/username/predictive-maintenance',
-      date: 'February 2024',
-      lastUpdated: '2024-02-20',
-      featured: false,
-      stars: 156,
-      forks: 31,
-      views: '1.2K',
-      contributors: 2,
-      developmentTime: '3 months',
-      datasetSize: '500K sensor readings',
-      features: [
-        'Real-time equipment monitoring',
-        'Predictive failure alerts',
-        'Interactive visualization',
-        'Maintenance scheduling',
-        'Performance analytics'
-      ],
-      challenges: [
-        {
-          description: 'Real-time data streaming to web dashboard',
-          solution: 'Implemented WebSocket for bidirectional communication and server-sent events'
-        },
-        {
-          description: 'Deploying ML models in browser environment',
-          solution: 'Used TensorFlow.js for client-side inference with model quantization'
-        }
-      ],
-      results: [
-        'Reduced unplanned downtime by 65%',
-        'Extended equipment lifespan by 30%',
-        'Saved $500K+ in maintenance costs',
-        'Achieved 92% prediction accuracy'
-      ],
-      metrics: {
-        'Downtime': 'Reduced 65%',
-        'Lifespan': 'Extended 30%',
-        'Cost Savings': '$500K+',
-        'Accuracy': '92%'
-      }
-    },
-    {
-      id: 6,
-      title: 'Natural Language Processing API',
-      shortDescription: 'Scalable NLP API for text analysis and processing.',
-      fullDescription: 'Built a comprehensive NLP API service providing various text processing capabilities including sentiment analysis, entity recognition, and text summarization.',
-      category: 'APIs',
-      complexity: 'Advanced',
-      status: 'maintained',
-      technologies: ['FastAPI', 'spaCy', 'Transformers', 'Redis', 'Docker', 'Kubernetes', 'AWS'],
-      image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1200&q=80',
-      demoUrl: 'https://demo-nlp.example.com',
-      githubUrl: 'https://github.com/username/nlp-api',
-      date: 'October 2023',
-      lastUpdated: '2024-01-10',
-      featured: false,
-      stars: 289,
-      forks: 67,
-      views: '2.1K',
-      contributors: 3,
-      developmentTime: '5 months',
-      datasetSize: 'N/A',
-      features: [
-        'Multiple NLP models (BERT, GPT, spaCy)',
-        'Real-time text processing',
-        'Batch processing support',
-        'Model version management',
-        'Comprehensive API documentation'
-      ],
-      challenges: [
-        {
-          description: 'Handling variable-length text inputs efficiently',
-          solution: 'Implemented dynamic batching and model quantization'
-        },
-        {
-          description: 'Ensuring low latency for real-time applications',
-          solution: 'Used model caching with Redis and optimized inference pipelines'
-        }
-      ],
-      results: [
-        'Processed 1M+ API requests daily',
-        'Achieved <50ms average response time',
-        'Supported 50+ concurrent languages',
-        'Maintained 99.9% API uptime'
-      ],
-      metrics: {
-        'Daily Requests': '1M+',
-        'Response Time': '50ms',
-        'Languages': '50+',
-        'Uptime': '99.9%'
-      }
-    }
+    // Add more mock projects as needed
   ];
 
-  // Calculate categories with counts
-  const categories = [
-    { 
-      value: 'all', 
-      label: 'All Projects', 
-      icon: FiCode, 
-      color: 'from-gray-600 to-gray-800', 
-      count: projects.length 
-    },
-    { 
-      value: 'Machine Learning', 
-      label: 'Machine Learning', 
-      icon: FiTrendingUp, 
-      color: 'from-primary-500 to-blue-600', 
-      count: projects.filter(p => p.category === 'Machine Learning').length 
-    },
-    { 
-      value: 'Deep Learning', 
-      label: 'Deep Learning', 
-      icon: FiCpu, 
-      color: 'from-purple-500 to-pink-600', 
-      count: projects.filter(p => p.category === 'Deep Learning').length 
-    },
-    { 
-      value: 'Data Science', 
-      label: 'Data Science', 
-      icon: FiDatabase, 
-      color: 'from-blue-500 to-cyan-600', 
-      count: projects.filter(p => p.category === 'Data Science').length 
-    },
-    { 
-      value: 'Web Apps', 
-      label: 'Web Apps', 
-      icon: FiZap, 
-      color: 'from-orange-500 to-yellow-600', 
-      count: projects.filter(p => p.category === 'Web Apps').length 
-    },
-    { 
-      value: 'APIs', 
-      label: 'APIs', 
-      icon: FiCloud, 
-      color: 'from-green-500 to-emerald-600', 
-      count: projects.filter(p => p.category === 'APIs').length 
-    }
-  ];
+  // Fetch projects from backend
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Try to fetch from API
+        // const response = await api.get('/projects');
+        // const data = response.data;
+        
+        // For now, simulate API call with setTimeout
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Simulate API response - replace this with actual API call
+        const data = mockProjects; // Replace with: const data = response.data || [];
+        
+        // Ensure data is an array
+        if (Array.isArray(data)) {
+          setProjects(data);
+        } else if (data && Array.isArray(data.projects)) {
+          // If response has nested projects array
+          setProjects(data.projects);
+        } else if (data && typeof data === 'object') {
+          // If it's a single object, wrap in array
+          setProjects([data]);
+        } else {
+          // If data is not in expected format, use mock data
+          setProjects(mockProjects);
+          setError('Received unexpected data format from API');
+        }
+        
+      } catch (err) {
+        console.error('Error fetching projects:', err);
+        setError('Failed to load projects from server. Using sample data instead.');
+        // Fallback to mock data
+        setProjects(mockProjects);
+      } finally {
+        setLoading(false);
+        setIsVisible(true);
+      }
+    };
 
-  // Filter projects based on multiple criteria
-  const filteredProjects = projects.filter(project => {
-    const matchesSearch = searchQuery === '' || 
-      project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.shortDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.technologies.some(tech => tech.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      project.category.toLowerCase().includes(searchQuery.toLowerCase());
+    fetchProjects();
+  }, []);
+
+  // Calculate categories with counts - ensure projects is an array
+  const categories = React.useMemo(() => {
+    if (!Array.isArray(projects)) {
+      return [
+        { 
+          value: 'all', 
+          label: 'All Projects', 
+          icon: FiCode, 
+          color: 'from-gray-600 to-gray-800', 
+          count: 0 
+        }
+      ];
+    }
+
+    return [
+      { 
+        value: 'all', 
+        label: 'All Projects', 
+        icon: FiCode, 
+        color: 'from-gray-600 to-gray-800', 
+        count: projects.length 
+      },
+      { 
+        value: 'Machine Learning', 
+        label: 'Machine Learning', 
+        icon: FiTrendingUp, 
+        color: 'from-primary-500 to-blue-600', 
+        count: projects.filter(p => p.category === 'Machine Learning').length 
+      },
+      { 
+        value: 'Deep Learning', 
+        label: 'Deep Learning', 
+        icon: FiCpu, 
+        color: 'from-purple-500 to-pink-600', 
+        count: projects.filter(p => p.category === 'Deep Learning').length 
+      },
+      { 
+        value: 'Data Science', 
+        label: 'Data Science', 
+        icon: FiDatabase, 
+        color: 'from-blue-500 to-cyan-600', 
+        count: projects.filter(p => p.category === 'Data Science').length 
+      },
+      { 
+        value: 'Web Apps', 
+        label: 'Web Apps', 
+        icon: FiZap, 
+        color: 'from-orange-500 to-yellow-600', 
+        count: projects.filter(p => p.category === 'Web Apps').length 
+      },
+      { 
+        value: 'APIs', 
+        label: 'APIs', 
+        icon: FiCloud, 
+        color: 'from-green-500 to-emerald-600', 
+        count: projects.filter(p => p.category === 'APIs').length 
+      }
+    ];
+  }, [projects]);
+
+  // Filter projects based on multiple criteria - ensure projects is an array
+  const filteredProjects = React.useMemo(() => {
+    if (!Array.isArray(projects)) return [];
     
-    const matchesCategory = selectedCategory === 'all' || project.category === selectedCategory;
-    const matchesComplexity = selectedComplexity === 'all' || project.complexity === selectedComplexity;
-    const matchesStatus = selectedStatus === 'all' || project.status === selectedStatus;
+    return projects.filter(project => {
+      const matchesSearch = searchQuery === '' || 
+        (project.title && project.title.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (project.shortDescription && project.shortDescription.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (project.technologies && Array.isArray(project.technologies) && 
+         project.technologies.some(tech => tech.toLowerCase().includes(searchQuery.toLowerCase()))) ||
+        (project.category && project.category.toLowerCase().includes(searchQuery.toLowerCase()));
+      
+      const matchesCategory = selectedCategory === 'all' || project.category === selectedCategory;
+      const matchesComplexity = selectedComplexity === 'all' || project.complexity === selectedComplexity;
+      const matchesStatus = selectedStatus === 'all' || project.status === selectedStatus;
 
-    return matchesSearch && matchesCategory && matchesComplexity && matchesStatus;
-  });
+      return matchesSearch && matchesCategory && matchesComplexity && matchesStatus;
+    });
+  }, [projects, searchQuery, selectedCategory, selectedComplexity, selectedStatus]);
 
-  // Sort projects
-  const sortedProjects = [...filteredProjects].sort((a, b) => {
-    switch (sortBy) {
-      case 'featured':
-        return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
-      case 'recent':
-        return new Date(b.lastUpdated || b.date) - new Date(a.lastUpdated || a.date);
-      case 'complexity':
-        const complexityOrder = { 'Expert': 4, 'Advanced': 3, 'Intermediate': 2, 'Beginner': 1 };
-        return (complexityOrder[b.complexity] || 0) - (complexityOrder[a.complexity] || 0);
-      case 'popular':
-        return (b.stars || 0) - (a.stars || 0);
-      case 'alphabetical':
-        return a.title.localeCompare(b.title);
-      default:
-        return 0;
-    }
-  });
+  // Sort projects - ensure filteredProjects is an array
+  const sortedProjects = React.useMemo(() => {
+    if (!Array.isArray(filteredProjects)) return [];
+    
+    return [...filteredProjects].sort((a, b) => {
+      switch (sortBy) {
+        case 'featured':
+          return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
+        case 'recent':
+          const dateA = a.lastUpdated || a.date;
+          const dateB = b.lastUpdated || b.date;
+          return new Date(dateB || 0) - new Date(dateA || 0);
+        case 'complexity':
+          const complexityOrder = { 'Expert': 4, 'Advanced': 3, 'Intermediate': 2, 'Beginner': 1 };
+          return (complexityOrder[b.complexity] || 0) - (complexityOrder[a.complexity] || 0);
+        case 'popular':
+          return (b.stars || 0) - (a.stars || 0);
+        case 'alphabetical':
+          return (a.title || '').localeCompare(b.title || '');
+        default:
+          return 0;
+      }
+    });
+  }, [filteredProjects, sortBy]);
 
   // Calculate pagination
   const itemsPerPage = viewMode === 'compact' ? 12 : viewMode === 'grid' ? 9 : 6;
@@ -458,37 +258,54 @@ const Projects = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentProjects = sortedProjects.slice(startIndex, endIndex);
 
-  const toggleFavorite = (projectId) => {
-    setFavorites(prev => 
-      prev.includes(projectId) 
-        ? prev.filter(id => id !== projectId)
-        : [...prev, projectId]
-    );
+  const toggleFavorite = async (projectId) => {
+    try {
+      // If you want to sync with backend
+      // await api.post(`/projects/${projectId}/favorite`);
+      
+      setFavorites(prev => 
+        prev.includes(projectId) 
+          ? prev.filter(id => id !== projectId)
+          : [...prev, projectId]
+      );
+    } catch (err) {
+      console.error('Error toggling favorite:', err);
+    }
   };
 
-  const toggleBookmark = (projectId) => {
-    setBookmarks(prev => 
-      prev.includes(projectId) 
-        ? prev.filter(id => id !== projectId)
-        : [...prev, projectId]
-    );
+  const toggleBookmark = async (projectId) => {
+    try {
+      // If you want to sync with backend
+      // await api.post(`/projects/${projectId}/bookmark`);
+      
+      setBookmarks(prev => 
+        prev.includes(projectId) 
+          ? prev.filter(id => id !== projectId)
+          : [...prev, projectId]
+      );
+    } catch (err) {
+      console.error('Error toggling bookmark:', err);
+    }
   };
 
   const handleQuickView = (project) => {
-    // In a real app, you might want to show a quick preview modal
     console.log('Quick view:', project);
   };
 
-  const handleShare = (project) => {
-    if (navigator.share) {
-      navigator.share({
-        title: project.title,
-        text: `Check out this project: ${project.shortDescription}`,
-        url: window.location.href,
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      alert('Link copied to clipboard!');
+  const handleShare = async (project) => {
+    try {
+      if (navigator.share) {
+        navigator.share({
+          title: project.title || 'Project',
+          text: `Check out this project: ${project.shortDescription || ''}`,
+          url: window.location.href,
+        });
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      }
+    } catch (err) {
+      console.error('Error sharing project:', err);
     }
   };
 
@@ -501,11 +318,48 @@ const Projects = () => {
     setCurrentPage(1);
   };
 
-  const handleStartProject = (formData) => {
-    console.log('Project inquiry submitted:', formData);
-    alert('Thank you for your project inquiry! I\'ll get back to you within 24 hours.');
+  const handleStartProject = async (formData) => {
+    try {
+      // Send project inquiry to backend
+      // await api.post('/project-inquiries', formData);
+      console.log('Project inquiry submitted:', formData);
+      alert('Thank you for your project inquiry! I\'ll get back to you within 24 hours.');
+    } catch (err) {
+      console.error('Error submitting project inquiry:', err);
+      alert('There was an error submitting your inquiry. Please try again.');
+    }
   };
 
+  const handleExportProjects = async () => {
+    try {
+      const exportData = sortedProjects.map(p => ({
+        title: p.title || '',
+        category: p.category || '',
+        description: p.shortDescription || '',
+        technologies: Array.isArray(p.technologies) ? p.technologies.join(', ') : '',
+        status: p.status || '',
+        complexity: p.complexity || ''
+      }));
+      
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'projects-export.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Error exporting projects:', err);
+      alert('Failed to export projects.');
+    }
+  };
+
+  // Handle project selection with error checking
+  const handleProjectSelect = (project) => {
+    if (project && typeof project === 'object') {
+      setSelectedProject(project);
+    }
+  };
 
   return (
     <motion.div
@@ -534,12 +388,15 @@ const Projects = () => {
         setCurrentPage={setCurrentPage}
         toggleBookmark={toggleBookmark}
         bookmarks={bookmarks}
+        loading={loading}
+        error={error}
+        onExportProjects={handleExportProjects}
       />
       
       <ProjectsGrid
         currentProjects={currentProjects}
         isVisible={isVisible}
-        setSelectedProject={setSelectedProject}
+        setSelectedProject={handleProjectSelect}
         favorites={favorites}
         toggleFavorite={toggleFavorite}
         onQuickView={handleQuickView}
@@ -551,8 +408,10 @@ const Projects = () => {
         itemsPerPage={itemsPerPage}
         onPageChange={setCurrentPage}
         onViewModeChange={setViewMode}
-        isLoading={false}
-        totalProjects={projects.length}
+        isLoading={loading}
+        totalProjects={Array.isArray(projects) ? projects.length : 0}
+        totalPages={totalPages}
+        error={error}
       />
       
       <ProjectDetailModal

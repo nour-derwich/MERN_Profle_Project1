@@ -1,3 +1,4 @@
+// utils/uploadImage.js
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
@@ -9,26 +10,49 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Configure Multer Storage
+// Test Cloudinary connection on startup
+cloudinary.api
+  .ping()
+  .then((result) => {
+    console.log("✅ Cloudinary connection successful:", {
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      status: result.status,
+    });
+  })
+  .catch((error) => {
+    console.error("❌ Cloudinary connection failed:", error.message);
+    console.error("Please check your Cloudinary credentials in .env file");
+  });
+
+// Configure Multer Storage for Cloudinary
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "portfolio",
-    allowed_formats: ["jpg", "jpeg", "png", "gif", "webp"],
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
     transformation: [{ width: 1200, height: 800, crop: "limit" }],
+    resource_type: "auto",
+    // Use unique public_id for each upload
+    public_id: (req, file) => {
+      const timestamp = Date.now();
+      const random = Math.random().toString(36).substring(7);
+      return `${timestamp}-${random}`;
+    },
   },
 });
 
+// Create multer upload middleware
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: parseInt(process.env.MAX_FILE_SIZE) || 20 * 1024 * 1024, // 20MB
+    fileSize: 5 * 1024 * 1024, // 5MB limit
   },
   fileFilter: (req, file, cb) => {
+    // Accept only image files
     if (file.mimetype.startsWith("image/")) {
       cb(null, true);
     } else {
-      cb(new Error("Only image files are allowed"), false);
+      cb(new Error("Only image files are allowed (JPEG, PNG, WebP)"), false);
     }
   },
 });

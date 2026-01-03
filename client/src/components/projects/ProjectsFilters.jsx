@@ -8,7 +8,6 @@ import {
   FiClock,
   FiStar,
   FiCode,
-  FiDatabase,
   FiLayers,
   FiZap,
   FiRefreshCw,
@@ -21,6 +20,13 @@ import {
 } from 'react-icons/fi';
 import { FaPython, FaReact, FaNodeJs, FaDocker } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+
+// Add missing FiDatabase icon
+const FiDatabase = ({ className }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+  </svg>
+);
 
 const ProjectsFilters = ({
   categories = [],
@@ -42,40 +48,45 @@ const ProjectsFilters = ({
   setCurrentPage = () => {},
   showBookmarks = false,
   toggleBookmark,
-  bookmarks = []
+  bookmarks = [],
+  isLoading = false
 }) => {
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [showSortDropdown, setShowSortDropdown] = useState(false);
 
-  // Default filters if not provided
-  const allCategories = [
-    { value: 'all', label: 'All Projects', icon: FiLayers, color: 'from-gray-600 to-gray-800', count: filteredProjects.length },
-    ...(categories.length > 0 ? categories : [
-      { value: 'ml', label: 'Machine Learning', icon: FiTrendingUp, color: 'from-primary-500 to-blue-600', count: 12 },
-      { value: 'dl', label: 'Deep Learning', icon: FiCode, color: 'from-purple-500 to-pink-600', count: 8 },
-      { value: 'cv', label: 'Computer Vision', icon: FiEye, color: 'from-blue-500 to-cyan-600', count: 6 },
-      { value: 'nlp', label: 'NLP', icon: FiDatabase, color: 'from-green-500 to-emerald-600', count: 5 },
-      { value: 'web', label: 'Web Apps', icon: FaReact, color: 'from-cyan-500 to-blue-600', count: 10 },
-      { value: 'api', label: 'APIs', icon: FaNodeJs, color: 'from-green-500 to-emerald-600', count: 7 },
-      { value: 'automation', label: 'Automation', icon: FiZap, color: 'from-orange-500 to-yellow-600', count: 4 },
-      { value: 'dashboards', label: 'Dashboards', icon: FiLayers, color: 'from-indigo-500 to-purple-600', count: 3 }
-    ])
+  // Default categories matching your project data
+  const defaultCategories = [
+    { value: 'all', label: 'All Projects', icon: FiLayers, color: 'from-gray-600 to-gray-800', count: Array.isArray(filteredProjects) ? filteredProjects.length : 0 },
+    { value: 'Machine Learning', label: 'Machine Learning', icon: FiTrendingUp, color: 'from-primary-500 to-blue-600', count: Array.isArray(filteredProjects) ? filteredProjects.filter(p => p.category === 'Machine Learning').length : 0 },
+    { value: 'Deep Learning', label: 'Deep Learning', icon: FiCode, color: 'from-purple-500 to-pink-600', count: Array.isArray(filteredProjects) ? filteredProjects.filter(p => p.category === 'Deep Learning').length : 0 },
+    { value: 'Data Science', label: 'Data Science', icon: FiDatabase, color: 'from-blue-500 to-cyan-600', count: Array.isArray(filteredProjects) ? filteredProjects.filter(p => p.category === 'Data Science').length : 0 },
+    { value: 'Web Apps', label: 'Web Apps', icon: FaReact, color: 'from-cyan-500 to-blue-600', count: Array.isArray(filteredProjects) ? filteredProjects.filter(p => p.category === 'Web Apps').length : 0 },
+    { value: 'APIs', label: 'APIs', icon: FaNodeJs, color: 'from-green-500 to-emerald-600', count: Array.isArray(filteredProjects) ? filteredProjects.filter(p => p.category === 'APIs').length : 0 },
+    { value: 'Computer Vision', label: 'Computer Vision', icon: FiEye, color: 'from-blue-500 to-cyan-600', count: Array.isArray(filteredProjects) ? filteredProjects.filter(p => p.category === 'Computer Vision').length : 0 },
+    { value: 'AI Finance', label: 'AI Finance', icon: FiTrendingUp, color: 'from-teal-500 to-emerald-600', count: Array.isArray(filteredProjects) ? filteredProjects.filter(p => p.category === 'AI Finance').length : 0 }
   ];
+
+  const allCategories = categories.length > 0 ? [
+    { value: 'all', label: 'All Projects', icon: FiLayers, color: 'from-gray-600 to-gray-800', count: Array.isArray(filteredProjects) ? filteredProjects.length : 0 },
+    ...categories
+  ] : defaultCategories;
 
   const complexities = [
     { id: 'all', label: 'All Levels', color: 'from-gray-600 to-gray-800' },
-    { id: 'beginner', label: 'Beginner', color: 'from-green-500 to-emerald-600' },
-    { id: 'intermediate', label: 'Intermediate', color: 'from-blue-500 to-cyan-600' },
-    { id: 'advanced', label: 'Advanced', color: 'from-purple-500 to-pink-600' },
-    { id: 'expert', label: 'Expert', color: 'from-red-500 to-orange-600' }
+    { id: 'Beginner', label: 'Beginner', color: 'from-green-500 to-emerald-600' },
+    { id: 'Intermediate', label: 'Intermediate', color: 'from-blue-500 to-cyan-600' },
+    { id: 'Advanced', label: 'Advanced', color: 'from-purple-500 to-pink-600' },
+    { id: 'Expert', label: 'Expert', color: 'from-red-500 to-orange-600' }
   ];
 
   const statuses = [
     { id: 'all', label: 'All Statuses', color: 'from-gray-600 to-gray-800' },
     { id: 'completed', label: 'Completed', color: 'from-green-500 to-emerald-600' },
+    { id: 'published', label: 'Published', color: 'from-green-500 to-emerald-600' },
     { id: 'in-progress', label: 'In Progress', color: 'from-blue-500 to-cyan-600' },
+    { id: 'draft', label: 'Draft', color: 'from-blue-500 to-cyan-600' },
     { id: 'maintained', label: 'Maintained', color: 'from-yellow-500 to-orange-600' },
     { id: 'archived', label: 'Archived', color: 'from-gray-600 to-gray-800' }
   ];
@@ -117,31 +128,48 @@ const ProjectsFilters = ({
     
     const colorMap = {
       category: {
-        'ml': 'from-primary-500 to-blue-600',
-        'dl': 'from-purple-500 to-pink-600',
-        'cv': 'from-blue-500 to-cyan-600',
-        'nlp': 'from-green-500 to-emerald-600',
-        'web': 'from-cyan-500 to-blue-600',
-        'api': 'from-green-500 to-emerald-600',
-        'automation': 'from-orange-500 to-yellow-600',
-        'dashboards': 'from-indigo-500 to-purple-600'
+        // Real categories from your projects
+        'Machine Learning': 'from-primary-500 to-blue-600',
+        'Deep Learning': 'from-purple-500 to-pink-600',
+        'Computer Vision': 'from-blue-500 to-cyan-600',
+        'Data Science': 'from-green-500 to-emerald-600',
+        'Web Apps': 'from-cyan-500 to-blue-600',
+        'APIs': 'from-green-500 to-emerald-600',
+        'AI Finance': 'from-teal-500 to-emerald-600',
+        'NLP': 'from-green-500 to-emerald-600',
+        'default': 'from-primary-500 to-blue-600'
       },
       complexity: {
-        'beginner': 'from-green-500 to-emerald-600',
-        'intermediate': 'from-blue-500 to-cyan-600',
-        'advanced': 'from-purple-500 to-pink-600',
-        'expert': 'from-red-500 to-orange-600'
+        'Beginner': 'from-green-500 to-emerald-600',
+        'Intermediate': 'from-blue-500 to-cyan-600',
+        'Advanced': 'from-purple-500 to-pink-600',
+        'Expert': 'from-red-500 to-orange-600'
       },
       status: {
         'completed': 'from-green-500 to-emerald-600',
+        'published': 'from-green-500 to-emerald-600',
         'in-progress': 'from-blue-500 to-cyan-600',
+        'draft': 'from-blue-500 to-cyan-600',
         'maintained': 'from-yellow-500 to-orange-600',
         'archived': 'from-gray-600 to-gray-800'
       }
     };
 
-    return colorMap[type]?.[value] || 'from-primary-500 to-blue-600';
+    return colorMap[type]?.[value] || colorMap[type]?.default || 'from-primary-500 to-blue-600';
   };
+
+  if (isLoading) {
+    return (
+      <section className="relative py-6 bg-gradient-to-b from-gray-800 to-gray-900 border-b border-gray-700/50 sticky top-0 z-50 backdrop-blur-xl">
+        <div className="container mx-auto px-4">
+          <div className="space-y-4">
+            <div className="h-16 bg-gray-700/50 rounded-xl animate-pulse" />
+            <div className="h-12 bg-gray-700/50 rounded-xl animate-pulse" />
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative py-6 bg-gradient-to-b from-gray-800 to-gray-900 border-b border-gray-700/50 sticky top-0 z-50 backdrop-blur-xl">
@@ -260,7 +288,7 @@ const ProjectsFilters = ({
             <div className="hidden md:flex items-center gap-2">
               <div className="px-3 py-1.5 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-lg">
                 <span className="text-gray-300">
-                  <span className="text-white font-bold">{filteredProjects.length}</span> projects
+                  <span className="text-white font-bold">{Array.isArray(filteredProjects) ? filteredProjects.length : 0}</span> projects
                 </span>
               </div>
             </div>

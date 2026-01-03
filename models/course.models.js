@@ -12,14 +12,27 @@ class Course {
       level,
       amazon_link,
       price,
+      original_price,
       rating,
+      reviews,
+      priority,
+      personal_insight,
+      time_to_read,
+      year,
+      pages,
+      why_recommend,
+      bestseller,
+      featured,
+      tags,
     } = courseData;
 
     const text = `
       INSERT INTO courses (
         title, author, description, short_description, cover_image,
-        category, level, amazon_link, price, rating
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        category, level, amazon_link, price, original_price,
+        rating, reviews, priority, personal_insight, time_to_read,
+        year, pages, why_recommend, bestseller, featured, tags
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
       RETURNING *
     `;
 
@@ -33,7 +46,18 @@ class Course {
       level,
       amazon_link,
       price,
-      rating,
+      original_price || null,
+      rating || 0.0,
+      reviews || 0,
+      priority || "Recommended",
+      personal_insight || description,
+      time_to_read || "2-3 weeks",
+      year || new Date().getFullYear(),
+      pages || 300,
+      why_recommend || ["Practical", "Career", "Foundation"],
+      bestseller || false,
+      featured || false,
+      tags || [],
     ];
 
     const result = await query(text, values);
@@ -45,19 +69,84 @@ class Course {
     const values = [];
     let paramCount = 1;
 
-    if (filters.category) {
+    // Category filter
+    if (filters.category && filters.category !== "all") {
       text += ` AND category = $${paramCount}`;
       values.push(filters.category);
       paramCount++;
     }
 
-    if (filters.author) {
-      text += ` AND author ILIKE $${paramCount}`;
-      values.push(`%${filters.author}%`);
+    // Level filter
+    if (filters.level && filters.level !== "all") {
+      text += ` AND level = $${paramCount}`;
+      values.push(filters.level);
       paramCount++;
     }
 
-    text += " ORDER BY created_at DESC";
+    // Price filter
+    if (filters.priceRange && filters.priceRange !== "all") {
+      switch (filters.priceRange) {
+        case "under40":
+          text += ` AND price < $${paramCount}`;
+          values.push(40);
+          break;
+        case "40-80":
+          text += ` AND price >= $${paramCount} AND price <= $${
+            paramCount + 1
+          }`;
+          values.push(40, 80);
+          paramCount += 2;
+          break;
+        case "80-120":
+          text += ` AND price >= $${paramCount} AND price <= $${
+            paramCount + 1
+          }`;
+          values.push(80, 120);
+          paramCount += 2;
+          break;
+        case "over120":
+          text += ` AND price > $${paramCount}`;
+          values.push(120);
+          break;
+      }
+    }
+
+    // Search query
+    if (filters.searchQuery) {
+      text += ` AND (
+        title ILIKE $${paramCount} OR 
+        author ILIKE $${paramCount} OR 
+        category ILIKE $${paramCount} OR
+        EXISTS (SELECT 1 FROM unnest(tags) AS tag WHERE tag ILIKE $${paramCount})
+      )`;
+      values.push(`%${filters.searchQuery}%`);
+      paramCount++;
+    }
+
+    // Sort order
+    if (filters.sortBy) {
+      switch (filters.sortBy) {
+        case "price-low":
+          text += " ORDER BY price ASC";
+          break;
+        case "price-high":
+          text += " ORDER BY price DESC";
+          break;
+        case "rating":
+          text += " ORDER BY rating DESC";
+          break;
+        case "popular":
+          text += " ORDER BY reviews DESC";
+          break;
+        case "featured":
+          text += " ORDER BY featured DESC, created_at DESC";
+          break;
+        default:
+          text += " ORDER BY created_at DESC";
+      }
+    } else {
+      text += " ORDER BY created_at DESC";
+    }
 
     const result = await query(text, values);
     return result.rows;
@@ -74,11 +163,9 @@ class Course {
     const values = [];
     let paramCount = 1;
 
-    // List of fields that should not be updated manually
     const excludedFields = ["id", "created_at", "updated_at"];
 
     Object.keys(courseData).forEach((key) => {
-      // Skip undefined values and excluded fields
       if (courseData[key] !== undefined && !excludedFields.includes(key)) {
         fields.push(`${key} = $${paramCount}`);
         values.push(courseData[key]);
@@ -86,7 +173,6 @@ class Course {
       }
     });
 
-    // If no fields to update, return the current record
     if (fields.length === 0) {
       return await this.findById(id);
     }
@@ -117,7 +203,7 @@ class Course {
 
   static async findFeatured() {
     const text =
-      "SELECT * FROM courses WHERE featured = true ORDER BY created_at DESC";
+      "SELECT * FROM courses WHERE featured = true ORDER BY created_at DESC LIMIT 3";
     const result = await query(text);
     return result.rows;
   }
@@ -131,8 +217,20 @@ class Course {
   static async search(searchQuery) {
     const text = `
       SELECT * FROM courses 
-      WHERE title ILIKE $1 OR author ILIKE $1 OR description ILIKE $1
-      ORDER BY created_at DESC
+      WHERE 
+        title ILIKE $1 OR 
+        author ILIKE $1 OR 
+        description ILIKE $1 OR
+        category ILIKE $1 OR
+        EXISTS (SELECT 1 FROM unnest(tags) AS tag WHERE tag ILIKE $1)
+      ORDER BY 
+        CASE 
+          WHEN title ILIKE $1 THEN 1
+          WHEN author ILIKE $1 THEN 2
+          WHEN tags::text ILIKE $1 THEN 3
+          ELSE 4
+        END,
+        created_at DESC
     `;
     const result = await query(text, [`%${searchQuery}%`]);
     return result.rows;
@@ -143,12 +241,39 @@ class Course {
       SELECT 
         COUNT(*) as total,
         COUNT(*) FILTER (WHERE featured = true) as featured,
+        COUNT(*) FILTER (WHERE bestseller = true) as bestsellers,
         COALESCE(SUM(clicks_count), 0) as total_clicks,
-        COUNT(DISTINCT category) as categories
+        COUNT(DISTINCT category) as categories,
+        ROUND(AVG(price), 2) as avg_price,
+        ROUND(AVG(rating), 2) as avg_rating
       FROM courses
     `;
     const result = await query(text);
     return result.rows[0];
+  }
+
+  static async getLevels() {
+    const text = "SELECT DISTINCT level FROM courses ORDER BY level";
+    const result = await query(text);
+    return result.rows.map((row) => row.level);
+  }
+
+  static async getRecommendations(limit = 3) {
+    const text = `
+      SELECT * FROM courses 
+      WHERE featured = true 
+      ORDER BY rating DESC, reviews DESC 
+      LIMIT $1
+    `;
+    const result = await query(text, [limit]);
+    return result.rows;
+  }
+
+  static async getByCategory(category) {
+    const text =
+      "SELECT * FROM courses WHERE category = $1 ORDER BY created_at DESC";
+    const result = await query(text, [category]);
+    return result.rows;
   }
 }
 

@@ -22,6 +22,13 @@ import {
 import { FaPython, FaReact, FaNodeJs, FaDocker, FaAws } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
+// Define FiDatabase icon at the top, before it's used
+const FiDatabase = ({ className }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+  </svg>
+);
+
 const ProjectCard = ({ 
   project, 
   index, 
@@ -58,9 +65,12 @@ const ProjectCard = ({
       'Automation': FiZap,
       'Dashboards': FiLayers,
       'Cloud': FiCloud,
-      'Security': FiShield
+      'Security': FiShield,
+      'Data Science': FiDatabase, // Added Data Science
+      'AI Finance': FiTrendingUp,
+      'default': FiCode
     };
-    return icons[category] || FiCode;
+    return icons[category] || icons.default;
   };
 
   const getTechIcon = (tech) => {
@@ -74,14 +84,24 @@ const ProjectCard = ({
       'AWS': FaAws,
       'FastAPI': FiZap,
       'PostgreSQL': FiDatabase,
-      'MongoDB': FiDatabase
+      'MongoDB': FiDatabase,
+      'MySQL': FiDatabase,
+      'Redis': FiDatabase,
+      'Elasticsearch': FiDatabase,
+      'SQLite': FiDatabase,
+      'default': FiCode
     };
-    return icons[tech] || FiCode;
+    return icons[tech] || icons.default;
   };
 
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    if (!dateString) return 'Recently';
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    } catch {
+      return 'Recently';
+    }
   };
 
   const handleFavorite = (e) => {
@@ -121,10 +141,10 @@ const ProjectCard = ({
       initial={{ opacity: 0, y: 20 }}
       animate={isVisible ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5, delay: index * 0.05 }}
-      className="relative group"
+      className="relative group cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={() => setSelectedProject(project)}
+      onClick={() => setSelectedProject && setSelectedProject(project)}
     >
       {/* Card Glow Effect */}
       <div className={`absolute -inset-0.5 bg-gradient-to-r ${getComplexityColor(project.complexity)} rounded-2xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
@@ -141,12 +161,16 @@ const ProjectCard = ({
 
           {/* Project Image */}
           <img 
-            src={project.image} 
+            src={project.image || project.cover_image || '/default-project.jpg'} 
             alt={project.title}
             className={`w-full h-full object-cover transition-all duration-700 ${
               imageLoaded ? 'opacity-100' : 'opacity-0'
             } ${isHovered ? 'scale-110' : 'scale-100'}`}
             onLoad={() => setImageLoaded(true)}
+            onError={(e) => {
+              e.target.src = '/default-project.jpg';
+              setImageLoaded(true);
+            }}
           />
           
           {/* Gradient Overlay */}
@@ -167,7 +191,7 @@ const ProjectCard = ({
             
             {/* Complexity Badge */}
             <div className={`relative px-3 py-1 bg-gradient-to-r ${getComplexityColor(project.complexity)} text-white text-xs font-bold rounded-full backdrop-blur-sm`}>
-              {project.complexity}
+              {project.complexity || 'Intermediate'}
             </div>
           </div>
 
@@ -219,7 +243,7 @@ const ProjectCard = ({
               <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full blur opacity-30" />
               <span className="relative px-3 py-1.5 bg-gradient-to-r from-primary-600 to-blue-600 text-white text-xs font-semibold rounded-full backdrop-blur-sm flex items-center gap-1">
                 <CategoryIcon className="text-xs" />
-                {project.category}
+                {project.category || 'Project'}
               </span>
             </div>
           </div>
@@ -227,20 +251,21 @@ const ProjectCard = ({
           {/* Status Indicator */}
           <div className="absolute bottom-4 right-4">
             <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full backdrop-blur-sm ${
-              project.status === 'completed' 
+              project.status === 'completed' || project.status === 'published'
                 ? 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 text-green-300'
-                : project.status === 'in-progress'
+                : project.status === 'in-progress' || project.status === 'draft'
                 ? 'bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30 text-blue-300'
                 : 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 text-yellow-300'
             }`}>
               <div className={`w-2 h-2 rounded-full ${
-                project.status === 'completed' ? 'bg-green-400' :
-                project.status === 'in-progress' ? 'bg-blue-400 animate-pulse' :
+                project.status === 'completed' || project.status === 'published' ? 'bg-green-400' :
+                project.status === 'in-progress' || project.status === 'draft' ? 'bg-blue-400 animate-pulse' :
                 'bg-yellow-400'
               }`} />
               <span className="text-xs font-medium">
-                {project.status === 'completed' ? 'Completed' : 
-                 project.status === 'in-progress' ? 'In Progress' : 'Maintained'}
+                {project.status === 'completed' || project.status === 'published' ? 'Completed' : 
+                 project.status === 'in-progress' || project.status === 'draft' ? 'In Progress' : 
+                 project.status === 'maintained' ? 'Maintained' : project.status || 'Active'}
               </span>
             </div>
           </div>
@@ -255,7 +280,7 @@ const ProjectCard = ({
           
           {/* Short Description */}
           <p className="text-sm text-gray-400 mb-4 leading-relaxed line-clamp-2">
-            {project.shortDescription}
+            {project.shortDescription || project.short_description || project.description || 'No description available'}
           </p>
 
           {/* Stats */}
@@ -275,13 +300,13 @@ const ProjectCard = ({
             <div className="flex flex-col items-center p-3 bg-gradient-to-br from-gray-800/30 to-gray-900/30 rounded-lg">
               <FiClock className="text-green-400 text-sm mb-1" />
               <div className="text-xs text-gray-500">Updated</div>
-              <div className="text-white font-bold text-xs">{formatDate(project.lastUpdated)}</div>
+              <div className="text-white font-bold text-xs">{formatDate(project.lastUpdated || project.updated_at || project.created_at)}</div>
             </div>
           </div>
 
           {/* Technologies */}
           <div className="flex flex-wrap gap-2 mb-6">
-            {project.technologies.slice(0, 4).map((tech, idx) => {
+            {(project.technologies || []).slice(0, 4).map((tech, idx) => {
               const TechIcon = getTechIcon(tech);
               return (
                 <span 
@@ -294,9 +319,9 @@ const ProjectCard = ({
                 </span>
               );
             })}
-            {project.technologies.length > 4 && (
+            {(project.technologies || []).length > 4 && (
               <span className="px-2 py-1.5 bg-gray-800/30 text-gray-500 rounded-lg text-xs">
-                +{project.technologies.length - 4}
+                +{(project.technologies || []).length - 4}
               </span>
             )}
           </div>
@@ -305,9 +330,9 @@ const ProjectCard = ({
           <div className="flex items-center justify-between pt-4 border-t border-gray-700/50">
             <div className="flex items-center gap-4">
               {/* GitHub Link */}
-              {project.githubUrl && (
+              {(project.githubUrl || project.github_url) && (
                 <a
-                  href={project.githubUrl}
+                  href={project.githubUrl || project.github_url}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
@@ -319,9 +344,9 @@ const ProjectCard = ({
               )}
               
               {/* Live Demo */}
-              {project.liveUrl && (
+              {(project.liveUrl || project.demo_url) && (
                 <a
-                  href={project.liveUrl}
+                  href={project.liveUrl || project.demo_url}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
@@ -361,27 +386,9 @@ const ProjectCard = ({
       <div className={`absolute inset-0 bg-gradient-to-r ${getComplexityColor(project.complexity)} rounded-2xl blur-xl -z-10 transition-all duration-500 ${
         isHovered ? 'opacity-20 translate-y-2' : 'opacity-0'
       }`} />
-
-      {/* Missing FiDatabase icon */}
-      {!FiDatabase && (
-        <style jsx>{`
-          .FiDatabase {
-            width: 1em;
-            height: 1em;
-            fill: currentColor;
-          }
-        `}</style>
-      )}
     </motion.div>
   );
 };
-
-// Add missing FiDatabase icon component
-const FiDatabase = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
-  </svg>
-);
 
 // Custom animations
 const ProjectCardStyle = () => (
@@ -408,6 +415,20 @@ const ProjectCardStyle = () => (
     }
     .animate-pulse {
       animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    .line-clamp-1 {
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
   `}</style>
 );

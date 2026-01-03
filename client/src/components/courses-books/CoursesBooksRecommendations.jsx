@@ -14,7 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import StarRating from './StarRating';
 
 const CoursesBooksRecommendations = ({ 
-  recommendations = [],
+  fetchRecommendations,
   favorites = [],
   toggleFavorite,
   onBookSelect
@@ -22,17 +22,59 @@ const CoursesBooksRecommendations = ({
   const [activeIndex, setActiveIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [recommendations, setRecommendations] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setIsVisible(true);
+    loadRecommendations();
     
     // Auto-rotate recommendations
     const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % recommendations.length);
+      if (recommendations.length > 0) {
+        setActiveIndex((prev) => (prev + 1) % recommendations.length);
+      }
     }, 5000);
     
     return () => clearInterval(interval);
   }, [recommendations.length]);
+
+  const loadRecommendations = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchRecommendations();
+      
+      // Format the data for frontend
+      const formattedRecommendations = data.map(book => ({
+        id: book.id,
+        title: book.title,
+        author: book.author,
+        price: parseFloat(book.price),
+        originalPrice: book.original_price ? parseFloat(book.original_price) : null,
+        rating: parseFloat(book.rating),
+        reviews: book.reviews || book.reviews_count || 0,
+        image: book.cover_image,
+        amazonLink: book.amazon_link,
+        description: book.description,
+        short_description: book.short_description,
+        level: book.level,
+        priority: book.priority || 'Recommended',
+        personal_insight: book.personal_insight || book.description,
+        time_to_read: book.time_to_read || '2-3 weeks',
+        year: book.year || book.publication_year,
+        pages: book.pages,
+        why_recommend: book.why_recommend || ['Practical', 'Career', 'Foundation'],
+        tags: book.tags || []
+      }));
+      
+      setRecommendations(formattedRecommendations);
+    } catch (error) {
+      console.error('Error loading recommendations:', error);
+      setRecommendations([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleBookClick = (book) => {
     if (onBookSelect) {
@@ -46,7 +88,8 @@ const CoursesBooksRecommendations = ({
       'Foundational': 'from-blue-500 to-cyan-600',
       'Advanced': 'from-purple-500 to-pink-600',
       'Practical': 'from-green-500 to-emerald-600',
-      'Theoretical': 'from-indigo-500 to-purple-600'
+      'Theoretical': 'from-indigo-500 to-purple-600',
+      'Recommended': 'from-primary-500 to-blue-600'
     };
     return colors[priority] || 'from-primary-500 to-blue-600';
   };
@@ -61,6 +104,24 @@ const CoursesBooksRecommendations = ({
     };
     return colors[why] || 'from-gray-600 to-gray-800';
   };
+
+  if (loading) {
+    return (
+      <section className="relative py-20 overflow-hidden bg-gradient-to-b from-gray-900 via-black to-gray-900">
+        <div className="container mx-auto px-4 text-center">
+          <div className="animate-pulse">
+            <div className="h-12 bg-gray-700 rounded-lg mb-6 w-64 mx-auto"></div>
+            <div className="h-8 bg-gray-700 rounded-lg mb-4 w-96 mx-auto"></div>
+            <div className="h-4 bg-gray-700 rounded-lg mb-8 w-3/4 mx-auto"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (recommendations.length === 0) {
+    return null; // Don't show recommendations section if no data
+  }
 
   return (
     <section className="relative py-20 overflow-hidden bg-gradient-to-b from-gray-900 via-black to-gray-900">
@@ -182,15 +243,21 @@ const CoursesBooksRecommendations = ({
                               src={book.image} 
                               alt={book.title}
                               className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&q=80';
+                              }}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent" />
                             
                             {/* Year Badge */}
-                            <div className="absolute bottom-4 left-4">
-                              <div className="px-3 py-1.5 bg-gradient-to-br from-gray-800/90 to-gray-900/90 backdrop-blur-sm border border-gray-700/50 rounded-lg">
-                                <span className="text-sm font-bold text-white">{book.year}</span>
+                            {book.year && (
+                              <div className="absolute bottom-4 left-4">
+                                <div className="px-3 py-1.5 bg-gradient-to-br from-gray-800/90 to-gray-900/90 backdrop-blur-sm border border-gray-700/50 rounded-lg">
+                                  <span className="text-sm font-bold text-white">{book.year}</span>
+                                </div>
                               </div>
-                            </div>
+                            )}
                           </div>
 
                           {/* Personal Insights */}
@@ -200,7 +267,7 @@ const CoursesBooksRecommendations = ({
                               <span>Why I Recommend It</span>
                             </h4>
                             <p className="text-gray-400 mb-6 leading-relaxed">
-                              {book.personalInsight || book.description}
+                              {book.personal_insight || book.description}
                             </p>
                             
                             {/* Stats */}
@@ -211,7 +278,7 @@ const CoursesBooksRecommendations = ({
                                 </div>
                                 <div>
                                   <div className="text-sm text-gray-500">Time to Read</div>
-                                  <div className="text-white font-medium">{book.timeToRead}</div>
+                                  <div className="text-white font-medium">{book.time_to_read}</div>
                                 </div>
                               </div>
                               
@@ -227,16 +294,18 @@ const CoursesBooksRecommendations = ({
                             </div>
 
                             {/* Tags */}
-                            <div className="flex flex-wrap gap-2">
-                              {book.whyRecommend?.map((reason, idx) => (
-                                <span 
-                                  key={idx}
-                                  className={`px-3 py-1.5 bg-gradient-to-br ${getWhyColor(reason)}/20 border ${getWhyColor(reason).replace('from-', 'border-').replace(' to-', '/30 to-')} text-gray-300 rounded-lg text-xs font-medium`}
-                                >
-                                  {reason}
-                                </span>
-                              ))}
-                            </div>
+                            {book.why_recommend && book.why_recommend.length > 0 && (
+                              <div className="flex flex-wrap gap-2">
+                                {book.why_recommend.map((reason, idx) => (
+                                  <span 
+                                    key={idx}
+                                    className={`px-3 py-1.5 bg-gradient-to-br ${getWhyColor(reason)}/20 border ${getWhyColor(reason).replace('from-', 'border-').replace(' to-', '/30 to-')} text-gray-300 rounded-lg text-xs font-medium`}
+                                  >
+                                    {reason}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         </div>
 
@@ -245,18 +314,18 @@ const CoursesBooksRecommendations = ({
                           <div className="flex items-center gap-4">
                             <div className="flex flex-col">
                               <div className="text-4xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                                ${book.price}
+                                ${book.price.toFixed(2)}
                               </div>
                               {book.originalPrice && (
                                 <div className="text-sm text-gray-500 line-through">
-                                  ${book.originalPrice}
+                                  ${book.originalPrice.toFixed(2)}
                                 </div>
                               )}
                             </div>
                             
                             <div className="flex items-center gap-2">
                               <StarRating rating={book.rating} />
-                              <span className="text-sm text-gray-400">({book.reviews})</span>
+                              <span className="text-sm text-gray-400">({book.reviews.toLocaleString()} reviews)</span>
                             </div>
                           </div>
                           
@@ -346,7 +415,7 @@ const CoursesBooksRecommendations = ({
                               ? 'text-yellow-400' 
                               : 'text-gray-500'
                           }`}>
-                            ${book.price}
+                            ${book.price.toFixed(2)}
                           </span>
                         </div>
                       </div>
@@ -357,7 +426,7 @@ const CoursesBooksRecommendations = ({
                       <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-700/30">
                         <div className="flex items-center gap-2">
                           <StarRating rating={book.rating} size="sm" showNumber={false} />
-                          <span className="text-xs text-gray-500">{book.rating}</span>
+                          <span className="text-xs text-gray-500">{book.rating.toFixed(1)}</span>
                         </div>
                         <button
                           onClick={(e) => {

@@ -5,7 +5,7 @@ const { protect, authorize } = require("../middleware/auth");
 const { body } = require("express-validator");
 const { upload } = require("../utils/uploadImage");
 
-// Validation middleware
+// Validation middleware - UPDATED FOR NEW FIELDS
 const projectValidation = [
   body("title")
     .trim()
@@ -22,8 +22,12 @@ const projectValidation = [
   body("category").trim().notEmpty().withMessage("Category is required"),
   body("technologies")
     .optional()
-    .isArray()
-    .withMessage("Technologies must be an array"),
+    .custom((value) => {
+      if (!Array.isArray(value)) {
+        throw new Error("Technologies must be an array");
+      }
+      return true;
+    }),
   body("demo_url")
     .optional()
     .isURL()
@@ -32,11 +36,21 @@ const projectValidation = [
     .optional()
     .isURL()
     .withMessage("GitHub URL must be a valid URL"),
+  body("complexity")
+    .optional()
+    .isIn(["Beginner", "Intermediate", "Advanced", "Expert"])
+    .withMessage(
+      "Complexity must be one of: Beginner, Intermediate, Advanced, Expert"
+    ),
+  body("status")
+    .optional()
+    .isIn(["draft", "published", "archived"])
+    .withMessage("Status must be one of: draft, published, archived"),
 ];
 
 // ===== PUBLIC ROUTES =====
 
-// Health check - MUST come before parameterized routes
+// Health check
 router.get("/health", (req, res) => {
   res.json({
     success: true,
@@ -61,23 +75,61 @@ router.get("/featured", projectController.getFeaturedProjects);
 // @access  Public
 router.get("/categories", projectController.getCategories);
 
+// @route   GET /api/projects/complexities
+// @desc    Get all complexity levels
+// @access  Public
+router.get("/complexities", projectController.getComplexities);
+
+// @route   GET /api/projects/technologies
+// @desc    Get all technologies used
+// @access  Public
+router.get("/technologies", projectController.getTechnologies);
+
 // @route   GET /api/projects/search
 // @desc    Search projects
 // @access  Public
 router.get("/search", projectController.searchProjects);
 
+// @route   GET /api/projects/stats
+// @desc    Get project statistics
+// @access  Public
+router.get("/stats", projectController.getProjectStats);
+router.post("/test-upload", protect, authorize("admin"), (req, res) => {
+  console.log("🔍 Test upload endpoint hit");
+  res.json({
+    success: true,
+    message: "Upload endpoint is working",
+    timestamp: new Date().toISOString(),
+  });
+});
+
+
 // ===== PARAMETERIZED ROUTES =====
-// These should come AFTER all specific routes
 
 // @route   GET /api/projects/:id
-// @desc    Get single project by ID
+// @desc    Get single project by ID or slug
 // @access  Public
 router.get("/:id", projectController.getProjectById);
+
+// @route   GET /api/projects/:id/related
+// @desc    Get related projects
+// @access  Public
+router.get("/:id/related", projectController.getRelatedProjects);
 
 // @route   POST /api/projects/:id/view
 // @desc    Increment project view count
 // @access  Public
 router.post("/:id/view", projectController.incrementViews);
+
+// @route   POST /api/projects/:id/star
+// @desc    Increment project stars
+// @access  Public
+router.post("/:id/star", projectController.incrementStars);
+
+// @route   POST /api/projects/:id/fork
+// @desc    Increment project forks
+// @access  Public
+router.post("/:id/fork", projectController.incrementForks);
 
 // ===== PROTECTED ROUTES (Admin only) =====
 
@@ -162,5 +214,14 @@ router.get(
   authorize("admin"),
   projectController.getAllProjectsAdmin
 );
+router.post("/test-upload", protect, authorize("admin"), (req, res) => {
+  console.log("🔍 Test upload endpoint hit");
+  res.json({
+    success: true,
+    message: "Upload endpoint is working",
+    timestamp: new Date().toISOString(),
+  });
+});
+
 
 module.exports = router;

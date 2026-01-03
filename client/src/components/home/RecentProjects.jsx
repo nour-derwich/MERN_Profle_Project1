@@ -6,158 +6,150 @@ import {
 } from 'react-icons/fi';
 import { FaPython, FaReact, FaNodeJs } from 'react-icons/fa';
 import { SiPytorch, SiTensorflow, SiMongodb, SiPostgresql } from 'react-icons/si';
+import { projectService } from "../../services/projectService";
 
 const RecentProjects = () => {
-  const [activeProject, setActiveProject] = useState(0);
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'detailed'
-  const containerRef = useRef(null);
+  const [viewMode, setViewMode] = useState('grid');
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const projects = [
-    {
-      id: 1,
-      title: 'Quantitative Trading AI',
-      description: 'Proprietary machine learning algorithm for intraday trading with dynamic risk management and optimization models.',
-      category: 'AI Finance',
-      technologies: [
-        { name: 'Python', icon: FaPython, color: 'from-blue-500 to-cyan-500' },
-        { name: 'PyTorch', icon: SiPytorch, color: 'from-red-500 to-orange-500' },
-        { name: 'Pandas', icon: FiBarChart2, color: 'from-green-500 to-emerald-500' },
-        { name: 'NumPy', icon: FiCpu, color: 'from-indigo-500 to-purple-500' }
-      ],
-      image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80',
-      icon: FiTrendingUp,
-      gradient: 'from-blue-600 via-purple-600 to-pink-600',
-      complexity: 'Advanced',
-      status: 'Completed',
-      duration: '6 months',
-      teamSize: 'Solo',
-      github: '#',
-      liveDemo: '#',
-      features: [
-        'Real-time market analysis',
-        'Risk optimization models',
-        'Backtesting framework',
-        'Automated execution'
-      ],
-      results: {
-        roi: '+28.5%',
-        accuracy: '94.2%',
-        riskScore: 'Low',
-        performance: 'A+'
-      }
-    },
-    {
-      id: 2,
-      title: 'Deep Learning Framework',
-      description: 'Custom neural network architecture for computer vision tasks with transfer learning capabilities.',
-      category: 'Deep Learning',
-      technologies: [
-        { name: 'PyTorch', icon: SiPytorch, color: 'from-red-500 to-orange-500' },
-        { name: 'TensorFlow', icon: SiTensorflow, color: 'from-orange-500 to-yellow-500' },
-        { name: 'OpenCV', icon: FiCpu, color: 'from-blue-500 to-cyan-500' },
-        { name: 'Scikit-learn', icon: FiDatabase, color: 'from-green-500 to-teal-500' }
-      ],
-      image: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800&q=80',
-      icon: FiCpu,
-      gradient: 'from-primary-600 via-blue-600 to-cyan-600',
-      complexity: 'Expert',
-      status: 'Ongoing',
-      duration: '8 months',
-      teamSize: '3 members',
-      github: '#',
-      liveDemo: '#',
-      features: [
-        'Transfer learning pipeline',
-        'Model optimization',
-        'GPU acceleration',
-        'Deployment ready'
-      ],
-      results: {
-        accuracy: '98.7%',
-        speed: '120 FPS',
-        models: '15+',
-        scalability: 'High'
-      }
-    },
-    {
-      id: 3,
-      title: 'Enterprise Analytics Suite',
-      description: 'Comprehensive data analysis platform with predictive modeling and business intelligence dashboard.',
-      category: 'Data Science',
-      technologies: [
-        { name: 'Python', icon: FaPython, color: 'from-blue-500 to-cyan-500' },
-        { name: 'React', icon: FaReact, color: 'from-cyan-500 to-blue-500' },
-        { name: 'PostgreSQL', icon: SiPostgresql, color: 'from-blue-500 to-indigo-500' },
-        { name: 'D3.js', icon: FiBarChart2, color: 'from-orange-500 to-red-500' }
-      ],
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
-      icon: FiDatabase,
-      gradient: 'from-green-600 via-teal-600 to-emerald-600',
-      complexity: 'Advanced',
-      status: 'Deployed',
-      duration: '5 months',
-      teamSize: '4 members',
-      github: '#',
-      liveDemo: '#',
-      features: [
-        'Real-time analytics',
-        'Predictive modeling',
-        'Custom dashboards',
-        'API integration'
-      ],
-      results: {
-        efficiency: '+65%',
-        insights: '100+',
-        users: '500+',
-        uptime: '99.9%'
-      }
-    },
-    {
-      id: 4,
-      title: 'AI Security System',
-      description: 'Intelligent threat detection using machine learning for real-time security monitoring.',
-      category: 'AI Security',
-      technologies: [
-        { name: 'TensorFlow', icon: SiTensorflow, color: 'from-orange-500 to-yellow-500' },
-        { name: 'Node.js', icon: FaNodeJs, color: 'from-green-500 to-emerald-500' },
-        { name: 'MongoDB', icon: SiMongodb, color: 'from-green-600 to-teal-600' },
-        { name: 'React', icon: FaReact, color: 'from-cyan-500 to-blue-500' }
-      ],
-      image: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&q=80',
-      icon: FiShield,
-      gradient: 'from-purple-600 via-pink-600 to-red-600',
-      complexity: 'Intermediate',
-      status: 'Completed',
-      duration: '4 months',
-      teamSize: '2 members',
-      github: '#',
-      liveDemo: '#',
-      features: [
-        'Real-time monitoring',
-        'Anomaly detection',
-        'Alert system',
-        'Dashboard interface'
-      ],
-      results: {
-        detectionRate: '99.5%',
-        falsePositives: '0.2%',
-        responseTime: '<2s',
-        coverage: 'Full'
-      }
-    }
-  ];
+  useEffect(() => {
+    projectService.getFeaturedProjects()
+      .then(response => {
+        // Check the actual response structure
+        console.log("API Response:", response);
+        
+        // The response might be nested differently
+        const projectsData = response.data || response || [];
+        
+        if (!Array.isArray(projectsData)) {
+          console.error("Projects data is not an array:", projectsData);
+          setProjects([]);
+          return;
+        }
 
-  const categories = [
-    { id: 'all', label: 'All Projects', count: 4 },
-    { id: 'ai-finance', label: 'AI Finance', count: 1 },
-    { id: 'deep-learning', label: 'Deep Learning', count: 1 },
-    { id: 'data-science', label: 'Data Science', count: 1 },
-    { id: 'ai-security', label: 'AI Security', count: 1 }
-  ];
+        // Transform backend data to frontend format
+        const transformedProjects = projectsData.slice(0, 4).map(project => {
+          // Ensure project has required properties
+          if (!project) return null;
+          
+          return {
+            id: project.id || Math.random(),
+            title: project.title || 'Untitled Project',
+            description: project.short_description || project.description || 'No description available',
+            category: project.category || 'Uncategorized',
+            complexity: project.complexity || 'Intermediate',
+            status: project.status || 'Published',
+            cover_image: project.cover_image || '',
+            technologies: Array.isArray(project.technologies) ? project.technologies : [],
+            duration: project.duration || '3 months',
+            team_size: project.team_size || '4 members',
+            stars: project.stars || 4.9,
+            // Add transformed fields
+            icon: getCategoryIcon(project.category),
+            gradient: getCategoryGradient(project.category),
+            image: project.cover_image || getDefaultImage(project.category),
+            teamSize: project.team_size || '4 members',
+            results: {
+              'Accuracy': '96.8%',
+              'ROI': '28.5%',
+              'Performance': '2.4x',
+              'Uptime': '99.9%'
+            }
+          };
+        }).filter(project => project !== null); // Remove null entries
 
-  const ProjectCard = ({ project, index, isDetailed = false }) => {
-    const Icon = project.icon;
+        console.log("Transformed projects:", transformedProjects);
+        setProjects(transformedProjects);
+      })
+      .catch(err => {
+        console.error("Failed to load projects:", err);
+        setError("Failed to load projects. Please try again later.");
+        // Set empty array on error
+        setProjects([]);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  // Helper functions
+  const getCategoryIcon = (category) => {
+    const iconMap = {
+      'AI Finance': FiTrendingUp,
+      'Deep Learning': FiCpu,
+      'Data Science': FiDatabase,
+      'AI Security': FiShield,
+      'Computer Vision': FiCode,
+      'NLP': FiBarChart2,
+      'Web Apps': FaReact,
+      'default': FiCode
+    };
+    return iconMap[category] || iconMap.default;
+  };
+
+  const getCategoryGradient = (category) => {
+    const gradientMap = {
+      'AI Finance': 'from-green-500/30 to-emerald-500/30',
+      'Deep Learning': 'from-purple-500/30 to-pink-500/30',
+      'Data Science': 'from-blue-500/30 to-cyan-500/30',
+      'AI Security': 'from-red-500/30 to-orange-500/30',
+      'default': 'from-primary-500/30 to-blue-500/30'
+    };
+    return gradientMap[category] || gradientMap.default;
+  };
+
+  const getTechIcon = (tech) => {
+    const iconMap = {
+      'Python': FaPython,
+      'React': FaReact,
+      'Node.js': FaNodeJs,
+      'PyTorch': SiPytorch,
+      'TensorFlow': SiTensorflow,
+      'MongoDB': SiMongodb,
+      'PostgreSQL': SiPostgresql,
+      'default': FiCode
+    };
+    return iconMap[tech] || iconMap.default;
+  };
+
+  const getTechColor = (tech) => {
+    const colorMap = {
+      'Python': 'from-blue-500 to-blue-600',
+      'React': 'from-cyan-500 to-blue-500',
+      'Node.js': 'from-green-500 to-emerald-600',
+      'PyTorch': 'from-red-500 to-orange-600',
+      'TensorFlow': 'from-orange-500 to-yellow-600',
+      'MongoDB': 'from-green-500 to-teal-600',
+      'PostgreSQL': 'from-blue-500 to-indigo-600',
+      'default': 'from-gray-500 to-gray-600'
+    };
+    return colorMap[tech] || colorMap.default;
+  };
+
+  const getDefaultImage = (category) => {
+    // Use placeholder images from unsplash or similar
+    const imageMap = {
+      'AI Finance': 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      'Deep Learning': 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w-800&q=80',
+      'Data Science': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      'AI Security': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      'default': 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+    };
+    return imageMap[category] || imageMap.default;
+  };
+
+  const ProjectCard = ({ project, isDetailed = false }) => {
+    if (!project) return null;
     
+    const Icon = project.icon || FiCode;
+    const techIcons = Array.isArray(project.technologies) 
+      ? project.technologies.map(tech => ({
+          name: tech,
+          icon: getTechIcon(tech),
+          color: getTechColor(tech)
+        }))
+      : [];
+
     if (isDetailed) {
       return (
         <div className="relative group">
@@ -173,6 +165,9 @@ const RecentProjects = () => {
                 src={project.image} 
                 alt={project.title}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                onError={(e) => {
+                  e.target.src = getDefaultImage(project.category);
+                }}
               />
               
               {/* Gradient Overlay */}
@@ -210,25 +205,27 @@ const RecentProjects = () => {
               </p>
 
               {/* Tech Stack */}
-              <div className="mb-6">
-                <h4 className="text-sm text-gray-500 uppercase tracking-wider mb-3">Tech Stack</h4>
-                <div className="flex flex-wrap gap-3">
-                  {project.technologies.map((tech, idx) => {
-                    const TechIcon = tech.icon;
-                    return (
-                      <div 
-                        key={idx}
-                        className="flex items-center gap-2 px-3 py-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-lg"
-                      >
-                        <div className={`p-1.5 bg-gradient-to-br ${tech.color} rounded`}>
-                          <TechIcon className="text-white text-sm" />
+              {techIcons.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="text-sm text-gray-500 uppercase tracking-wider mb-3">Tech Stack</h4>
+                  <div className="flex flex-wrap gap-3">
+                    {techIcons.slice(0, 6).map((tech, idx) => {
+                      const TechIcon = tech.icon;
+                      return (
+                        <div 
+                          key={idx}
+                          className="flex items-center gap-2 px-3 py-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-lg"
+                        >
+                          <div className={`p-1.5 bg-gradient-to-br ${tech.color} rounded`}>
+                            <TechIcon className="text-white text-sm" />
+                          </div>
+                          <span className="text-gray-300 text-sm font-medium">{tech.name}</span>
                         </div>
-                        <span className="text-gray-300 text-sm font-medium">{tech.name}</span>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Project Info */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -249,7 +246,7 @@ const RecentProjects = () => {
                 </div>
                 <div className="text-center p-3 bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-xl border border-gray-700/50">
                   <FiStar className="text-yellow-400 mx-auto mb-2" />
-                  <div className="text-white font-bold">4.9/5</div>
+                  <div className="text-white font-bold">{project.stars || '4.9'}/5</div>
                   <div className="text-xs text-gray-500">Rating</div>
                 </div>
               </div>
@@ -258,7 +255,7 @@ const RecentProjects = () => {
               <div className="mb-6">
                 <h4 className="text-sm text-gray-500 uppercase tracking-wider mb-3">Key Results</h4>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {Object.entries(project.results).map(([key, value], idx) => (
+                  {Object.entries(project.results || {}).map(([key, value], idx) => (
                     <div 
                       key={idx}
                       className="text-center p-3 bg-gradient-to-br from-gray-800/30 to-gray-900/30 rounded-lg border border-gray-700/30"
@@ -286,6 +283,7 @@ const RecentProjects = () => {
       );
     }
 
+    // Grid View
     return (
       <div className="relative group">
         {/* Mini Card View */}
@@ -297,6 +295,9 @@ const RecentProjects = () => {
               src={project.image} 
               alt={project.title}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              onError={(e) => {
+                e.target.src = getDefaultImage(project.category);
+              }}
             />
             <div className={`absolute inset-0 bg-gradient-to-t ${project.gradient} opacity-30`} />
             <div className="absolute top-3 right-3">
@@ -320,7 +321,7 @@ const RecentProjects = () => {
             </p>
             <div className="flex items-center justify-between">
               <div className="flex -space-x-2">
-                {project.technologies.slice(0, 3).map((tech, idx) => {
+                {techIcons.slice(0, 3).map((tech, idx) => {
                   const TechIcon = tech.icon;
                   return (
                     <div 
@@ -332,9 +333,9 @@ const RecentProjects = () => {
                     </div>
                   );
                 })}
-                {project.technologies.length > 3 && (
+                {techIcons.length > 3 && (
                   <div className="p-1.5 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-full text-xs text-gray-400">
-                    +{project.technologies.length - 3}
+                    +{techIcons.length - 3}
                   </div>
                 )}
               </div>
@@ -347,6 +348,35 @@ const RecentProjects = () => {
       </div>
     );
   };
+
+  // Loading state
+  if (loading) {
+    return (
+      <section className="relative py-24 bg-gradient-to-b from-gray-900 to-black overflow-hidden">
+        <div className="container mx-auto px-4 text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary-500 mx-auto"></div>
+          <p className="text-gray-400 mt-4">Loading projects...</p>
+        </div>
+      </section>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <section className="relative py-24 bg-gradient-to-b from-gray-900 to-black overflow-hidden">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-red-400 mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative py-24 bg-gradient-to-b from-gray-900 to-black overflow-hidden">
@@ -429,16 +459,21 @@ const RecentProjects = () => {
         </div>
 
         {/* Projects Grid */}
-        {viewMode === 'grid' ? (
+        {projects.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-400 mb-4">No projects found.</p>
+            <p className="text-gray-500 text-sm">Add some projects in the admin panel to see them here.</p>
+          </div>
+        ) : viewMode === 'grid' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {projects.map((project, index) => (
-              <ProjectCard key={project.id} project={project} index={index} />
+            {projects.map(project => (
+              <ProjectCard key={project.id} project={project} />
             ))}
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-8 mb-12">
-            {projects.map((project, index) => (
-              <ProjectCard key={project.id} project={project} index={index} isDetailed={true} />
+           {projects.map(project => (
+              <ProjectCard key={project.id} project={project} isDetailed />
             ))}
           </div>
         )}
@@ -462,7 +497,7 @@ const RecentProjects = () => {
               </div>
               <div className="text-center p-6">
                 <div className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">
-                  15+
+                  {projects.length}+
                 </div>
                 <div className="text-gray-400">Projects Delivered</div>
               </div>
@@ -513,21 +548,8 @@ const RecentProjects = () => {
           }
         }
         
-        @keyframes float-slow {
-          0%, 100% {
-            transform: translate(0, 0) scale(1);
-          }
-          50% {
-            transform: translate(30px, 30px) scale(1.1);
-          }
-        }
-        
         .animate-binary-fall {
           animation: binary-fall 10s linear infinite;
-        }
-        
-        .animate-float-slow {
-          animation: float-slow 20s ease-in-out infinite;
         }
         
         .line-clamp-1 {

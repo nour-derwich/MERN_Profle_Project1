@@ -114,9 +114,9 @@ const AdminFormationForm = () => {
       return;
     }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setErrors(prev => ({ ...prev, cover_image: 'Image size should be less than 5MB' }));
+    // Validate file size (max 20MB)
+    if (file.size > 20 * 1024 * 1024) {
+      setErrors(prev => ({ ...prev, cover_image: 'Image size should be less than 20MB' }));
       return;
     }
 
@@ -674,7 +674,7 @@ const AdminFormationForm = () => {
                           Click to upload image
                         </p>
                         <p className="text-xs text-gray-400 mt-1">
-                          PNG, JPG up to 5MB
+                          PNG, JPG up to 20MB
                         </p>
                       </div>
                       <input

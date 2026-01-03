@@ -69,6 +69,11 @@ export const projectService = {
     return response.data;
   },
 
+  getFeaturedProjects: async (limit = 6) => {
+    const res = await api.get(`/projects/featured?limit=${limit}`);
+    return res.data.data;
+  },
+
   search: async (query, filters = {}) => {
     const response = await api.get("/projects/search", {
       params: { q: query, ...filters },

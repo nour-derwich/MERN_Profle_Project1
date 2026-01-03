@@ -24,24 +24,73 @@ CREATE TABLE users (
 -- ============================================
 -- PROJECTS TABLE
 -- ============================================
+
 CREATE TABLE projects (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    
+    -- Basic Information
     title VARCHAR(200) NOT NULL,
-    description TEXT,
+    slug VARCHAR(255) UNIQUE,
+    description TEXT NOT NULL,
     short_description VARCHAR(500),
+    full_description TEXT,
+    
+    -- URLs & Media
     cover_image TEXT,
     demo_url TEXT,
     github_url TEXT,
-    category VARCHAR(50),
-    technologies TEXT[], -- Array of technologies
-    status VARCHAR(20) DEFAULT 'published', -- draft, published, archived
-    enverment VARCHAR(50), -- web, mobile, desktop
+    documentation_url TEXT,
+    article_url TEXT,
     video TEXT,
+    
+    -- Categorization
+    category VARCHAR(100) NOT NULL,
+    technologies TEXT[], -- Array of technologies
+    complexity VARCHAR(20) DEFAULT 'Intermediate' CHECK (complexity IN ('Beginner', 'Intermediate', 'Advanced', 'Expert')),
+    
+    -- Status & Display
+    status VARCHAR(20) DEFAULT 'draft' CHECK (status IN ('draft', 'published', 'archived')),
     featured BOOLEAN DEFAULT false,
     display_order INTEGER DEFAULT 0,
+    
+    -- Statistics
     views_count INTEGER DEFAULT 0,
+    stars INTEGER DEFAULT 0,
+    forks INTEGER DEFAULT 0,
+    contributors INTEGER DEFAULT 1,
+    
+    -- Project Details
+    environment VARCHAR(100), -- Changed from "enverment"
+    development_time VARCHAR(50),
+    dataset_size VARCHAR(50),
+    team_size VARCHAR(50),
+    duration VARCHAR(50),
+    
+    -- Project Content (Arrays)
+    goals TEXT[],
+    features TEXT[],
+    results TEXT[],
+    metrics JSONB, -- JSON object for performance metrics
+    
+    -- Architecture & Technical
+    architecture TEXT,
+    
+    -- Metadata
+    tags VARCHAR(100)[],
+    meta_description VARCHAR(300),
+    meta_keywords VARCHAR(200),
+    
+    -- Availability Flags
+    live_demo_available BOOLEAN DEFAULT false,
+    source_code_available BOOLEAN DEFAULT false,
+    documentation_available BOOLEAN DEFAULT false,
+    api_available BOOLEAN DEFAULT false,
+    open_source BOOLEAN DEFAULT false,
+    
+    -- Timestamps
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ============================================
@@ -105,6 +154,19 @@ CREATE TABLE courses (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+-- ALTER TABLE courses to add missing columns
+ALTER TABLE courses 
+ADD COLUMN IF NOT EXISTS priority VARCHAR(50),
+ADD COLUMN IF NOT EXISTS personal_insight TEXT,
+ADD COLUMN IF NOT EXISTS time_to_read VARCHAR(50),
+ADD COLUMN IF NOT EXISTS year INTEGER,
+ADD COLUMN IF NOT EXISTS pages INTEGER,
+ADD COLUMN IF NOT EXISTS original_price DECIMAL(10, 2),
+ADD COLUMN IF NOT EXISTS why_recommend TEXT[], -- Array of reasons
+ADD COLUMN IF NOT EXISTS bestseller BOOLEAN DEFAULT false,
+ADD COLUMN IF NOT EXISTS tags TEXT[],
+ADD COLUMN IF NOT EXISTS reviews INTEGER DEFAULT 0;
+
 
 -- ============================================
 -- REGISTRATIONS TABLE
@@ -205,6 +267,13 @@ CREATE INDEX idx_projects_category ON projects(category);
 CREATE INDEX idx_projects_status ON projects(status);
 CREATE INDEX idx_projects_featured ON projects(featured);
 CREATE INDEX idx_projects_created_at ON projects(created_at DESC);
+CREATE INDEX idx_projects_slug ON projects(slug);
+CREATE INDEX idx_projects_complexity ON projects(complexity);
+CREATE INDEX idx_projects_display_order ON projects(display_order);
+CREATE INDEX idx_projects_last_updated ON projects(last_updated DESC);
+CREATE INDEX idx_projects_open_source ON projects(open_source);
+CREATE INDEX idx_projects_technologies ON projects USING GIN(technologies);
+CREATE INDEX idx_projects_tags ON projects USING GIN(tags);
 
 -- Formations
 CREATE INDEX idx_formations_category ON formations(category);
@@ -217,6 +286,9 @@ CREATE INDEX idx_formations_featured ON formations(featured);
 CREATE INDEX idx_courses_category ON courses(category);
 CREATE INDEX idx_courses_author ON courses(author);
 CREATE INDEX idx_courses_featured ON courses(featured);
+CREATE INDEX IF NOT EXISTS idx_courses_bestseller ON courses(bestseller);
+CREATE INDEX IF NOT EXISTS idx_courses_tags ON courses USING GIN(tags);
+CREATE INDEX IF NOT EXISTS idx_courses_why_recommend ON courses USING GIN(why_recommend);
 
 -- Registrations
 CREATE INDEX idx_registrations_formation_id ON registrations(formation_id);

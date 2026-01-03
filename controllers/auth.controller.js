@@ -60,23 +60,97 @@ exports.register = asyncHandler(async (req, res, next) => {
 exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
+  console.log('🔐 Login attempt:', { email });
+
   if (!email || !password) {
     return next(new ErrorResponse("Please provide email and password", 400));
   }
 
+  // Find user
   const user = await User.findByEmail(email);
-
+  
   if (!user) {
+    console.log('❌ User not found:', email);
     return next(new ErrorResponse("Invalid credentials", 401));
   }
 
-  const isMatch = await User.verifyPassword(password, user.password_hash);
+  console.log('✅ User found:', {
+    id: user.id,
+    email: user.email,
+    password_hash_present: !!user.password_hash,
+    password_hash_sample: user.password_hash ? user.password_hash.substring(0, 30) + '...' : 'none'
+  });
+
+  // Check password - IMPORTANT: Try different methods
+  let isMatch = false;
+  
+  try {
+    // Method 1: If User model has verifyPassword static method
+    if (User.verifyPassword) {
+      console.log('🔑 Using User.verifyPassword static method');
+      isMatch = await User.verifyPassword(password, user.password_hash);
+    }
+    // Method 2: If user instance has checkPassword method
+    else if (user.checkPassword) {
+      console.log('🔑 Using user.checkPassword instance method');
+      isMatch = await user.checkPassword(password);
+    }
+    // Method 3: Direct bcrypt compare
+    else {
+      console.log('🔑 Using direct bcrypt.compare');
+      const bcrypt = require("bcrypt");
+      isMatch = await bcrypt.compare(password, user.password_hash);
+    }
+    
+    console.log('✅ Password match result:', isMatch);
+    
+  } catch (error) {
+    console.error('❌ Password comparison error:', error.message);
+    return next(new ErrorResponse("Authentication error", 500));
+  }
 
   if (!isMatch) {
+    console.log('❌ Password does not match');
+    
+    // Debug: Check if password is stored in plain text (temporary for debugging)
+    if (user.password_hash === password) {
+      console.log('⚠️  WARNING: Password is stored in PLAIN TEXT!');
+      console.log('⚠️  Please run the password reset script to fix this.');
+    }
+    
     return next(new ErrorResponse("Invalid credentials", 401));
   }
 
-  sendTokenResponse(user, 200, res);
+  console.log('🎉 Login successful for:', email);
+
+  // Check if user is active
+  if (user.is_active === false) {
+    console.log('❌ User account is inactive');
+    return next(new ErrorResponse("Your account has been deactivated", 401));
+  }
+
+  // Update last login
+  if (User.updateLastLogin) {
+    await User.updateLastLogin(user.id);
+  }
+
+  // Generate token
+  const token = generateToken(user.id);
+
+  // Remove password from response
+  user.password_hash = undefined;
+
+  res.status(200).json({
+    success: true,
+    token,
+    user: {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      full_name: user.full_name,
+      role: user.role,
+    },
+  });
 });
 
 // @desc    Logout user

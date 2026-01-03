@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { 
   FiHeart, 
-  FiShoppingCart, 
   FiExternalLink, 
   FiBookOpen, 
   FiClock, 
   FiChevronRight,
   FiEye,
-  FiBookmark,
   FiFeather
 } from 'react-icons/fi';
 import { FaAmazon } from 'react-icons/fa';
@@ -26,27 +24,32 @@ const BookCard = ({
 
   const getLevelColor = (level) => {
     const colors = {
-      'Beginner': 'from-green-500 to-emerald-600',
-      'Intermediate': 'from-blue-500 to-cyan-600',
-      'Advanced': 'from-purple-500 to-pink-600',
-      'Expert': 'from-red-500 to-orange-600',
-      'Practical': 'from-orange-500 to-yellow-600'
+      'beginner': 'from-green-500 to-emerald-600',
+      'intermediate': 'from-blue-500 to-cyan-600',
+      'advanced': 'from-purple-500 to-pink-600',
+      'expert': 'from-red-500 to-orange-600',
+      'practical': 'from-orange-500 to-yellow-600'
     };
-    return colors[level] || 'from-gray-600 to-gray-800';
+    return colors[level?.toLowerCase()] || 'from-gray-600 to-gray-800';
   };
 
   const getCategoryColor = (category) => {
     const colors = {
-      'Machine Learning': 'from-primary-500 to-blue-600',
+      'Machine Learning': 'from-blue-500 to-cyan-600',
       'Deep Learning': 'from-purple-500 to-pink-600',
-      'Data Science': 'from-blue-500 to-cyan-600',
-      'Python Programming': 'from-green-500 to-emerald-600',
+      'Data Science': 'from-teal-500 to-emerald-600',
+      'Python Programming': 'from-green-500 to-lime-600',
       'Mathematics': 'from-orange-500 to-yellow-600',
       'Statistics': 'from-red-500 to-orange-600',
       'AI Ethics': 'from-indigo-500 to-purple-600',
       'Research Papers': 'from-gray-600 to-gray-800'
     };
-    return colors[category] || 'from-primary-500 to-blue-600';
+    return colors[category] || 'from-blue-500 to-cyan-600';
+  };
+
+  const handleImageError = (e) => {
+    e.target.onerror = null;
+    e.target.src = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&q=80';
   };
 
   return (
@@ -62,7 +65,7 @@ const BookCard = ({
       <div className={`absolute -inset-0.5 bg-gradient-to-r ${getCategoryColor(book.category)} rounded-2xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
 
       {/* Main Card */}
-      <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl overflow-hidden backdrop-blur-sm transition-all duration-500 group-hover:border-primary-500/30 group-hover:scale-[1.02]">
+      <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl overflow-hidden backdrop-blur-sm transition-all duration-500 group-hover:border-blue-500/30 group-hover:scale-[1.02]">
         
         {/* Image Section with Overlay */}
         <div className="relative h-64 overflow-hidden">
@@ -79,6 +82,7 @@ const BookCard = ({
               imageLoaded ? 'opacity-100' : 'opacity-0'
             } ${isHovered ? 'scale-110' : 'scale-100'}`}
             onLoad={() => setImageLoaded(true)}
+            onError={handleImageError}
           />
           
           {/* Gradient Overlay */}
@@ -97,8 +101,8 @@ const BookCard = ({
             
             {book.featured && (
               <div className="relative">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full blur opacity-30" />
-                <span className="relative px-3 py-1.5 bg-gradient-to-r from-primary-600 to-blue-600 text-white text-xs font-bold rounded-full backdrop-blur-sm">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full blur opacity-30" />
+                <span className="relative px-3 py-1.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white text-xs font-bold rounded-full backdrop-blur-sm">
                   FEATURED
                 </span>
               </div>
@@ -125,10 +129,10 @@ const BookCard = ({
             {/* Quick View Button */}
             <button
               onClick={() => onQuickView && onQuickView(book)}
-              className="relative p-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-full backdrop-blur-sm hover:border-primary-500/50 transition-all duration-300 group/btn"
+              className="relative p-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-full backdrop-blur-sm hover:border-blue-500/50 transition-all duration-300 group/btn"
             >
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full blur opacity-0 group-hover/btn:opacity-30 transition-opacity duration-500" />
-              <FiEye className="relative text-lg text-gray-400 group-hover/btn:text-primary-400" />
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full blur opacity-0 group-hover/btn:opacity-30 transition-opacity duration-500" />
+              <FiEye className="relative text-lg text-gray-400 group-hover/btn:text-blue-400" />
             </button>
           </div>
 
@@ -146,73 +150,81 @@ const BookCard = ({
         {/* Content Section */}
         <div className="p-6">
           {/* Title with Hover Effect */}
-          <h3 className="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-primary-300 transition-colors duration-300">
+          <h3 className="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-blue-300 transition-colors duration-300">
             {book.title}
           </h3>
           
           {/* Author */}
           <p className="text-sm text-gray-400 mb-3 flex items-center gap-2">
-            <FiFeather className="text-primary-400" />
+            <FiFeather className="text-blue-400" />
             <span>by {book.author}</span>
           </p>
           
           {/* Description */}
           <p className="text-sm text-gray-500 mb-4 line-clamp-2 leading-relaxed">
-            {book.description}
+            {book.short_description || book.description}
           </p>
 
           {/* Stats */}
           <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="flex items-center gap-2">
-              <FiBookOpen className="text-blue-400 text-sm" />
-              <span className="text-xs text-gray-400">{book.pages} pages</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <FiClock className="text-yellow-400 text-sm" />
-              <span className="text-xs text-gray-400">{book.year}</span>
-            </div>
+            {book.pages && (
+              <div className="flex items-center gap-2">
+                <FiBookOpen className="text-blue-400 text-sm" />
+                <span className="text-xs text-gray-400">{book.pages} pages</span>
+              </div>
+            )}
+            {book.year && (
+              <div className="flex items-center gap-2">
+                <FiClock className="text-yellow-400 text-sm" />
+                <span className="text-xs text-gray-400">{book.year}</span>
+              </div>
+            )}
           </div>
 
           {/* Tags */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {book.tags.slice(0, 3).map((tag, idx) => (
-              <span 
-                key={idx}
-                className="px-2 py-1 bg-gray-800/50 text-gray-400 rounded-lg text-xs font-medium border border-gray-700/50 hover:border-primary-500/30 hover:text-primary-300 transition-all duration-300"
-              >
-                {tag}
-              </span>
-            ))}
-            {book.tags.length > 3 && (
-              <span className="px-2 py-1 bg-gray-800/30 text-gray-500 rounded-lg text-xs">
-                +{book.tags.length - 3}
-              </span>
-            )}
-          </div>
+          {book.tags && book.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {book.tags.slice(0, 3).map((tag, idx) => (
+                <span 
+                  key={idx}
+                  className="px-2 py-1 bg-gray-800/50 text-gray-400 rounded-lg text-xs font-medium border border-gray-700/50 hover:border-blue-500/30 hover:text-blue-300 transition-all duration-300"
+                >
+                  {tag}
+                </span>
+              ))}
+              {book.tags.length > 3 && (
+                <span className="px-2 py-1 bg-gray-800/30 text-gray-500 rounded-lg text-xs">
+                  +{book.tags.length - 3}
+                </span>
+              )}
+            </div>
+          )}
 
           {/* Rating and Level */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <StarRating rating={book.rating} size="sm" />
               <div className="flex flex-col">
-                <span className="text-sm font-bold text-white">{book.rating}</span>
+                <span className="text-sm font-bold text-white">{book.rating.toFixed(1)}</span>
                 <span className="text-xs text-gray-500">({book.reviews.toLocaleString()} reviews)</span>
               </div>
             </div>
-            <div className={`px-3 py-1 bg-gradient-to-r ${getLevelColor(book.level)} text-white text-xs font-bold rounded-full backdrop-blur-sm`}>
-              {book.level}
-            </div>
+            {book.level && (
+              <div className={`px-3 py-1 bg-gradient-to-r ${getLevelColor(book.level)} text-white text-xs font-bold rounded-full backdrop-blur-sm capitalize`}>
+                {book.level}
+              </div>
+            )}
           </div>
 
           {/* Price and CTA */}
           <div className="flex items-center justify-between pt-4 border-t border-gray-700/50">
             <div className="flex flex-col">
-              <div className="text-3xl font-bold bg-gradient-to-r from-primary-400 to-blue-400 bg-clip-text text-transparent">
-                ${book.price}
+              <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                ${book.price.toFixed(2)}
               </div>
               {book.originalPrice && (
                 <div className="text-sm text-gray-500 line-through">
-                  ${book.originalPrice}
+                  ${book.originalPrice.toFixed(2)}
                 </div>
               )}
             </div>
@@ -236,7 +248,7 @@ const BookCard = ({
         </div>
 
         {/* Hover Effect Line */}
-        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary-500 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
       </div>
 
       {/* 3D Floating Effect on Hover */}
