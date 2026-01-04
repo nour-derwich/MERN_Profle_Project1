@@ -6,6 +6,8 @@ const { validateFormation } = require("../middleware/validation");
 
 // Public routes
 router.get("/", formationController.getAllFormations);
+router.get("/categories", formationController.getCategories);
+router.get("/levels", formationController.getLevels);
 router.get("/:id", formationController.getFormationById);
 
 // Protected routes (admin only)
@@ -33,6 +35,18 @@ router.get(
   protect,
   authorize("admin"),
   formationController.getFormationStats
+);
+router.get(
+  "/statuses",
+  protect,
+  authorize("admin"),
+  formationController.getStatuses
+);
+router.put(
+  "/:id/participants",
+  protect,
+  authorize("admin"),
+  formationController.updateParticipants
 );
 
 module.exports = router;

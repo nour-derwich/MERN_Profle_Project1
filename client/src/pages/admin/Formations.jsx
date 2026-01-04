@@ -84,10 +84,15 @@ const AdminFormations = () => {
     // Add export logic here
   };
 
-  const filteredFormations = formations.filter(formation =>
-    formation.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    formation.category?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredFormations = formations.filter(formation => {
+  const searchLower = searchTerm.toLowerCase();
+  return (
+    formation.title?.toLowerCase().includes(searchLower) ||
+    formation.category?.toLowerCase().includes(searchLower) ||
+    formation.description?.toLowerCase().includes(searchLower) ||
+    formation.instructor_name?.toLowerCase().includes(searchLower)
   );
+});
 
   const columns = [
     {
@@ -95,7 +100,7 @@ const AdminFormations = () => {
       title: 'Image',
       render: (item) => (
         <img 
-          src={item.image || 'https://via.placeholder.com/50'} 
+          src={item.cover_image || 'https://via.placeholder.com/50'} 
           alt={item.title}
           className="w-12 h-12 rounded-lg object-cover"
         />
@@ -292,31 +297,35 @@ const AdminFormations = () => {
             {/* Status Filter */}
             <div>
               <select
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              >
-                <option value="all">All Status</option>
-                <option value="published">Published</option>
-                <option value="draft">Draft</option>
-                <option value="archived">Archived</option>
-              </select>
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                >
+                  <option value="all">All Status</option>
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="enrolling">Enrolling</option>
+                  <option value="upcoming">Upcoming</option>
+                  <option value="full">Full</option>
+                  <option value="completed">Completed</option>
+                  <option value="archived">Archived</option>
+                </select>
             </div>
 
             {/* Category Filter */}
             <div>
               <select
-                value={filterCategory}
-                onChange={(e) => setFilterCategory(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              >
-                <option value="all">All Categories</option>
-                <option value="web-development">Web Development</option>
-                <option value="mobile-development">Mobile Development</option>
-                <option value="data-science">Data Science</option>
-                <option value="design">Design</option>
-                <option value="business">Business</option>
-              </select>
+                  value={filterCategory}
+                  onChange={(e) => setFilterCategory(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                >
+                  <option value="all">All Categories</option>
+                  <option value="Machine Learning">Machine Learning</option>
+                  <option value="Deep Learning">Deep Learning</option>
+                  <option value="Data Science">Data Science</option>
+                  <option value="AI Engineering">AI Engineering</option>
+                  <option value="Web Development">Web Development</option>
+                </select>
             </div>
           </div>
         </div>

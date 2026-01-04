@@ -2,19 +2,36 @@ const Formation = require("../models/formation.models");
 const asyncHandler = require("../middleware/asyncHandler");
 const ErrorResponse = require("../utils/errorResponse");
 
-// @desc    Get all formations
+// @desc    Get all formations with filters
 // @route   GET /api/formations
 // @access  Public
 exports.getAllFormations = asyncHandler(async (req, res) => {
-  const { category, level, status, featured, limit, offset } = req.query;
+  const {
+    category,
+    level,
+    status,
+    featured,
+    limit = 10,
+    offset = 0,
+    sortBy = "featured",
+    searchQuery,
+    priceRange,
+    selectedStatus,
+    admin,
+  } = req.query;
 
   const filters = {
     category,
     level,
-    status: status || "published",
+    status,
     featured: featured === "true",
-    limit: parseInt(limit) || 10,
-    offset: parseInt(offset) || 0,
+    limit: parseInt(limit),
+    offset: parseInt(offset),
+    sortBy,
+    searchQuery,
+    priceRange,
+    selectedStatus,
+    admin: admin === "true",
   };
 
   const formations = await Formation.findAll(filters);
@@ -62,7 +79,17 @@ exports.createFormation = asyncHandler(async (req, res) => {
 // @route   PUT /api/formations/:id
 // @access  Private/Admin
 exports.updateFormation = asyncHandler(async (req, res, next) => {
-  const formation = await Formation.update(req.params.id, req.body);
+  // Remove computed fields from the request body
+  const dataToUpdate = { ...req.body };
+  delete dataToUpdate.spots_left;
+  delete dataToUpdate.rating;
+  delete dataToUpdate.reviews_count;
+  delete dataToUpdate.total_registrations;
+  delete dataToUpdate.id; // Also remove id if it's present
+  delete dataToUpdate.created_at;
+  delete dataToUpdate.updated_at;
+
+  const formation = await Formation.update(req.params.id, dataToUpdate);
 
   if (!formation) {
     return next(new ErrorResponse("Formation not found", 404));
@@ -100,5 +127,67 @@ exports.getFormationStats = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     data: stats,
+  });
+});
+
+// @desc    Get formation categories
+// @route   GET /api/formations/categories
+// @access  Public
+exports.getCategories = asyncHandler(async (req, res) => {
+  const categories = await Formation.getCategories();
+
+  res.status(200).json({
+    success: true,
+    count: categories.length,
+    data: categories,
+  });
+});
+
+// @desc    Get formation levels
+// @route   GET /api/formations/levels
+// @access  Public
+exports.getLevels = asyncHandler(async (req, res) => {
+  const levels = await Formation.getLevels();
+
+  res.status(200).json({
+    success: true,
+    count: levels.length,
+    data: levels,
+  });
+});
+
+// @desc    Get formation statuses
+// @route   GET /api/formations/statuses
+// @access  Private/Admin
+exports.getStatuses = asyncHandler(async (req, res) => {
+  const statuses = await Formation.getStatuses();
+
+  res.status(200).json({
+    success: true,
+    count: statuses.length,
+    data: statuses,
+  });
+});
+
+// @desc    Update formation participants
+// @route   PUT /api/formations/:id/participants
+// @access  Private/Admin
+exports.updateParticipants = asyncHandler(async (req, res, next) => {
+  const { count } = req.body;
+
+  if (!count || typeof count !== "number") {
+    return next(new ErrorResponse("Please provide a valid count", 400));
+  }
+
+  const formation = await Formation.updateParticipants(req.params.id, count);
+
+  if (!formation) {
+    return next(new ErrorResponse("Formation not found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Participants updated successfully",
+    data: formation,
   });
 });

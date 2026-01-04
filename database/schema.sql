@@ -126,6 +126,42 @@ CREATE TABLE formations (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+-- Add missing columns to formations table
+ALTER TABLE formations
+ADD COLUMN IF NOT EXISTS full_description TEXT,
+ADD COLUMN IF NOT EXISTS original_price DECIMAL(10, 2),
+ADD COLUMN IF NOT EXISTS installment_price DECIMAL(10, 2),
+ADD COLUMN IF NOT EXISTS weeks_duration VARCHAR(50),
+ADD COLUMN IF NOT EXISTS hours_per_week VARCHAR(50),
+ADD COLUMN IF NOT EXISTS spots_left INTEGER,
+ADD COLUMN IF NOT EXISTS format VARCHAR(50) DEFAULT 'Online',
+ADD COLUMN IF NOT EXISTS location VARCHAR(100) DEFAULT 'Online',
+ADD COLUMN IF NOT EXISTS live_sessions VARCHAR(100),
+ADD COLUMN IF NOT EXISTS features TEXT[],
+ADD COLUMN IF NOT EXISTS highlights TEXT[],
+ADD COLUMN IF NOT EXISTS modules JSONB,
+ADD COLUMN IF NOT EXISTS testimonials JSONB,
+ADD COLUMN IF NOT EXISTS instructor_title VARCHAR(100),
+ADD COLUMN IF NOT EXISTS instructor_rating DECIMAL(3, 2),
+ADD COLUMN IF NOT EXISTS instructor_reviews INTEGER DEFAULT 0,
+ADD COLUMN IF NOT EXISTS instructor_students INTEGER DEFAULT 0,
+ADD COLUMN IF NOT EXISTS instructor_verified BOOLEAN DEFAULT false,
+ADD COLUMN IF NOT EXISTS tags VARCHAR(100)[],
+ADD COLUMN IF NOT EXISTS meta_description VARCHAR(300),
+ADD COLUMN IF NOT EXISTS meta_keywords VARCHAR(200);
+
+-- Update spots_left trigger
+CREATE OR REPLACE FUNCTION update_spots_left()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.spots_left = NEW.max_participants - NEW.current_participants;
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE OR REPLACE TRIGGER update_spots_left_trigger
+BEFORE INSERT OR UPDATE OF max_participants, current_participants ON formations
+FOR EACH ROW EXECUTE FUNCTION update_spots_left();
 
 -- ============================================
 -- COURSES (BOOKS) TABLE
