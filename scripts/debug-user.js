@@ -1,75 +1,58 @@
-// scripts/debug-user.js
-const { query } = require("../config/database");
-const bcrypt = require("bcrypt");
+const express = require("express");
+const app = express();
 
-const debugUser = async () => {
-  try {
-    console.log("🔍 Debugging user authentication...\n");
+// Load your routes
+const formationRoutes = require("../routes/formation.routes");
 
-    // Check if user exists
-    const user = await query("SELECT * FROM users WHERE email = $1", [
-      "admin@example.com",
-    ]);
+console.log("🔍 Debugging Formation Routes\n");
+console.log("📋 Route stack from formationRoutes:");
 
-    if (user.rows.length === 0) {
-      console.log("❌ User not found in database");
-      return;
+// Check if formationRoutes is a router
+if (formationRoutes && formationRoutes.stack) {
+  formationRoutes.stack.forEach((layer) => {
+    if (layer.route) {
+      const path = layer.route.path;
+      const methods = Object.keys(layer.route.methods);
+      console.log(`  ${methods.join(",")} ${path}`);
+    } else if (layer.name === "router") {
+      // Nested router
+      console.log("  Nested router found");
     }
+  });
+} else {
+  console.log("❌ formationRoutes is not a valid Express router");
+  console.log("Type:", typeof formationRoutes);
+  console.log("Has stack?", formationRoutes.stack !== undefined);
+}
 
-    const dbUser = user.rows[0];
-    console.log("📋 User found in database:");
-    console.log(`   ID: ${dbUser.id}`);
-    console.log(`   Email: ${dbUser.email}`);
-    console.log(`   Username: ${dbUser.username}`);
-    console.log(`   Password Hash: ${dbUser.password_hash}`);
-    console.log(`   Role: ${dbUser.role}`);
+console.log("\n🧪 Testing route matching...\n");
 
-    // Test password verification
-    const testPassword = "admin123";
-    console.log(`\n🔐 Testing password verification:`);
-    console.log(`   Test password: ${testPassword}`);
+// Test the route matching logic
+const testPaths = [
+  "/statuses",
+  "/categories",
+  "/levels",
+  "/550e8400-e29b-41d4-a716-446655440001",
+];
 
-    const isMatch = await bcrypt.compare(testPassword, dbUser.password_hash);
-    console.log(`   Password match: ${isMatch}`);
+testPaths.forEach((testPath) => {
+  console.log(`Testing: ${testPath}`);
 
-    if (!isMatch) {
-      console.log("\n❌ Password doesn't match. Let's fix this...");
-      await resetPassword();
-    } else {
-      console.log("\n✅ Password verification successful!");
-    }
-  } catch (error) {
-    console.error("❌ Debug error:", error);
+  // Check what route would match
+  if (testPath === "/statuses") {
+    console.log("  Should match: GET /statuses");
+  } else if (testPath === "/categories") {
+    console.log("  Should match: GET /categories");
+  } else if (testPath === "/levels") {
+    console.log("  Should match: GET /levels");
+  } else if (testPath.match(/^\/[a-f0-9-]{36}$/)) {
+    console.log("  Should match: GET /:id (UUID pattern)");
+  } else {
+    console.log("  Unknown pattern");
   }
-};
+  console.log("");
+});
 
-const resetPassword = async () => {
-  try {
-    const newPassword = "admin123";
-    const password_hash = await bcrypt.hash(newPassword, 10);
-
-    await query("UPDATE users SET password_hash = $1 WHERE email = $2", [
-      password_hash,
-      "admin@example.com",
-    ]);
-
-    console.log("✅ Password reset successfully!");
-    console.log(`📧 Email: admin@example.com`);
-    console.log(`🔐 New Password: ${newPassword}`);
-
-    // Verify the reset worked
-    const updatedUser = await query("SELECT * FROM users WHERE email = $1", [
-      "admin@example.com",
-    ]);
-
-    const isMatch = await bcrypt.compare(
-      newPassword,
-      updatedUser.rows[0].password_hash
-    );
-    console.log(`✅ Verification after reset: ${isMatch}`);
-  } catch (error) {
-    console.error("❌ Error resetting password:", error);
-  }
-};
-
-debugUser();
+console.log(
+  "💡 If /statuses is matching /:id, check route order in formation.routes.js"
+);

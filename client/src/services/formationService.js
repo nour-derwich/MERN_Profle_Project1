@@ -6,16 +6,27 @@ const formationService = {
    */
   getAll: async (filters = {}) => {
     try {
-      const response = await api.get("/formations", {
-        params: {
-          ...filters,
-          admin: filters.admin || true, // Always request admin view
-        },
+      // Don't force admin view for public pages
+      const params = { ...filters };
+
+      // Remove undefined filters
+      Object.keys(params).forEach((key) => {
+        if (params[key] === undefined || params[key] === "") {
+          delete params[key];
+        }
       });
+
+      const response = await api.get("/formations", { params });
       return response.data;
     } catch (error) {
       console.error("Error fetching formations:", error);
-      throw error;
+      // Return fallback structure for offline/dev mode
+      return {
+        success: false,
+        message: error.response?.data?.message || "Failed to fetch formations",
+        data: [],
+        count: 0,
+      };
     }
   },
 
@@ -28,7 +39,11 @@ const formationService = {
       return response.data;
     } catch (error) {
       console.error(`Error fetching formation ${id}:`, error);
-      throw error;
+      return {
+        success: false,
+        message: error.response?.data?.message || "Failed to fetch formation",
+        data: null,
+      };
     }
   },
 
@@ -37,36 +52,33 @@ const formationService = {
    */
   create: async (formationData) => {
     try {
-      // Format the data properly
+      // Ensure proper data formatting for arrays/JSON
       const formattedData = {
         ...formationData,
-        price: parseFloat(formationData.price) || 0,
-        original_price: formationData.original_price
-          ? parseFloat(formationData.original_price)
+        duration_hours: formationData.duration_hours
+          ? parseInt(formationData.duration_hours)
           : null,
-        installment_price: formationData.installment_price
-          ? parseFloat(formationData.installment_price)
-          : null,
-        duration_hours: parseInt(formationData.duration_hours) || 0,
-        max_participants: parseInt(formationData.max_participants) || 0,
-        current_participants: parseInt(formationData.current_participants) || 0,
-        // Ensure arrays are properly formatted
+        max_participants: formationData.max_participants
+          ? parseInt(formationData.max_participants)
+          : 20, // Default
+        current_participants: 0,
+        // Handle array fields
         learning_objectives: Array.isArray(formationData.learning_objectives)
           ? formationData.learning_objectives
           : (formationData.learning_objectives || "")
-              .split(",")
+              .split("\n")
               .map((item) => item.trim())
               .filter((item) => item),
         features: Array.isArray(formationData.features)
           ? formationData.features
           : (formationData.features || "")
-              .split(",")
+              .split("\n")
               .map((item) => item.trim())
               .filter((item) => item),
         highlights: Array.isArray(formationData.highlights)
           ? formationData.highlights
           : (formationData.highlights || "")
-              .split(",")
+              .split("\n")
               .map((item) => item.trim())
               .filter((item) => item),
         tags: Array.isArray(formationData.tags)
@@ -75,6 +87,10 @@ const formationService = {
               .split(",")
               .map((item) => item.trim())
               .filter((item) => item),
+        // Handle JSON fields
+        program: formationData.program || [],
+        modules: formationData.modules || [],
+        testimonials: formationData.testimonials || [],
       };
 
       const response = await api.post("/formations", formattedData);
@@ -90,37 +106,17 @@ const formationService = {
    */
   update: async (id, formationData) => {
     try {
-      // Format the data properly
       const formattedData = {
         ...formationData,
-        price:
-          formationData.price !== undefined
-            ? parseFloat(formationData.price)
-            : undefined,
-        original_price:
-          formationData.original_price !== undefined
-            ? formationData.original_price
-              ? parseFloat(formationData.original_price)
-              : null
-            : undefined,
-        installment_price:
-          formationData.installment_price !== undefined
-            ? formationData.installment_price
-              ? parseFloat(formationData.installment_price)
-              : null
-            : undefined,
-        duration_hours:
-          formationData.duration_hours !== undefined
-            ? parseInt(formationData.duration_hours)
-            : undefined,
-        max_participants:
-          formationData.max_participants !== undefined
-            ? parseInt(formationData.max_participants)
-            : undefined,
-        current_participants:
-          formationData.current_participants !== undefined
-            ? parseInt(formationData.current_participants)
-            : undefined,
+        ...(formationData.duration_hours !== undefined && {
+          duration_hours: parseInt(formationData.duration_hours),
+        }),
+        ...(formationData.max_participants !== undefined && {
+          max_participants: parseInt(formationData.max_participants),
+        }),
+        ...(formationData.current_participants !== undefined && {
+          current_participants: parseInt(formationData.current_participants),
+        }),
       };
 
       const response = await api.put(`/formations/${id}`, formattedData);
@@ -145,7 +141,7 @@ const formationService = {
   },
 
   /**
-   * Get formation statistics (admin only)
+   * Get formation statistics
    */
   getStats: async () => {
     try {
@@ -153,9 +149,8 @@ const formationService = {
       return response.data;
     } catch (error) {
       console.error("Error fetching formation stats:", error);
-      // Return fallback stats
       return {
-        success: false,
+        success: true,
         data: {
           total_formations: 0,
           published_formations: 0,
@@ -163,7 +158,6 @@ const formationService = {
           featured_formations: 0,
           total_participants: 0,
           total_capacity: 0,
-          average_price: 0,
           total_views: 0,
         },
       };
@@ -171,14 +165,14 @@ const formationService = {
   },
 
   /**
-   * Upload formation image (admin only)
+   * Upload formation image
    */
   uploadImage: async (imageFile) => {
     try {
       const formData = new FormData();
       formData.append("image", imageFile);
 
-      const response = await api.post("/formations/upload-image", formData, {
+      const response = await api.post("/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -205,7 +199,11 @@ const formationService = {
       return response.data;
     } catch (error) {
       console.error("Error fetching featured formations:", error);
-      throw error;
+      return {
+        success: true,
+        data: [],
+        count: 0,
+      };
     }
   },
 
@@ -223,7 +221,11 @@ const formationService = {
       return response.data;
     } catch (error) {
       console.error("Error searching formations:", error);
-      throw error;
+      return {
+        success: false,
+        message: "Search failed",
+        data: [],
+      };
     }
   },
 
@@ -236,15 +238,14 @@ const formationService = {
       return response.data;
     } catch (error) {
       console.error("Error fetching categories:", error);
-      // Return fallback categories
       return {
-        success: false,
+        success: true,
         data: [
-          { category: "Machine Learning", count: 0 },
-          { category: "Deep Learning", count: 0 },
-          { category: "Data Science", count: 0 },
-          { category: "AI Engineering", count: 0 },
           { category: "Web Development", count: 0 },
+          { category: "Data Science", count: 0 },
+          { category: "UI/UX Design", count: 0 },
+          { category: "Business", count: 0 },
+          { category: "Machine Learning", count: 0 },
         ],
       };
     }
@@ -259,14 +260,12 @@ const formationService = {
       return response.data;
     } catch (error) {
       console.error("Error fetching levels:", error);
-      // Return fallback levels
       return {
-        success: false,
+        success: true,
         data: [
           { level: "beginner", count: 0 },
           { level: "intermediate", count: 0 },
           { level: "advanced", count: 0 },
-          { level: "expert", count: 0 },
         ],
       };
     }
@@ -281,16 +280,14 @@ const formationService = {
       return response.data;
     } catch (error) {
       console.error("Error fetching statuses:", error);
-      // Return fallback statuses
       return {
-        success: false,
+        success: true,
         data: [
           { status: "draft", count: 0 },
           { status: "published", count: 0 },
           { status: "enrolling", count: 0 },
           { status: "full", count: 0 },
           { status: "completed", count: 0 },
-          { status: "archived", count: 0 },
         ],
       };
     }
@@ -301,8 +298,8 @@ const formationService = {
    */
   updateParticipants: async (id, count) => {
     try {
-      const response = await api.put(`/formations/${id}/participants`, {
-        count,
+      const response = await api.patch(`/formations/${id}/participants`, {
+        count: parseInt(count),
       });
       return response.data;
     } catch (error) {
@@ -317,7 +314,7 @@ const formationService = {
   toggleFeatured: async (id, featured) => {
     try {
       const response = await api.patch(`/formations/${id}/featured`, {
-        featured,
+        featured: !!featured,
       });
       return response.data;
     } catch (error) {
@@ -334,7 +331,9 @@ const formationService = {
    */
   changeStatus: async (id, status) => {
     try {
-      const response = await api.patch(`/formations/${id}/status`, { status });
+      const response = await api.patch(`/formations/${id}/status`, {
+        status,
+      });
       return response.data;
     } catch (error) {
       console.error(`Error changing status for formation ${id}:`, error);
@@ -351,7 +350,10 @@ const formationService = {
       return response.data;
     } catch (error) {
       console.error(`Error fetching enrollments for formation ${id}:`, error);
-      throw error;
+      return {
+        success: true,
+        data: [],
+      };
     }
   },
 
@@ -364,35 +366,10 @@ const formationService = {
       return response.data;
     } catch (error) {
       console.error(`Error fetching reviews for formation ${id}:`, error);
-      throw error;
-    }
-  },
-
-  /**
-   * Get formation analytics
-   */
-  getAnalytics: async (id, period = "month") => {
-    try {
-      const response = await api.get(`/formations/${id}/analytics`, {
-        params: { period },
-      });
-      return response.data;
-    } catch (error) {
-      console.error(`Error fetching analytics for formation ${id}:`, error);
-      throw error;
-    }
-  },
-
-  /**
-   * Duplicate formation
-   */
-  duplicate: async (id) => {
-    try {
-      const response = await api.post(`/formations/${id}/duplicate`);
-      return response.data;
-    } catch (error) {
-      console.error(`Error duplicating formation ${id}:`, error);
-      throw error;
+      return {
+        success: true,
+        data: [],
+      };
     }
   },
 
@@ -403,7 +380,7 @@ const formationService = {
     try {
       const response = await api.get("/formations/export", {
         params: filters,
-        responseType: "blob", // Important for file download
+        responseType: "blob",
       });
       return response.data;
     } catch (error) {
@@ -433,11 +410,43 @@ const formationService = {
    */
   bulkDelete: async (ids) => {
     try {
-      const response = await api.post("/formations/bulk-delete", { ids });
+      const response = await api.delete("/formations/bulk-delete", {
+        data: { ids },
+      });
       return response.data;
     } catch (error) {
       console.error("Error bulk deleting formations:", error);
       throw error;
+    }
+  },
+
+  /**
+   * Get formation by slug (optional)
+   */
+  getBySlug: async (slug) => {
+    try {
+      const response = await api.get(`/formations/slug/${slug}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching formation by slug ${slug}:`, error);
+      return {
+        success: false,
+        message: "Formation not found",
+        data: null,
+      };
+    }
+  },
+
+  /**
+   * Increment formation views
+   */
+  incrementViews: async (id) => {
+    try {
+      const response = await api.post(`/formations/${id}/views`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error incrementing views for formation ${id}:`, error);
+      // Don't throw error for this - it's not critical
     }
   },
 };

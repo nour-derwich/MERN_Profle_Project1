@@ -17,10 +17,10 @@ const AdminFormations = () => {
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
   const [stats, setStats] = useState({
-    total: 0,
-    published: 0,
-    draft: 0,
-    totalEnrollments: 0
+    total_formations: 0,
+    published_formations: 0,
+    draft_formations: 0,
+    total_participants: 0
   });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedFormation, setSelectedFormation] = useState(null);
@@ -33,11 +33,12 @@ const AdminFormations = () => {
   const loadFormations = async () => {
     try {
       setLoading(true);
-      const filters = {};
+      const filters = { admin: true }; // Add admin flag to see all formations
       if (filterStatus !== 'all') filters.status = filterStatus;
       if (filterCategory !== 'all') filters.category = filterCategory;
       
       const data = await formationService.getAll(filters);
+      console.log('📚 Formations loaded:', data);
       setFormations(data.data || []);
     } catch (error) {
       console.error('Error loading formations:', error);
@@ -49,6 +50,7 @@ const AdminFormations = () => {
   const loadStats = async () => {
     try {
       const data = await formationService.getStats();
+      console.log('📊 Stats loaded:', data);
       setStats(data.data || {});
     } catch (error) {
       console.error('Error loading stats:', error);
@@ -79,20 +81,32 @@ const AdminFormations = () => {
     navigate(`/admin/formations/view/${formation.id}`);
   };
 
-  const handleExport = () => {
-    console.log('Exporting formations...');
-    // Add export logic here
+  const handleExport = async () => {
+    try {
+      console.log('Exporting formations...');
+      const data = await formationService.exportToCSV({ status: filterStatus, category: filterCategory });
+      // Create blob and download
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `formations-${new Date().toISOString()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error exporting formations:', error);
+    }
   };
 
   const filteredFormations = formations.filter(formation => {
-  const searchLower = searchTerm.toLowerCase();
-  return (
-    formation.title?.toLowerCase().includes(searchLower) ||
-    formation.category?.toLowerCase().includes(searchLower) ||
-    formation.description?.toLowerCase().includes(searchLower) ||
-    formation.instructor_name?.toLowerCase().includes(searchLower)
-  );
-});
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      formation.title?.toLowerCase().includes(searchLower) ||
+      formation.category?.toLowerCase().includes(searchLower) ||
+      formation.description?.toLowerCase().includes(searchLower) ||
+      formation.instructor_name?.toLowerCase().includes(searchLower)
+    );
+  });
 
   const columns = [
     {
@@ -126,16 +140,16 @@ const AdminFormations = () => {
       )
     },
     { 
-      key: 'duration', 
+      key: 'duration_hours', 
       title: 'Duration',
-      render: (item) => `${item.duration} hours`
+      render: (item) => `${item.duration_hours || 0} hours`
     },
     { 
       key: 'price', 
       title: 'Price',
       render: (item) => (
         <span className="font-bold text-green-600">
-          ${item.price}
+          ${item.price || 0}
         </span>
       )
     },
@@ -155,11 +169,11 @@ const AdminFormations = () => {
       )
     },
     {
-      key: 'enrollments',
+      key: 'current_participants',
       title: 'Enrollments',
       render: (item) => (
         <span className="font-semibold text-indigo-600">
-          {item.enrollments || 0}
+          {item.current_participants || 0}
         </span>
       )
     }
@@ -192,7 +206,7 @@ const AdminFormations = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-500/50 to-blue-600/50 bg-clip-text text-transparent mb-2">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text text-transparent mb-2">
                 Manage Formations
               </h1>
               <p className="text-gray-600">
@@ -217,7 +231,7 @@ const AdminFormations = () => {
               </button>
               <button
                 onClick={() => navigate('/admin/formations/new')}
-                className="flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-blue-500/50 to-blue-600/50 text-white rounded-xl hover:shadow-lg transition-all"
+                className="flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:shadow-lg transition-all"
               >
                 <FiPlus size={20} />
                 <span className="font-medium">Add Formation</span>
@@ -232,10 +246,12 @@ const AdminFormations = () => {
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-gray-500 text-sm font-semibold uppercase">Total Formations</p>
-                <h3 className="text-3xl font-bold text-gray-900 mt-2">{stats.total || 0}</h3>
+                <h3 className="text-3xl font-bold text-gray-900 mt-2">
+                  {stats.total_formations || 0}
+                </h3>
               </div>
               <div className="p-3 bg-purple-100 rounded-xl">
-                <FiBook className="text-2xl  from-blue-900 via-blue-800 to-blue-700 " />
+                <FiBook className="text-2xl text-purple-600" />
               </div>
             </div>
           </div>
@@ -244,7 +260,9 @@ const AdminFormations = () => {
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-gray-500 text-sm font-semibold uppercase">Published</p>
-                <h3 className="text-3xl font-bold text-gray-900 mt-2">{stats.published || 0}</h3>
+                <h3 className="text-3xl font-bold text-gray-900 mt-2">
+                  {stats.published_formations || 0}
+                </h3>
               </div>
               <div className="p-3 bg-green-100 rounded-xl">
                 <FiTrendingUp className="text-2xl text-green-600" />
@@ -255,8 +273,10 @@ const AdminFormations = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-sm font-semibold uppercase">Total Enrollments</p>
-                <h3 className="text-3xl font-bold text-gray-900 mt-2">{stats.totalEnrollments || 0}</h3>
+                <p className="text-gray-500 text-sm font-semibold uppercase">Total Participants</p>
+                <h3 className="text-3xl font-bold text-gray-900 mt-2">
+                  {stats.total_participants || 0}
+                </h3>
               </div>
               <div className="p-3 bg-blue-100 rounded-xl">
                 <FiUsers className="text-2xl text-blue-600" />
@@ -268,7 +288,9 @@ const AdminFormations = () => {
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-gray-500 text-sm font-semibold uppercase">Draft</p>
-                <h3 className="text-3xl font-bold text-gray-900 mt-2">{stats.draft || 0}</h3>
+                <h3 className="text-3xl font-bold text-gray-900 mt-2">
+                  {stats.draft_formations || 0}
+                </h3>
               </div>
               <div className="p-3 bg-yellow-100 rounded-xl">
                 <FiEdit className="text-2xl text-yellow-600" />
@@ -297,35 +319,35 @@ const AdminFormations = () => {
             {/* Status Filter */}
             <div>
               <select
-                  value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                >
-                  <option value="all">All Status</option>
-                  <option value="draft">Draft</option>
-                  <option value="published">Published</option>
-                  <option value="enrolling">Enrolling</option>
-                  <option value="upcoming">Upcoming</option>
-                  <option value="full">Full</option>
-                  <option value="completed">Completed</option>
-                  <option value="archived">Archived</option>
-                </select>
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              >
+                <option value="all">All Status</option>
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+                <option value="enrolling">Enrolling</option>
+                <option value="upcoming">Upcoming</option>
+                <option value="full">Full</option>
+                <option value="completed">Completed</option>
+                <option value="archived">Archived</option>
+              </select>
             </div>
 
             {/* Category Filter */}
             <div>
               <select
-                  value={filterCategory}
-                  onChange={(e) => setFilterCategory(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                >
-                  <option value="all">All Categories</option>
-                  <option value="Machine Learning">Machine Learning</option>
-                  <option value="Deep Learning">Deep Learning</option>
-                  <option value="Data Science">Data Science</option>
-                  <option value="AI Engineering">AI Engineering</option>
-                  <option value="Web Development">Web Development</option>
-                </select>
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              >
+                <option value="all">All Categories</option>
+                <option value="Machine Learning">Machine Learning</option>
+                <option value="Deep Learning">Deep Learning</option>
+                <option value="Data Science">Data Science</option>
+                <option value="AI Engineering">AI Engineering</option>
+                <option value="Web Development">Web Development</option>
+              </select>
             </div>
           </div>
         </div>
@@ -334,6 +356,25 @@ const AdminFormations = () => {
         {loading ? (
           <div className="flex justify-center items-center h-96">
             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-600"></div>
+          </div>
+        ) : filteredFormations.length === 0 ? (
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-12 text-center">
+            <FiBook className="text-6xl text-gray-300 mx-auto mb-4" />
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">No Formations Found</h3>
+            <p className="text-gray-600 mb-6">
+              {searchTerm || filterStatus !== 'all' || filterCategory !== 'all'
+                ? 'Try adjusting your filters or search term'
+                : 'Get started by creating your first formation'}
+            </p>
+            {!searchTerm && filterStatus === 'all' && filterCategory === 'all' && (
+              <button
+                onClick={() => navigate('/admin/formations/new')}
+                className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:shadow-lg transition-all"
+              >
+                <FiPlus size={20} />
+                <span className="font-medium">Create First Formation</span>
+              </button>
+            )}
           </div>
         ) : (
           <DataTable

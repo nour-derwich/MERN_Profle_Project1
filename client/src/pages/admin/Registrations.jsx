@@ -5,7 +5,7 @@ import DataTable from '../../components/admin/DataTable';
 import { 
   FiSearch, FiFilter, FiDownload, FiRefreshCw,
   FiUsers, FiCheckCircle, FiClock, FiXCircle,
-  FiDollarSign, FiMail, FiTrash2, FiEye
+  FiMail, FiTrash2, FiEye, FiUserCheck, FiFileText
 } from 'react-icons/fi';
 import registrationService from '../../services/registrationService';
 
@@ -15,14 +15,13 @@ const AdminRegistrations = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
-  const [filterPaymentStatus, setFilterPaymentStatus] = useState('all');
   const [stats, setStats] = useState({
     total_registrations: 0,
     confirmed: 0,
     pending: 0,
     cancelled: 0,
-    paid: 0,
-    total_revenue: 0
+    verified: 0,
+    unique_formations: 0
   });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
@@ -32,7 +31,7 @@ const AdminRegistrations = () => {
   useEffect(() => {
     loadRegistrations();
     loadStats();
-  }, [filterStatus, filterPaymentStatus]);
+  }, [filterStatus]);
 
   const loadRegistrations = async () => {
     try {
@@ -52,7 +51,16 @@ const AdminRegistrations = () => {
   const loadStats = async () => {
     try {
       const data = await registrationService.getStats();
-      setStats(data.data || {});
+      // Use the summary object from the response
+      setStats(data.data?.summary || {
+        total_registrations: 0,
+        confirmed: 0,
+        pending: 0,
+        cancelled: 0,
+        verified: 0,
+        unique_formations: 0,
+        unique_participants: 0
+      });
     } catch (error) {
       console.error('Error loading stats:', error);
     }
@@ -111,15 +119,26 @@ const AdminRegistrations = () => {
     }
   };
 
+  // Format verification status
+  const getVerificationStatus = (registration) => {
+    if (registration.is_verified) {
+      return { text: 'Verified', color: 'bg-green-100 text-green-800' };
+    } else if (registration.verification_token) {
+      return { text: 'Pending Verification', color: 'bg-yellow-100 text-yellow-800' };
+    } else {
+      return { text: 'Not Verified', color: 'bg-gray-100 text-gray-800' };
+    }
+  };
+
   const filteredRegistrations = registrations.filter(reg => {
     const matchesSearch = reg.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          reg.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          reg.phone?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesPayment = filterPaymentStatus === 'all' || reg.payment_status === filterPaymentStatus;
-    return matchesSearch && matchesPayment;
+    return matchesSearch;
   });
 
   const formatDate = (dateString) => {
+    if (!dateString) return '-';
     return new Date(dateString).toLocaleDateString('fr-FR', {
       year: 'numeric',
       month: 'short',
@@ -153,49 +172,47 @@ const AdminRegistrations = () => {
       )
     },
     { 
+      key: 'role', 
+      title: 'Role',
+      render: (item) => (
+        <span className="text-gray-700">{item.role || '-'}</span>
+      )
+    },
+    { 
+      key: 'job_title', 
+      title: 'Current Position',
+      render: (item) => (
+        <span className="text-gray-700">{item.job_title || item.current_role || '-'}</span>
+      )
+    },
+    { 
       key: 'status', 
       title: 'Status',
-      render: (item) => (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleStatusChange(item);
-          }}
-          className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
-            item.status === 'confirmed' 
-              ? 'bg-green-100 text-green-800 hover:bg-green-200' 
-              : item.status === 'pending'
-              ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
-              : 'bg-red-100 text-red-800 hover:bg-red-200'
-          }`}
-        >
-          {item.status}
-        </button>
-      )
-    },
-    { 
-      key: 'payment_status', 
-      title: 'Payment',
-      render: (item) => (
-        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-          item.payment_status === 'paid' 
-            ? 'bg-green-100 text-green-800' 
-            : item.payment_status === 'pending'
-            ? 'bg-orange-100 text-orange-800'
-            : 'bg-gray-100 text-gray-800'
-        }`}>
-          {item.payment_status}
-        </span>
-      )
-    },
-    { 
-      key: 'amount_paid', 
-      title: 'Amount',
-      render: (item) => (
-        <span className="font-bold text-green-600">
-          {item.amount_paid ? `${item.amount_paid} TND` : '-'}
-        </span>
-      )
+      render: (item) => {
+        const verification = getVerificationStatus(item);
+        return (
+          <div className="space-y-1">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleStatusChange(item);
+              }}
+              className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
+                item.status === 'confirmed' 
+                  ? 'bg-green-100 text-green-800 hover:bg-green-200' 
+                  : item.status === 'pending'
+                  ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
+                  : 'bg-red-100 text-red-800 hover:bg-red-200'
+              }`}
+            >
+              {item.status}
+            </button>
+            <div className={`px-2 py-1 rounded text-xs ${verification.color}`}>
+              {verification.text}
+            </div>
+          </div>
+        );
+      }
     },
     { 
       key: 'registration_date', 
@@ -262,8 +279,8 @@ const AdminRegistrations = () => {
           </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-6 mb-8">
+        {/* Stats Cards - UPDATED FOR NO PAYMENT */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
@@ -271,7 +288,7 @@ const AdminRegistrations = () => {
                 <h3 className="text-2xl font-bold text-gray-900 mt-1">{stats.total_registrations || 0}</h3>
               </div>
               <div className="p-2 bg-purple-100 rounded-lg">
-                <FiUsers className="text-lg  from-blue-900 via-blue-800 to-blue-700 " />
+                <FiUsers className="text-lg text-purple-600" />
               </div>
             </div>
           </div>
@@ -315,11 +332,26 @@ const AdminRegistrations = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-xs font-semibold uppercase">Paid</p>
-                <h3 className="text-2xl font-bold text-gray-900 mt-1">{stats.paid || 0}</h3>
+                <p className="text-gray-500 text-xs font-semibold uppercase">Verified</p>
+                <h3 className="text-2xl font-bold text-gray-900 mt-1">{stats.verified || 0}</h3>
               </div>
               <div className="p-2 bg-blue-100 rounded-lg">
-                <FiDollarSign className="text-lg text-blue-600" />
+                <FiUserCheck className="text-lg text-blue-600" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Stats Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-gray-500 text-xs font-semibold uppercase">Unique Formations</p>
+                <h3 className="text-2xl font-bold text-gray-900 mt-1">{stats.unique_formations || 0}</h3>
+              </div>
+              <div className="p-2 bg-indigo-100 rounded-lg">
+                <FiFileText className="text-lg text-indigo-600" />
               </div>
             </div>
           </div>
@@ -327,11 +359,11 @@ const AdminRegistrations = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-xs font-semibold uppercase">Revenue</p>
-                <h3 className="text-xl font-bold text-gray-900 mt-1">{stats.total_revenue || 0} TND</h3>
+                <p className="text-gray-500 text-xs font-semibold uppercase">Unique Participants</p>
+                <h3 className="text-2xl font-bold text-gray-900 mt-1">{stats.unique_participants || 0}</h3>
               </div>
-              <div className="p-2 bg-green-100 rounded-lg">
-                <FiDollarSign className="text-lg text-green-600" />
+              <div className="p-2 bg-pink-100 rounded-lg">
+                <FiUsers className="text-lg text-pink-600" />
               </div>
             </div>
           </div>
@@ -339,7 +371,7 @@ const AdminRegistrations = () => {
 
         {/* Filters and Search */}
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Search */}
             <div className="md:col-span-2">
               <div className="relative">
@@ -365,20 +397,6 @@ const AdminRegistrations = () => {
                 <option value="pending">Pending</option>
                 <option value="confirmed">Confirmed</option>
                 <option value="cancelled">Cancelled</option>
-              </select>
-            </div>
-
-            {/* Payment Status Filter */}
-            <div>
-              <select
-                value={filterPaymentStatus}
-                onChange={(e) => setFilterPaymentStatus(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              >
-                <option value="all">All Payments</option>
-                <option value="pending">Payment Pending</option>
-                <option value="paid">Paid</option>
-                <option value="refunded">Refunded</option>
               </select>
             </div>
           </div>

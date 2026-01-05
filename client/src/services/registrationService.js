@@ -2,7 +2,7 @@ import api from "./api";
 
 export const registrationService = {
   /**
-   * Create new registration
+   * Create new registration (FREE - no payment)
    */
   create: async (registrationData) => {
     const response = await api.post("/registrations", registrationData);
@@ -60,28 +60,21 @@ export const registrationService = {
   },
 
   /**
-   * Update payment status (admin only)
+   * Send welcome email (admin only)
    */
-  updatePaymentStatus: async (id, paymentStatus) => {
-    const response = await api.patch(`/registrations/${id}/payment`, {
-      payment_status: paymentStatus,
+  sendWelcomeEmail: async (id) => {
+    const response = await api.post(`/registrations/${id}/send-welcome`);
+    return response.data;
+  },
+
+  /**
+   * Send custom notification (admin only)
+   */
+  sendCustomNotification: async (id, subject, message) => {
+    const response = await api.post(`/registrations/${id}/notify`, {
+      subject,
+      message,
     });
-    return response.data;
-  },
-
-  /**
-   * Confirm registration (admin only)
-   */
-  confirm: async (id) => {
-    const response = await api.post(`/registrations/${id}/confirm`);
-    return response.data;
-  },
-
-  /**
-   * Send reminder email (admin only)
-   */
-  sendReminder: async (id) => {
-    const response = await api.post(`/registrations/${id}/send-reminder`);
     return response.data;
   },
 
@@ -115,8 +108,11 @@ export const registrationService = {
   /**
    * Cancel registration (public)
    */
-  cancel: async (id, email) => {
-    const response = await api.post(`/registrations/${id}/cancel`, { email });
+  cancel: async (id, email, reason) => {
+    const response = await api.post(`/registrations/${id}/cancel`, {
+      email,
+      reason,
+    });
     return response.data;
   },
 
@@ -125,6 +121,17 @@ export const registrationService = {
    */
   verifyEmail: async (token) => {
     const response = await api.get(`/registrations/verify/${token}`);
+    return response.data;
+  },
+
+  /**
+   * Resend verification email
+   */
+  resendVerification: async (email, formationId) => {
+    const response = await api.post("/registrations/resend-verification", {
+      email,
+      formation_id: formationId,
+    });
     return response.data;
   },
 };

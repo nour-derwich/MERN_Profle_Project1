@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   FiSearch, 
   FiFilter, 
@@ -20,6 +20,7 @@ import {
 } from 'react-icons/fi';
 import { FaSortAmountDown, FaSortAmountUpAlt } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import { formationService } from '../../services/formationService';
 
 const FormationsFilters = ({
   searchQuery = '',
@@ -36,10 +37,6 @@ const FormationsFilters = ({
   setSortBy,
   viewMode = 'grid',
   setViewMode,
-  categories = [],
-  levels = [],
-  statuses = [],
-  priceRanges = [],
   filteredFormations = [],
   onClearFilters,
   onAdvancedFilter
@@ -47,17 +44,167 @@ const FormationsFilters = ({
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
+  
+  // State for dynamic data from backend
+  const [categories, setCategories] = useState([]);
+  const [levels, setLevels] = useState([]);
+  const [statuses, setStatuses] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Default filters if not provided
-  const allCategories = [{ value: 'all', label: 'All Categories', color: 'from-gray-600 to-gray-800' }, ...categories];
-  const allLevels = [{ value: 'all', label: 'All Levels', color: 'from-gray-600 to-gray-800' }, ...levels];
-  const allStatuses = [{ value: 'all', label: 'All Statuses', color: 'from-gray-600 to-gray-800' }, ...statuses];
-  const allPriceRanges = priceRanges.length > 0 ? priceRanges : [
+  // Fetch filter data from backend
+  useEffect(() => {
+    const fetchFilterData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Fetch categories
+        const categoriesResponse = await formationService.getCategories();
+        if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
+          setCategories(categoriesResponse.data.map(cat => ({
+            value: cat.category?.toLowerCase().replace(/ /g, '-') || 'unknown',
+            label: cat.category || 'Unknown',
+            color: getCategoryColor(cat.category),
+            count: cat.count || 0
+          })));
+        }
+        
+        // Fetch levels
+        const levelsResponse = await formationService.getLevels();
+        if (levelsResponse.success && Array.isArray(levelsResponse.data)) {
+          setLevels(levelsResponse.data.map(level => ({
+            value: level.level || 'unknown',
+            label: formatLevelLabel(level.level),
+            color: getLevelColor(level.level),
+            count: level.count || 0
+          })));
+        }
+        
+        // Fetch statuses
+        const statusesResponse = await formationService.getStatuses();
+        if (statusesResponse.success && Array.isArray(statusesResponse.data)) {
+          setStatuses(statusesResponse.data.map(status => ({
+            value: status.status || 'unknown',
+            label: formatStatusLabel(status.status),
+            color: getStatusColor(status.status),
+            count: status.count || 0
+          })));
+        }
+        
+      } catch (error) {
+        console.error('Error fetching filter data:', error);
+        setDefaultFilterData();
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFilterData();
+  }, []);
+
+  // Helper function to set default filter data if API fails
+  const setDefaultFilterData = () => {
+    setCategories([
+      { value: 'machine-learning', label: 'Machine Learning', color: 'from-primary-500 to-blue-600', count: 0 },
+      { value: 'deep-learning', label: 'Deep Learning', color: 'from-purple-500 to-pink-600', count: 0 },
+      { value: 'data-science', label: 'Data Science', color: 'from-blue-500 to-cyan-600', count: 0 },
+      { value: 'ai-engineering', label: 'AI Engineering', color: 'from-green-500 to-emerald-600', count: 0 },
+      { value: 'web-development', label: 'Web Development', color: 'from-orange-500 to-red-600', count: 0 }
+    ]);
+    
+    setLevels([
+      { value: 'beginner', label: 'Beginner', color: 'from-green-500 to-emerald-600', count: 0 },
+      { value: 'intermediate', label: 'Intermediate', color: 'from-blue-500 to-cyan-600', count: 0 },
+      { value: 'advanced', label: 'Advanced', color: 'from-purple-500 to-pink-600', count: 0 },
+      { value: 'expert', label: 'Expert', color: 'from-red-500 to-orange-600', count: 0 }
+    ]);
+    
+    setStatuses([
+      { value: 'published', label: 'Published', color: 'from-green-500 to-emerald-600', count: 0 },
+      { value: 'draft', label: 'Draft', color: 'from-yellow-500 to-orange-600', count: 0 },
+      { value: 'enrolling', label: 'Enrolling', color: 'from-blue-500 to-cyan-600', count: 0 },
+      { value: 'full', label: 'Full', color: 'from-red-500 to-orange-600', count: 0 },
+      { value: 'completed', label: 'Completed', color: 'from-gray-600 to-gray-800', count: 0 }
+    ]);
+  };
+
+  // Helper function to get category color
+  const getCategoryColor = (category) => {
+    const colors = {
+      'Machine Learning': 'from-primary-500 to-blue-600',
+      'Deep Learning': 'from-purple-500 to-pink-600',
+      'Data Science': 'from-blue-500 to-cyan-600',
+      'AI Engineering': 'from-green-500 to-emerald-600',
+      'Web Development': 'from-orange-500 to-red-600',
+      'Mobile Development': 'from-indigo-500 to-purple-600',
+      'Design': 'from-pink-500 to-rose-600',
+      'Business': 'from-emerald-500 to-green-600',
+      'Marketing': 'from-yellow-500 to-amber-600',
+      'default': 'from-gray-500 to-gray-700'
+    };
+    return colors[category] || colors.default;
+  };
+
+  // Helper function to format level label
+  const formatLevelLabel = (level) => {
+    const labels = {
+      'beginner': 'Beginner',
+      'intermediate': 'Intermediate',
+      'advanced': 'Advanced',
+      'expert': 'Expert'
+    };
+    return labels[level] || (level?.charAt(0).toUpperCase() + level?.slice(1)) || 'Unknown';
+  };
+
+  // Helper function to get level color
+  const getLevelColor = (level) => {
+    const colors = {
+      'beginner': 'from-green-500 to-emerald-600',
+      'intermediate': 'from-blue-500 to-cyan-600',
+      'advanced': 'from-purple-500 to-pink-600',
+      'expert': 'from-red-500 to-orange-600',
+      'default': 'from-gray-500 to-gray-700'
+    };
+    return colors[level] || colors.default;
+  };
+
+  // Helper function to format status label
+  const formatStatusLabel = (status) => {
+    const labels = {
+      'published': 'Published',
+      'draft': 'Draft',
+      'enrolling': 'Enrolling',
+      'full': 'Full',
+      'completed': 'Completed',
+      'archived': 'Archived'
+    };
+    return labels[status] || (status?.charAt(0).toUpperCase() + status?.slice(1)) || 'Unknown';
+  };
+
+  // Helper function to get status color
+  const getStatusColor = (status) => {
+    const colors = {
+      'published': 'from-green-500 to-emerald-600',
+      'draft': 'from-yellow-500 to-orange-600',
+      'enrolling': 'from-blue-500 to-cyan-600',
+      'full': 'from-red-500 to-orange-600',
+      'completed': 'from-gray-600 to-gray-800',
+      'archived': 'from-gray-600 to-gray-800',
+      'default': 'from-gray-500 to-gray-700'
+    };
+    return colors[status] || colors.default;
+  };
+
+  // Create filter arrays with "All" option
+  const allCategories = [{ value: 'all', label: 'All Categories', color: 'from-gray-600 to-gray-800', count: 0 }, ...categories];
+  const allLevels = [{ value: 'all', label: 'All Levels', color: 'from-gray-600 to-gray-800', count: 0 }, ...levels];
+  const allStatuses = [{ value: 'all', label: 'All Statuses', color: 'from-gray-600 to-gray-800', count: 0 }, ...statuses];
+  
+  const allPriceRanges = [
     { id: 'all', label: 'All Prices', range: 'Any price', color: 'from-gray-600 to-gray-800' },
-    { id: 'free', label: 'Free', range: '$0', color: 'from-green-500 to-emerald-600' },
-    { id: 'under50', label: 'Under $50', range: '$0 - $50', color: 'from-blue-500 to-cyan-600' },
-    { id: '50-100', label: '$50 - $100', range: '$50 - $100', color: 'from-primary-500 to-indigo-600' },
-    { id: '100+', label: 'Premium', range: '$100+', color: 'from-purple-500 to-pink-600' }
+    { id: 'under600', label: 'Under $600', range: '$0 - $600', color: 'from-green-500 to-emerald-600' },
+    { id: '600-900', label: '$600 - $900', range: '$600 - $900', color: 'from-blue-500 to-cyan-600' },
+    { id: '900-1200', label: '$900 - $1200', range: '$900 - $1200', color: 'from-primary-500 to-indigo-600' },
+    { id: 'over1200', label: 'Premium', range: '$1200+', color: 'from-purple-500 to-pink-600' }
   ];
 
   const sortOptions = [
@@ -102,28 +249,46 @@ const FormationsFilters = ({
     
     const colorMap = {
       category: {
-        'Machine Learning': 'from-primary-500 to-blue-600',
-        'Deep Learning': 'from-purple-500 to-pink-600',
-        'Data Science': 'from-blue-500 to-cyan-600',
-        'Python': 'from-green-500 to-emerald-600',
-        'AI Engineering': 'from-orange-500 to-yellow-600',
-        'Mathematics': 'from-red-500 to-orange-600'
+        'machine-learning': 'from-primary-500 to-blue-600',
+        'deep-learning': 'from-purple-500 to-pink-600',
+        'data-science': 'from-blue-500 to-cyan-600',
+        'ai-engineering': 'from-green-500 to-emerald-600',
+        'web-development': 'from-orange-500 to-yellow-600'
       },
       level: {
-        'Beginner': 'from-green-500 to-emerald-600',
-        'Intermediate': 'from-blue-500 to-cyan-600',
-        'Advanced': 'from-purple-500 to-pink-600',
-        'Expert': 'from-red-500 to-orange-600'
+        'beginner': 'from-green-500 to-emerald-600',
+        'intermediate': 'from-blue-500 to-cyan-600',
+        'advanced': 'from-purple-500 to-pink-600',
+        'expert': 'from-red-500 to-orange-600'
       },
       status: {
-        'upcoming': 'from-blue-500 to-cyan-600',
-        'ongoing': 'from-green-500 to-emerald-600',
-        'completed': 'from-gray-600 to-gray-800',
-        'self-paced': 'from-primary-500 to-indigo-600'
+        'published': 'from-green-500 to-emerald-600',
+        'draft': 'from-yellow-500 to-orange-600',
+        'enrolling': 'from-blue-500 to-cyan-600',
+        'full': 'from-red-500 to-orange-600',
+        'completed': 'from-gray-600 to-gray-800'
       }
     };
 
     return colorMap[type]?.[value] || 'from-primary-500 to-blue-600';
+  };
+
+  // Get current filter label
+  const getFilterLabel = (type, value) => {
+    if (value === 'all') return 'All';
+    
+    switch (type) {
+      case 'category':
+        return categories.find(c => c.value === value)?.label || value;
+      case 'level':
+        return levels.find(l => l.value === value)?.label || value;
+      case 'status':
+        return statuses.find(s => s.value === value)?.label || value;
+      case 'price':
+        return allPriceRanges.find(p => p.id === value)?.label || value;
+      default:
+        return value;
+    }
   };
 
   return (
@@ -208,12 +373,17 @@ const FormationsFilters = ({
                   ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white'
                   : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
               }`}
+              disabled={isLoading}
             >
               <FiFilter className="text-lg" />
               <span className="font-medium">Filters</span>
-              <FiChevronDown className={`transition-transform duration-300 ${
-                isFiltersExpanded ? 'rotate-180' : ''
-              }`} />
+              {isLoading ? (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <FiChevronDown className={`transition-transform duration-300 ${
+                  isFiltersExpanded ? 'rotate-180' : ''
+                }`} />
+              )}
             </button>
 
             {/* View Mode Toggle */}
@@ -328,120 +498,150 @@ const FormationsFilters = ({
               className="overflow-hidden"
             >
               <div className="mt-4 p-6 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-xl backdrop-blur-sm">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                  
-                  {/* Category Filter */}
-                  <div>
-                    <div className="text-sm font-semibold text-gray-400 mb-4 flex items-center gap-2">
-                      <FiHash className="text-primary-400" />
-                      <span>Category</span>
-                    </div>
-                    <div className="space-y-2">
-                      {allCategories.map((category) => {
-                        const isActive = selectedCategory === category.value;
-                        return (
-                          <button
-                            key={category.value}
-                            onClick={() => setSelectedCategory(category.value)}
-                            className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-300 flex items-center justify-between group ${
-                              isActive
-                                ? `bg-gradient-to-r ${getFilterColor('category', category.value)} text-white`
-                                : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
-                            }`}
-                          >
-                            <span className="text-sm">{category.label}</span>
-                            <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-white' : 'bg-gray-700 group-hover:bg-gray-600'}`} />
-                          </button>
-                        );
-                      })}
-                    </div>
+                {isLoading ? (
+                  <div className="flex justify-center items-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
                   </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    
+                    {/* Category Filter */}
+                    <div>
+                      <div className="text-sm font-semibold text-gray-400 mb-4 flex items-center gap-2">
+                        <FiHash className="text-primary-400" />
+                        <span>Category</span>
+                      </div>
+                      <div className="space-y-2">
+                        {allCategories.map((category) => {
+                          const isActive = selectedCategory === category.value;
+                          return (
+                            <button
+                              key={category.value}
+                              onClick={() => setSelectedCategory(category.value)}
+                              className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-300 flex items-center justify-between group ${
+                                isActive
+                                  ? `bg-gradient-to-r ${getFilterColor('category', category.value)} text-white`
+                                  : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between w-full">
+                                <span className="text-sm">{category.label}</span>
+                                {category.count > 0 && (
+                                  <span className={`text-xs px-2 py-1 rounded-full ${
+                                    isActive ? 'bg-white/20' : 'bg-gray-700/50'
+                                  }`}>
+                                    {category.count}
+                                  </span>
+                                )}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
 
-                  {/* Level Filter */}
-                  <div>
-                    <div className="text-sm font-semibold text-gray-400 mb-4 flex items-center gap-2">
-                      <FiTrendingUp className="text-blue-400" />
-                      <span>Level</span>
+                    {/* Level Filter */}
+                    <div>
+                      <div className="text-sm font-semibold text-gray-400 mb-4 flex items-center gap-2">
+                        <FiTrendingUp className="text-blue-400" />
+                        <span>Level</span>
+                      </div>
+                      <div className="space-y-2">
+                        {allLevels.map((level) => {
+                          const isActive = selectedLevel === level.value;
+                          return (
+                            <button
+                              key={level.value}
+                              onClick={() => setSelectedLevel(level.value)}
+                              className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-300 flex items-center justify-between group ${
+                                isActive
+                                  ? `bg-gradient-to-r ${getFilterColor('level', level.value)} text-white`
+                                  : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-blue-500/30'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between w-full">
+                                <span className="text-sm">{level.label}</span>
+                                {level.count > 0 && (
+                                  <span className={`text-xs px-2 py-1 rounded-full ${
+                                    isActive ? 'bg-white/20' : 'bg-gray-700/50'
+                                  }`}>
+                                    {level.count}
+                                  </span>
+                                )}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      {allLevels.map((level) => {
-                        const isActive = selectedLevel === level.value;
-                        return (
-                          <button
-                            key={level.value}
-                            onClick={() => setSelectedLevel(level.value)}
-                            className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-300 flex items-center justify-between group ${
-                              isActive
-                                ? `bg-gradient-to-r ${getFilterColor('level', level.value)} text-white`
-                                : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-blue-500/30'
-                            }`}
-                          >
-                            <span className="text-sm">{level.label}</span>
-                            <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-white' : 'bg-gray-700 group-hover:bg-gray-600'}`} />
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
 
-                  {/* Status Filter */}
-                  <div>
-                    <div className="text-sm font-semibold text-gray-400 mb-4 flex items-center gap-2">
-                      <FiClock className="text-green-400" />
-                      <span>Status</span>
+                    {/* Status Filter */}
+                    <div>
+                      <div className="text-sm font-semibold text-gray-400 mb-4 flex items-center gap-2">
+                        <FiClock className="text-green-400" />
+                        <span>Status</span>
+                      </div>
+                      <div className="space-y-2">
+                        {allStatuses.map((status) => {
+                          const isActive = selectedStatus === status.value;
+                          return (
+                            <button
+                              key={status.value}
+                              onClick={() => setSelectedStatus(status.value)}
+                              className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-300 flex items-center justify-between group ${
+                                isActive
+                                  ? `bg-gradient-to-r ${getFilterColor('status', status.value)} text-white`
+                                  : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-green-500/30'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between w-full">
+                                <span className="text-sm">{status.label}</span>
+                                {status.count > 0 && (
+                                  <span className={`text-xs px-2 py-1 rounded-full ${
+                                    isActive ? 'bg-white/20' : 'bg-gray-700/50'
+                                  }`}>
+                                    {status.count}
+                                  </span>
+                                )}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      {allStatuses.map((status) => {
-                        const isActive = selectedStatus === status.value;
-                        return (
-                          <button
-                            key={status.value}
-                            onClick={() => setSelectedStatus(status.value)}
-                            className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-300 flex items-center justify-between group ${
-                              isActive
-                                ? `bg-gradient-to-r ${getFilterColor('status', status.value)} text-white`
-                                : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-green-500/30'
-                            }`}
-                          >
-                            <span className="text-sm">{status.label}</span>
-                            <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-white' : 'bg-gray-700 group-hover:bg-gray-600'}`} />
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
 
-                  {/* Price Filter */}
-                  <div>
-                    <div className="text-sm font-semibold text-gray-400 mb-4 flex items-center gap-2">
-                      <FiDollarSign className="text-yellow-400" />
-                      <span>Price Range</span>
-                    </div>
-                    <div className="space-y-2">
-                      {allPriceRanges.map((range) => {
-                        const isActive = priceRange === range.id;
-                        return (
-                          <button
-                            key={range.id}
-                            onClick={() => setPriceRange(range.id)}
-                            className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-300 group ${
-                              isActive
-                                ? `bg-gradient-to-r ${range.color} text-white`
-                                : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-yellow-500/30'
-                            }`}
-                          >
-                            <div className="flex flex-col">
-                              <span className="text-sm font-medium">{range.label}</span>
-                              <span className="text-xs text-gray-400 group-hover:text-gray-300">
-                                {range.range}
-                              </span>
-                            </div>
-                          </button>
-                        );
-                      })}
+                    {/* Price Filter */}
+                    <div>
+                      <div className="text-sm font-semibold text-gray-400 mb-4 flex items-center gap-2">
+                        <FiDollarSign className="text-yellow-400" />
+                        <span>Price Range</span>
+                      </div>
+                      <div className="space-y-2">
+                        {allPriceRanges.map((range) => {
+                          const isActive = priceRange === range.id;
+                          return (
+                            <button
+                              key={range.id}
+                              onClick={() => setPriceRange(range.id)}
+                              className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-300 group ${
+                                isActive
+                                  ? `bg-gradient-to-r ${range.color} text-white`
+                                  : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-yellow-500/30'
+                              }`}
+                            >
+                              <div className="flex flex-col">
+                                <span className="text-sm font-medium">{range.label}</span>
+                                <span className="text-xs text-gray-400 group-hover:text-gray-300">
+                                  {range.range}
+                                </span>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </motion.div>
           )}
@@ -517,7 +717,7 @@ const FormationsFilters = ({
               
               {selectedCategory !== 'all' && (
                 <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-600/50 text-gray-300 rounded-lg text-sm">
-                  <span>{allCategories.find(c => c.value === selectedCategory)?.label}</span>
+                  <span>{getFilterLabel('category', selectedCategory)}</span>
                   <button
                     onClick={() => setSelectedCategory('all')}
                     className="ml-1 text-gray-400 hover:text-white"
@@ -530,7 +730,7 @@ const FormationsFilters = ({
               {selectedLevel !== 'all' && (
                 <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 text-blue-300 rounded-lg text-sm">
                   <FiTrendingUp className="text-xs" />
-                  <span>{allLevels.find(l => l.value === selectedLevel)?.label}</span>
+                  <span>{getFilterLabel('level', selectedLevel)}</span>
                   <button
                     onClick={() => setSelectedLevel('all')}
                     className="ml-1 text-blue-400 hover:text-white"
@@ -543,7 +743,7 @@ const FormationsFilters = ({
               {selectedStatus !== 'all' && (
                 <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 text-green-300 rounded-lg text-sm">
                   <FiClock className="text-xs" />
-                  <span>{allStatuses.find(s => s.value === selectedStatus)?.label}</span>
+                  <span>{getFilterLabel('status', selectedStatus)}</span>
                   <button
                     onClick={() => setSelectedStatus('all')}
                     className="ml-1 text-green-400 hover:text-white"
@@ -556,7 +756,7 @@ const FormationsFilters = ({
               {priceRange !== 'all' && (
                 <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 text-yellow-300 rounded-lg text-sm">
                   <FiDollarSign className="text-xs" />
-                  <span>{allPriceRanges.find(p => p.id === priceRange)?.label}</span>
+                  <span>{getFilterLabel('price', priceRange)}</span>
                   <button
                     onClick={() => setPriceRange('all')}
                     className="ml-1 text-yellow-400 hover:text-white"

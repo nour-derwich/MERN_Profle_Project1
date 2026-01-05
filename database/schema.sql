@@ -207,18 +207,37 @@ ADD COLUMN IF NOT EXISTS reviews INTEGER DEFAULT 0;
 -- ============================================
 -- REGISTRATIONS TABLE
 -- ============================================
-CREATE TABLE registrations (
+ALTER TABLE registrations 
+DROP COLUMN IF EXISTS payment_method,
+DROP COLUMN IF EXISTS payment_reference,
+DROP COLUMN IF EXISTS card_last4,
+DROP COLUMN IF EXISTS card_brand,
+DROP COLUMN IF EXISTS card_exp_month,
+DROP COLUMN IF EXISTS card_exp_year,
+DROP COLUMN IF EXISTS amount_paid,
+DROP COLUMN IF EXISTS payment_status,
+DROP COLUMN IF EXISTS currency;
+
+CREATE TABLE IF NOT EXISTS registrations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     formation_id UUID REFERENCES formations(id) ON DELETE CASCADE,
     full_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
     phone VARCHAR(20),
     message TEXT,
+    role VARCHAR(100),
+    current_role VARCHAR(100),
+    terms_accepted BOOLEAN DEFAULT false,
+    
+    -- Status only (no payment status)
     status VARCHAR(20) DEFAULT 'pending', -- pending, confirmed, cancelled, completed
-    payment_status VARCHAR(20) DEFAULT 'pending', -- pending, paid, refunded
-    payment_method VARCHAR(50),
-    payment_reference VARCHAR(100),
-    amount_paid DECIMAL(10, 2),
+    
+    -- Verification fields
+    verification_token VARCHAR(100),
+    verification_token_expires TIMESTAMP,
+    is_verified BOOLEAN DEFAULT false,
+    
+    -- Timestamps
     registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     confirmed_at TIMESTAMP,
     cancelled_at TIMESTAMP,
@@ -226,7 +245,6 @@ CREATE TABLE registrations (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
 -- ============================================
 -- MESSAGES (CONTACT) TABLE
 -- ============================================

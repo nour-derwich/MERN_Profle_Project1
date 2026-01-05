@@ -1,3 +1,4 @@
+// controllers/formation.controller.js
 const Formation = require("../models/formation.models");
 const asyncHandler = require("../middleware/asyncHandler");
 const ErrorResponse = require("../utils/errorResponse");
@@ -47,14 +48,30 @@ exports.getAllFormations = asyncHandler(async (req, res) => {
 // @route   GET /api/formations/:id
 // @access  Public
 exports.getFormationById = asyncHandler(async (req, res, next) => {
-  const formation = await Formation.findById(req.params.id);
+  const { id } = req.params;
+
+  console.log(`🔍 getFormationById called with: ${id}`);
+
+  // Check if this is a static route that was misrouted
+  const staticRoutes = ["statuses", "categories", "levels", "stats", "export"];
+  if (staticRoutes.includes(id)) {
+    console.error(
+      `❌ ERROR: Static route "${id}" was routed to getFormationById!`
+    );
+    return res.status(404).json({
+      success: false,
+      message: `Route /api/formations/${id} not found. Check your route configuration.`,
+    });
+  }
+
+  const formation = await Formation.findById(id);
 
   if (!formation) {
     return next(new ErrorResponse("Formation not found", 404));
   }
 
   // Increment views
-  await Formation.incrementViews(req.params.id);
+  await Formation.incrementViews(id);
 
   res.status(200).json({
     success: true,
@@ -79,17 +96,19 @@ exports.createFormation = asyncHandler(async (req, res) => {
 // @route   PUT /api/formations/:id
 // @access  Private/Admin
 exports.updateFormation = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+
   // Remove computed fields from the request body
   const dataToUpdate = { ...req.body };
   delete dataToUpdate.spots_left;
   delete dataToUpdate.rating;
   delete dataToUpdate.reviews_count;
   delete dataToUpdate.total_registrations;
-  delete dataToUpdate.id; // Also remove id if it's present
+  delete dataToUpdate.id;
   delete dataToUpdate.created_at;
   delete dataToUpdate.updated_at;
 
-  const formation = await Formation.update(req.params.id, dataToUpdate);
+  const formation = await Formation.update(id, dataToUpdate);
 
   if (!formation) {
     return next(new ErrorResponse("Formation not found", 404));
@@ -106,7 +125,9 @@ exports.updateFormation = asyncHandler(async (req, res, next) => {
 // @route   DELETE /api/formations/:id
 // @access  Private/Admin
 exports.deleteFormation = asyncHandler(async (req, res, next) => {
-  const formation = await Formation.delete(req.params.id);
+  const { id } = req.params;
+
+  const formation = await Formation.delete(id);
 
   if (!formation) {
     return next(new ErrorResponse("Formation not found", 404));
@@ -160,6 +181,7 @@ exports.getLevels = asyncHandler(async (req, res) => {
 // @route   GET /api/formations/statuses
 // @access  Private/Admin
 exports.getStatuses = asyncHandler(async (req, res) => {
+  console.log("🔍 getStatuses controller called");
   const statuses = await Formation.getStatuses();
 
   res.status(200).json({
@@ -173,13 +195,14 @@ exports.getStatuses = asyncHandler(async (req, res) => {
 // @route   PUT /api/formations/:id/participants
 // @access  Private/Admin
 exports.updateParticipants = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
   const { count } = req.body;
 
   if (!count || typeof count !== "number") {
     return next(new ErrorResponse("Please provide a valid count", 400));
   }
 
-  const formation = await Formation.updateParticipants(req.params.id, count);
+  const formation = await Formation.updateParticipants(id, count);
 
   if (!formation) {
     return next(new ErrorResponse("Formation not found", 404));

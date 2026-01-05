@@ -7,11 +7,13 @@
     "dev": "nodemon server.js",
     "test": "jest",
     "db:setup": "node scripts/setup-database.js",
-    "db:seed": "node scripts/seed-database.js",
+    "db:seed": "node scripts/seed-registrations.js",
     "db:reset": "node scripts/reset-database.js",
-    "db:migrate": "node scripts/migrate.js",
+    "db:migrate": "node scripts/migrate-registrations.js",
     "db:fresh": "npm run db:reset && npm run db:setup && npm run db:seed && npm run db:migrate",
-    "migrate": "node scripts/migrate-database.js"
+    "db:cleanup": "node scripts/cleanup-payment-columns.js",
+    "db:add-demo": "node scripts/add-demo-registration.js"
+
   },
   "keywords": [],
   "author": "",

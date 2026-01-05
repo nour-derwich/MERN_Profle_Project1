@@ -6,6 +6,7 @@ import FormationsGrid from '../../components/formations/FormationsGrid';
 import FormationDetail from '../../components/formations/FormationDetail';
 import RegistrationModal from '../../components/formations/RegistrationModal';
 import { formationService } from '../../services/formationService';
+import { registrationService } from '../../services/registrationService';
 
 const Formations = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -13,7 +14,6 @@ const Formations = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLevel, setSelectedLevel] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
-  const [priceRange, setPriceRange] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
   const [viewMode, setViewMode] = useState('grid');
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,13 +21,14 @@ const Formations = () => {
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
   const [favorites, setFavorites] = useState([]);
   const [formData, setFormData] = useState({
+    formation_id: '',
     fullName: '',
     email: '',
     phone: '',
     role: '',
+    current_role: '',
     message: '',
-    terms: false,
-    paymentMethod: 'credit'
+    terms: false
   });
 
   // New state for API data
@@ -38,6 +39,7 @@ const Formations = () => {
   const [levels, setLevels] = useState([]);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [totalFormations, setTotalFormations] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const itemsPerPage = 6;
 
@@ -62,12 +64,10 @@ const Formations = () => {
         category: selectedCategory !== 'all' ? selectedCategory : undefined,
         level: selectedLevel !== 'all' ? selectedLevel : undefined,
         status: selectedStatus !== 'all' ? selectedStatus : undefined,
-        priceRange: priceRange !== 'all' ? priceRange : undefined,
         searchQuery: searchQuery || undefined,
         sortBy,
         limit: itemsPerPage,
-        offset: (currentPage - 1) * itemsPerPage,
-        admin: false // Only get published formations for public view
+        offset: (currentPage - 1) * itemsPerPage
       };
 
       // Remove undefined filters
@@ -80,14 +80,62 @@ const Formations = () => {
       const response = await formationService.getAll(filters);
       
       if (response.success) {
-        setFormations(response.data || []);
-        setTotalFormations(response.count || response.data?.length || 0);
+        // Transform API data to match frontend structure
+        const transformedData = response.data.map(formation => ({
+          id: formation.id,
+          title: formation.title,
+          description: formation.description,
+          short_description: formation.short_description,
+          full_description: formation.full_description,
+          cover_image: formation.cover_image,
+          category: formation.category,
+          level: formation.level,
+          duration_hours: formation.duration_hours,
+          weeks_duration: formation.weeks_duration,
+          hours_per_week: formation.hours_per_week,
+          max_participants: formation.max_participants,
+          current_participants: formation.current_participants,
+          start_date: formation.start_date,
+          end_date: formation.end_date,
+          schedule: formation.schedule,
+          format: formation.format || 'Online',
+          location: formation.location || 'Online',
+          live_sessions: formation.live_sessions,
+          status: formation.status,
+          featured: formation.featured || false,
+          instructor_name: formation.instructor_name,
+          instructor_title: formation.instructor_title,
+          instructor_bio: formation.instructor_bio,
+          instructor_photo: formation.instructor_photo,
+          instructor_rating: formation.instructor_rating,
+          instructor_reviews: formation.instructor_reviews,
+          instructor_students: formation.instructor_students,
+          instructor_verified: formation.instructor_verified,
+          rating: formation.rating,
+          reviews_count: formation.reviews_count,
+          views_count: formation.views_count,
+          spots_left: formation.spots_left || (formation.max_participants - formation.current_participants),
+          // Handle array/JSON fields
+          program: typeof formation.program === 'string' ? JSON.parse(formation.program) : formation.program || [],
+          modules: typeof formation.modules === 'string' ? JSON.parse(formation.modules) : formation.modules || [],
+          testimonials: typeof formation.testimonials === 'string' ? JSON.parse(formation.testimonials) : formation.testimonials || [],
+          features: Array.isArray(formation.features) ? formation.features : [],
+          highlights: Array.isArray(formation.highlights) ? formation.highlights : [],
+          learning_objectives: Array.isArray(formation.learning_objectives) ? formation.learning_objectives : [],
+          tags: Array.isArray(formation.tags) ? formation.tags : [],
+          prerequisites: formation.prerequisites || '',
+          created_at: formation.created_at,
+          updated_at: formation.updated_at
+        }));
+        
+        setFormations(transformedData);
+        setTotalFormations(response.count || transformedData.length);
       } else {
-        setError('Failed to load formations');
+        setError(response.message || 'Failed to load formations');
       }
     } catch (err) {
       console.error('Error fetching formations:', err);
-      setError(err.response?.data?.message || 'Failed to load formations');
+      setError(err.response?.data?.message || 'Failed to load formations. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -114,10 +162,10 @@ const Formations = () => {
       // Fallback categories if API fails
       setCategories([
         { value: 'all', label: 'All Categories', color: 'from-gray-600 to-gray-800' },
-        { value: 'machine-learning', label: 'Machine Learning', color: 'from-primary-500 to-blue-600' },
-        { value: 'deep-learning', label: 'Deep Learning', color: 'from-purple-500 to-pink-600' },
-        { value: 'data-science', label: 'Data Science', color: 'from-blue-500 to-cyan-600' },
-        { value: 'ai-engineering', label: 'AI Engineering', color: 'from-green-500 to-emerald-600' }
+        { value: 'web-dev', label: 'Web Development', color: 'from-blue-500 to-cyan-600' },
+        { value: 'data-science', label: 'Data Science', color: 'from-green-500 to-emerald-600' },
+        { value: 'design', label: 'UI/UX Design', color: 'from-purple-500 to-pink-600' },
+        { value: 'business', label: 'Business', color: 'from-orange-500 to-amber-600' }
       ]);
     }
   };
@@ -145,8 +193,7 @@ const Formations = () => {
         { value: 'all', label: 'All Levels', color: 'from-gray-600 to-gray-800' },
         { value: 'beginner', label: 'Beginner', color: 'from-green-500 to-emerald-600' },
         { value: 'intermediate', label: 'Intermediate', color: 'from-blue-500 to-cyan-600' },
-        { value: 'advanced', label: 'Advanced', color: 'from-purple-500 to-pink-600' },
-        { value: 'expert', label: 'Expert', color: 'from-red-500 to-orange-600' }
+        { value: 'advanced', label: 'Advanced', color: 'from-purple-500 to-pink-600' }
       ]);
     }
   };
@@ -154,15 +201,14 @@ const Formations = () => {
   // Helper function to get category color
   const getCategoryColor = (category) => {
     const colors = {
-      'Machine Learning': 'from-primary-500 to-blue-600',
-      'Deep Learning': 'from-purple-500 to-pink-600',
-      'Data Science': 'from-blue-500 to-cyan-600',
-      'AI Engineering': 'from-green-500 to-emerald-600',
-      'Web Development': 'from-orange-500 to-red-600',
-      'Mobile Development': 'from-indigo-500 to-purple-600',
-      'Design': 'from-pink-500 to-rose-600',
-      'Business': 'from-emerald-500 to-green-600',
+      'Web Development': 'from-blue-500 to-cyan-600',
+      'Data Science': 'from-green-500 to-emerald-600',
+      'UI/UX Design': 'from-purple-500 to-pink-600',
+      'Business': 'from-orange-500 to-amber-600',
       'Marketing': 'from-yellow-500 to-amber-600',
+      'Machine Learning': 'from-primary-500 to-blue-600',
+      'Deep Learning': 'from-indigo-500 to-purple-600',
+      'AI Engineering': 'from-red-500 to-orange-600',
       'default': 'from-gray-500 to-gray-700'
     };
     return colors[category] || colors.default;
@@ -173,8 +219,7 @@ const Formations = () => {
     const labels = {
       'beginner': 'Beginner',
       'intermediate': 'Intermediate',
-      'advanced': 'Advanced',
-      'expert': 'Expert'
+      'advanced': 'Advanced'
     };
     return labels[level] || level.charAt(0).toUpperCase() + level.slice(1);
   };
@@ -185,7 +230,6 @@ const Formations = () => {
       'beginner': 'from-green-500 to-emerald-600',
       'intermediate': 'from-blue-500 to-cyan-600',
       'advanced': 'from-purple-500 to-pink-600',
-      'expert': 'from-red-500 to-orange-600',
       'default': 'from-gray-500 to-gray-700'
     };
     return colors[level] || colors.default;
@@ -194,26 +238,16 @@ const Formations = () => {
   // Update formations when filters change
   useEffect(() => {
     fetchFormations();
-  }, [searchQuery, selectedCategory, selectedLevel, selectedStatus, priceRange, sortBy, currentPage]);
+  }, [searchQuery, selectedCategory, selectedLevel, selectedStatus, sortBy, currentPage]);
 
   // Status options
   const statuses = [
     { value: 'all', label: 'All Statuses', color: 'from-gray-600 to-gray-800' },
-    { value: 'upcoming', label: 'Upcoming', color: 'from-blue-500 to-cyan-600' },
-    { value: 'enrolling', label: 'Enrolling', color: 'from-green-500 to-emerald-600' },
-    { value: 'full', label: 'Full', color: 'from-red-500 to-orange-600' },
-    { value: 'completed', label: 'Completed', color: 'from-gray-600 to-gray-800' },
     { value: 'published', label: 'Published', color: 'from-green-500 to-emerald-600' },
-    { value: 'draft', label: 'Draft', color: 'from-yellow-500 to-orange-600' }
-  ];
-
-  // Price ranges
-  const priceRanges = [
-    { id: 'all', label: 'All Prices', range: 'Any price', color: 'from-gray-600 to-gray-800' },
-    { id: 'under600', label: 'Under $600', range: '$0 - $600', color: 'from-green-500 to-emerald-600' },
-    { id: '600-900', label: '$600 - $900', range: '$600 - $900', color: 'from-blue-500 to-cyan-600' },
-    { id: '900-1200', label: '$900 - $1200', range: '$900 - $1200', color: 'from-primary-500 to-indigo-600' },
-    { id: 'over1200', label: 'Premium', range: '$1200+', color: 'from-purple-500 to-pink-600' }
+    { value: 'enrolling', label: 'Enrolling', color: 'from-blue-500 to-cyan-600' },
+    { value: 'upcoming', label: 'Upcoming', color: 'from-purple-500 to-pink-600' },
+    { value: 'full', label: 'Full', color: 'from-red-500 to-orange-600' },
+    { value: 'completed', label: 'Completed', color: 'from-gray-600 to-gray-800' }
   ];
 
   // Filter formations client-side for better UX
@@ -222,7 +256,7 @@ const Formations = () => {
       formation.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       formation.category?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       formation.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      formation.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+      (Array.isArray(formation.tags) && formation.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())));
     
     const matchesCategory = selectedCategory === 'all' || 
       formation.category?.toLowerCase().replace(/ /g, '-') === selectedCategory;
@@ -232,14 +266,8 @@ const Formations = () => {
     
     const matchesStatus = selectedStatus === 'all' || 
       formation.status?.toLowerCase() === selectedStatus.toLowerCase();
-    
-    const matchesPrice = priceRange === 'all' ||
-      (priceRange === 'under600' && formation.price < 600) ||
-      (priceRange === '600-900' && formation.price >= 600 && formation.price <= 900) ||
-      (priceRange === '900-1200' && formation.price >= 900 && formation.price <= 1200) ||
-      (priceRange === 'over1200' && formation.price > 1200);
 
-    return matchesSearch && matchesCategory && matchesLevel && matchesStatus && matchesPrice;
+    return matchesSearch && matchesCategory && matchesLevel && matchesStatus;
   });
 
   // Sort formations
@@ -251,10 +279,6 @@ const Formations = () => {
         return (b.rating || 0) - (a.rating || 0);
       case 'recent':
         return new Date(b.created_at || b.start_date || 0) - new Date(a.created_at || a.start_date || 0);
-      case 'price-low':
-        return (a.price || 0) - (b.price || 0);
-      case 'price-high':
-        return (b.price || 0) - (a.price || 0);
       case 'featured':
         return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
       default:
@@ -279,50 +303,88 @@ const Formations = () => {
   };
 
   const handleRegistrationSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    
-    try {
-      // Here you would call your registration API
-      console.log('Registration submitted:', {
-        formationId: selectedFormation.id,
-        formationTitle: selectedFormation.title,
-        ...formData
-      });
+  e.preventDefault();
+  
+  if (!selectedFormation) {
+    alert('No formation selected');
+    return;
+  }
+  
+  if (!formData.terms_accepted) { // Changed from formData.terms
+    alert('You must accept the terms and conditions');
+    return;
+  }
+  
+  setIsSubmitting(true);
+  
+  try {
+    // Prepare registration data for API - MATCHING BACKEND EXPECTATIONS
+    const registrationData = {
+      formation_id: selectedFormation.id,
+      full_name: formData.full_name || formData.fullName, // Match backend field name
+      email: formData.email,
+      phone: formData.phone,
+      role: formData.role || 'student',
+      current_role: formData.current_role || formData.job_title || '', // Handle both names
+      message: formData.motivation || formData.message || '', // Use message field
+      terms_accepted: formData.terms_accepted || formData.terms // Match backend field name
+    };
 
-      // Simulate API call
+    // Remove empty fields
+    Object.keys(registrationData).forEach(key => {
+      if (registrationData[key] === '' || registrationData[key] === null || registrationData[key] === undefined) {
+        delete registrationData[key];
+      }
+    });
+
+    console.log('Sending registration data:', registrationData); // Debug log
+    
+    // Call the registration API
+    const response = await registrationService.create(registrationData);
+    
+    if (response.success) {
+      setRegistrationSuccess(true);
+      
+      // Reset form
+      setFormData({
+        formation_id: '',
+        full_name: '', 
+        email: '',
+        phone: '',
+        role: '',
+        current_role: '', 
+        motivation: '', 
+        experience_level: 'beginner', 
+        terms_accepted: false 
+      });
+      
+      // Refresh formations to update participant count
+      fetchFormations();
+      
+      // Show success message for 3 seconds
       setTimeout(() => {
-        setIsLoading(false);
-        setRegistrationSuccess(true);
-        
-        // Reset form after success
-        setTimeout(() => {
-          setShowRegistrationModal(false);
-          setRegistrationSuccess(false);
-          setFormData({
-            fullName: '',
-            email: '',
-            phone: '',
-            role: '',
-            message: '',
-            terms: false,
-            paymentMethod: 'credit'
-          });
-        }, 3000);
-      }, 2000);
-    } catch (err) {
-      console.error('Error submitting registration:', err);
-      setError('Failed to submit registration. Please try again.');
-      setIsLoading(false);
+        setShowRegistrationModal(false);
+        setRegistrationSuccess(false);
+      }, 3000);
+      
+    } else {
+      throw new Error(response.message || 'Registration failed');
     }
-  };
+    
+  } catch (err) {
+    console.error('Error submitting registration:', err);
+    console.error('Error details:', err.response?.data); // Log detailed error
+    alert(err.response?.data?.message || err.message || 'Failed to submit registration. Please try again.');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const handleClearFilters = () => {
     setSearchQuery('');
     setSelectedCategory('all');
     setSelectedLevel('all');
     setSelectedStatus('all');
-    setPriceRange('all');
     setSortBy('featured');
     setCurrentPage(1);
   };
@@ -331,13 +393,17 @@ const Formations = () => {
     setSelectedFormation(formation);
   };
 
-  const handleShare = () => {
+  const handleShare = async () => {
     if (navigator.share) {
-      navigator.share({
-        title: selectedFormation.title,
-        text: `Check out this amazing formation: ${selectedFormation.title}`,
-        url: window.location.href,
-      });
+      try {
+        await navigator.share({
+          title: selectedFormation.title,
+          text: `Check out this amazing formation: ${selectedFormation.title}`,
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.log('Error sharing:', err);
+      }
     } else {
       navigator.clipboard.writeText(window.location.href);
       alert('Link copied to clipboard!');
@@ -350,7 +416,55 @@ const Formations = () => {
       // Fetch full formation details
       const response = await formationService.getById(formation.id);
       if (response.success) {
-        setSelectedFormation(response.data);
+        // Transform the API data
+        const formationData = {
+          id: response.data.id,
+          title: response.data.title,
+          description: response.data.description,
+          short_description: response.data.short_description,
+          full_description: response.data.full_description,
+          cover_image: response.data.cover_image,
+          category: response.data.category,
+          level: response.data.level,
+          duration_hours: response.data.duration_hours,
+          weeks_duration: response.data.weeks_duration,
+          hours_per_week: response.data.hours_per_week,
+          max_participants: response.data.max_participants,
+          current_participants: response.data.current_participants,
+          start_date: response.data.start_date,
+          end_date: response.data.end_date,
+          schedule: response.data.schedule,
+          format: response.data.format || 'Online',
+          location: response.data.location || 'Online',
+          live_sessions: response.data.live_sessions,
+          status: response.data.status,
+          featured: response.data.featured || false,
+          instructor_name: response.data.instructor_name,
+          instructor_title: response.data.instructor_title,
+          instructor_bio: response.data.instructor_bio,
+          instructor_photo: response.data.instructor_photo,
+          instructor_rating: response.data.instructor_rating,
+          instructor_reviews: response.data.instructor_reviews,
+          instructor_students: response.data.instructor_students,
+          instructor_verified: response.data.instructor_verified,
+          rating: response.data.rating,
+          reviews_count: response.data.reviews_count,
+          views_count: response.data.views_count,
+          spots_left: response.data.spots_left || (response.data.max_participants - response.data.current_participants),
+          // Handle array/JSON fields
+          program: typeof response.data.program === 'string' ? JSON.parse(response.data.program) : response.data.program || [],
+          modules: typeof response.data.modules === 'string' ? JSON.parse(response.data.modules) : response.data.modules || [],
+          testimonials: typeof response.data.testimonials === 'string' ? JSON.parse(response.data.testimonials) : response.data.testimonials || [],
+          features: Array.isArray(response.data.features) ? response.data.features : [],
+          highlights: Array.isArray(response.data.highlights) ? response.data.highlights : [],
+          learning_objectives: Array.isArray(response.data.learning_objectives) ? response.data.learning_objectives : [],
+          tags: Array.isArray(response.data.tags) ? response.data.tags : [],
+          prerequisites: response.data.prerequisites || '',
+          created_at: response.data.created_at,
+          updated_at: response.data.updated_at
+        };
+        
+        setSelectedFormation(formationData);
       } else {
         setSelectedFormation(formation);
       }
@@ -379,7 +493,7 @@ const Formations = () => {
           formData={formData}
           handleInputChange={handleInputChange}
           handleRegistrationSubmit={handleRegistrationSubmit}
-          isLoading={isLoading}
+          isLoading={isSubmitting}
           registrationSuccess={registrationSuccess}
           onSuccessClose={() => {
             setShowRegistrationModal(false);
@@ -443,8 +557,6 @@ const Formations = () => {
         setSelectedLevel={setSelectedLevel}
         selectedStatus={selectedStatus}
         setSelectedStatus={setSelectedStatus}
-        priceRange={priceRange}
-        setPriceRange={setPriceRange}
         sortBy={sortBy}
         setSortBy={setSortBy}
         viewMode={viewMode}
@@ -452,7 +564,6 @@ const Formations = () => {
         categories={categories}
         levels={levels}
         statuses={statuses}
-        priceRanges={priceRanges}
         filteredFormations={filteredFormations}
         onClearFilters={handleClearFilters}
       />
