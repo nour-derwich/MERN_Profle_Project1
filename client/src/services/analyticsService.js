@@ -1,4 +1,4 @@
-import api from "./api";
+import api from './api';
 
 export const analyticsService = {
   /**
@@ -28,7 +28,7 @@ export const analyticsService = {
   /**
    * Get traffic analytics (admin only)
    */
-  getTrafficAnalytics: async (period = "30d") => {
+  getTrafficAnalytics: async (period = "30") => {
     const response = await api.get("/analytics/traffic", {
       params: { period },
     });
@@ -58,10 +58,10 @@ export const analyticsService = {
    */
   trackPageView: async (page, referrer = null) => {
     return await analyticsService.trackEvent({
-      type: "page_view",
-      page,
+      event_type: "page_view",
+      page_url: page,
       referrer,
-      timestamp: new Date().toISOString(),
+      metadata: { timestamp: new Date().toISOString() },
     });
   },
 
@@ -70,11 +70,11 @@ export const analyticsService = {
    */
   trackButtonClick: async (buttonId, page, metadata = {}) => {
     return await analyticsService.trackEvent({
-      type: "button_click",
-      button_id: buttonId,
-      page,
-      metadata,
-      timestamp: new Date().toISOString(),
+      event_type: "click",
+      entity_type: "button",
+      entity_id: buttonId,
+      page_url: page,
+      metadata: { ...metadata, timestamp: new Date().toISOString() },
     });
   },
 
@@ -83,11 +83,11 @@ export const analyticsService = {
    */
   trackFormSubmission: async (formId, page, metadata = {}) => {
     return await analyticsService.trackEvent({
-      type: "form_submission",
-      form_id: formId,
-      page,
-      metadata,
-      timestamp: new Date().toISOString(),
+      event_type: "form_submission",
+      entity_type: "form",
+      entity_id: formId,
+      page_url: page,
+      metadata: { ...metadata, timestamp: new Date().toISOString() },
     });
   },
 
@@ -96,11 +96,11 @@ export const analyticsService = {
    */
   trackDownload: async (fileId, fileName, page) => {
     return await analyticsService.trackEvent({
-      type: "download",
-      file_id: fileId,
-      file_name: fileName,
-      page,
-      timestamp: new Date().toISOString(),
+      event_type: "download",
+      entity_type: "file",
+      entity_id: fileId,
+      page_url: page,
+      metadata: { file_name: fileName, timestamp: new Date().toISOString() },
     });
   },
 };

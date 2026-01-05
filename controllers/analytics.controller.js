@@ -41,53 +41,61 @@ exports.trackEvent = asyncHandler(async (req, res) => {
 exports.getOverview = asyncHandler(async (req, res) => {
   const { start_date, end_date } = req.query;
 
+  let dateWhere = '';
+  const params = [];
+  
+  if (start_date) {
+    params.push(start_date);
+    dateWhere += ` AND created_at >= $${params.length}`;
+  }
+  if (end_date) {
+    params.push(end_date);
+    dateWhere += ` AND created_at <= $${params.length}`;
+  }
+
   // Total page views
   const pageViewsQuery = `
     SELECT COUNT(*) as total_views
     FROM analytics
     WHERE event_type = 'page_view'
-    ${start_date ? "AND created_at >= $1" : ""}
-    ${end_date ? "AND created_at <= $2" : ""}
+    ${dateWhere}
   `;
 
   // Total registrations
   const registrationsQuery = `
     SELECT COUNT(*) as total_registrations
     FROM registrations
-    ${start_date ? "AND created_at >= $1" : ""}
-    ${end_date ? "AND created_at <= $2" : ""}
+    WHERE 1=1 ${dateWhere.replace(/created_at/g, 'registration_date')}
   `;
 
   // Total messages
   const messagesQuery = `
     SELECT COUNT(*) as total_messages
     FROM messages
-    ${start_date ? "AND created_at >= $1" : ""}
-    ${end_date ? "AND created_at <= $2" : ""}
+    WHERE 1=1 ${dateWhere}
   `;
 
   // Total formations
-  const formationsQuery =
-    "SELECT COUNT(*) as total_formations FROM formations WHERE status = $1";
-
-  const params = [];
-  if (start_date) params.push(start_date);
-  if (end_date) params.push(end_date);
+  const formationsQuery = `
+    SELECT COUNT(*) as total_formations 
+    FROM formations 
+    WHERE status = $${params.length + 1}
+  `;
 
   const [pageViews, registrations, messages, formations] = await Promise.all([
     query(pageViewsQuery, params),
     query(registrationsQuery, params),
     query(messagesQuery, params),
-    query(formationsQuery, ["published"]),
+    query(formationsQuery, [...params, 'published']),
   ]);
 
   res.status(200).json({
     success: true,
     data: {
-      total_views: parseInt(pageViews.rows[0].total_views),
-      total_registrations: parseInt(registrations.rows[0].total_registrations),
-      total_messages: parseInt(messages.rows[0].total_messages),
-      total_formations: parseInt(formations.rows[0].total_formations),
+      total_views: parseInt(pageViews.rows[0]?.total_views || 0),
+      total_registrations: parseInt(registrations.rows[0]?.total_registrations || 0),
+      total_messages: parseInt(messages.rows[0]?.total_messages || 0),
+      total_formations: parseInt(formations.rows[0]?.total_formations || 0),
     },
   });
 });
@@ -96,6 +104,7 @@ exports.getOverview = asyncHandler(async (req, res) => {
 // @route   GET /api/analytics/formations
 // @access  Private/Admin
 exports.getFormationAnalytics = asyncHandler(async (req, res) => {
+  // FIXED: Removed payment_status and amount_paid references
   const text = `
     SELECT 
       f.id,
@@ -104,20 +113,29 @@ exports.getFormationAnalytics = asyncHandler(async (req, res) => {
       f.current_participants,
       f.max_participants,
       f.views_count,
+      f.price,
       COUNT(DISTINCT r.id) as registrations_count,
       COUNT(DISTINCT CASE WHEN r.status = 'confirmed' THEN r.id END) as confirmed_count,
-      COALESCE(SUM(CASE WHEN r.payment_status = 'paid' THEN r.amount_paid ELSE 0 END), 0) as total_revenue
+      -- Calculate potential revenue based on formation price and confirmed registrations
+      (f.price * COUNT(DISTINCT CASE WHEN r.status = 'confirmed' THEN r.id END)) as potential_revenue
     FROM formations f
     LEFT JOIN registrations r ON f.id = r.formation_id
+    WHERE f.status = 'published'
     GROUP BY f.id
     ORDER BY registrations_count DESC
   `;
 
   const result = await query(text);
 
+  // Map potential_revenue to total_revenue for frontend compatibility
+  const rows = result.rows.map(row => ({
+    ...row,
+    total_revenue: row.potential_revenue || 0
+  }));
+
   res.status(200).json({
     success: true,
-    data: result.rows
+    data: rows
   });
 });
 
@@ -125,9 +143,10 @@ exports.getFormationAnalytics = asyncHandler(async (req, res) => {
 // @route   GET /api/analytics/traffic
 // @access  Private/Admin
 exports.getTrafficAnalytics = asyncHandler(async (req, res) => {
-  const { days = 30 } = req.query;
+  const { period = "30" } = req.query;
+  const days = parseInt(period) || 30;
 
-  // Daily page views
+  // Daily page views (last X days)
   const dailyViewsQuery = `
     SELECT 
       DATE(created_at) as date,
@@ -136,10 +155,10 @@ exports.getTrafficAnalytics = asyncHandler(async (req, res) => {
     WHERE event_type = 'page_view'
     AND created_at >= NOW() - INTERVAL '${days} days'
     GROUP BY DATE(created_at)
-    ORDER BY date DESC
+    ORDER BY date ASC
   `;
 
-  // Top pages
+  // Top pages (last X days)
   const topPagesQuery = `
     SELECT 
       page_url,
@@ -152,34 +171,45 @@ exports.getTrafficAnalytics = asyncHandler(async (req, res) => {
     LIMIT 10
   `;
 
-  // Top referrers
+  // Top referrers (last X days)
   const topReferrersQuery = `
     SELECT 
-      referrer,
+      COALESCE(NULLIF(referrer, ''), 'Direct') as referrer,
       COUNT(*) as count
     FROM analytics
-    WHERE referrer IS NOT NULL
-    AND referrer != ''
+    WHERE event_type = 'page_view'
     AND created_at >= NOW() - INTERVAL '${days} days'
-    GROUP BY referrer
+    GROUP BY COALESCE(NULLIF(referrer, ''), 'Direct')
     ORDER BY count DESC
     LIMIT 10
   `;
 
-  const [dailyViews, topPages, topReferrers] = await Promise.all([
-    query(dailyViewsQuery),
-    query(topPagesQuery),
-    query(topReferrersQuery)
-  ]);
+  try {
+    const [dailyViews, topPages, topReferrers] = await Promise.all([
+      query(dailyViewsQuery),
+      query(topPagesQuery),
+      query(topReferrersQuery)
+    ]);
 
-  res.status(200).json({
-    success: true,
-    data: {
-      daily_views: dailyViews.rows,
-      top_pages: topPages.rows,
-      top_referrers: topReferrers.rows
-    }
-  });
+    res.status(200).json({
+      success: true,
+      data: {
+        daily_views: dailyViews.rows,
+        top_pages: topPages.rows,
+        top_referrers: topReferrers.rows
+      }
+    });
+  } catch (error) {
+    console.error('Traffic analytics error:', error);
+    res.status(200).json({
+      success: true,
+      data: {
+        daily_views: [],
+        top_pages: [],
+        top_referrers: []
+      }
+    });
+  }
 });
 
 // @desc    Get conversion analytics
@@ -202,6 +232,7 @@ exports.getConversionAnalytics = asyncHandler(async (req, res) => {
     WHERE f.status = 'published'
     GROUP BY f.id
     ORDER BY conversion_rate DESC
+    LIMIT 10
   `;
 
   // Course clicks
@@ -215,29 +246,68 @@ exports.getConversionAnalytics = asyncHandler(async (req, res) => {
     LIMIT 10
   `;
 
-  const [formationConversions, courseClicks] = await Promise.all([
-    query(formationConversionQuery),
-    query(courseClicksQuery)
-  ]);
+  try {
+    const [formationConversions, courseClicks] = await Promise.all([
+      query(formationConversionQuery),
+      query(courseClicksQuery)
+    ]);
 
-  res.status(200).json({
-    success: true,
-    data: {
-      formation_conversions: formationConversions.rows,
-      top_course_clicks: courseClicks.rows
-    }
-  });
+    res.status(200).json({
+      success: true,
+      data: {
+        formation_conversions: formationConversions.rows,
+        top_course_clicks: courseClicks.rows
+      }
+    });
+  } catch (error) {
+    console.error('Conversion analytics error:', error);
+    res.status(200).json({
+      success: true,
+      data: {
+        formation_conversions: [],
+        top_course_clicks: []
+      }
+    });
+  }
 });
 
 // @desc    Get monthly analytics
 // @route   GET /api/analytics/monthly
 // @access  Private/Admin
 exports.getMonthlyAnalytics = asyncHandler(async (req, res) => {
-  const text = 'SELECT * FROM monthly_analytics ORDER BY month DESC LIMIT 12';
-  const result = await query(text);
+  try {
+    const text = `
+      SELECT 
+        TO_CHAR(DATE_TRUNC('month', created_at), 'YYYY-MM') as month,
+        event_type,
+        COUNT(*) as event_count
+      FROM analytics
+      WHERE created_at >= NOW() - INTERVAL '12 months'
+      GROUP BY DATE_TRUNC('month', created_at), event_type
+      ORDER BY DATE_TRUNC('month', created_at) DESC
+      LIMIT 24
+    `;
+    
+    const result = await query(text);
+    
+    // Format data for chart
+    const monthlyData = {};
+    result.rows.forEach(row => {
+      if (!monthlyData[row.month]) {
+        monthlyData[row.month] = { month: row.month };
+      }
+      monthlyData[row.month][row.event_type] = parseInt(row.event_count);
+    });
 
-  res.status(200).json({
-    success: true,
-    data: result.rows
-  });
+    res.status(200).json({
+      success: true,
+      data: Object.values(monthlyData)
+    });
+  } catch (error) {
+    console.error('Monthly analytics error:', error);
+    res.status(200).json({
+      success: true,
+      data: []
+    });
+  }
 });

@@ -262,6 +262,15 @@ CREATE TABLE messages (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+ALTER TABLE messages 
+ADD COLUMN IF NOT EXISTS message_type VARCHAR(50) DEFAULT 'contact',
+ADD COLUMN IF NOT EXISTS project_type VARCHAR(100),
+ADD COLUMN IF NOT EXISTS timeline VARCHAR(100),
+ADD COLUMN IF NOT EXISTS budget_range VARCHAR(100),
+ADD COLUMN IF NOT EXISTS phone VARCHAR(20),
+ADD COLUMN IF NOT EXISTS company VARCHAR(100),
+ADD COLUMN IF NOT EXISTS website VARCHAR(200);
+ALTER TABLE messages ALTER COLUMN subject TYPE VARCHAR(500);
 
 -- ============================================
 -- REVIEWS TABLE (for formations)
@@ -359,6 +368,7 @@ CREATE INDEX idx_messages_email ON messages(email);
 CREATE INDEX idx_reviews_formation_id ON reviews(formation_id);
 CREATE INDEX idx_reviews_approved ON reviews(is_approved);
 CREATE INDEX idx_reviews_featured ON reviews(is_featured);
+CREATE INDEX IF NOT EXISTS idx_messages_message_type ON messages(message_type);
 
 -- Analytics
 CREATE INDEX idx_analytics_event_type ON analytics(event_type);
