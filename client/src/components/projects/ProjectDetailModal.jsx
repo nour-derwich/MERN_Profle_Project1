@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  FiX, 
-  FiExternalLink, 
-  FiGithub, 
-  FiCalendar, 
+import {
+  FiX,
+  FiExternalLink,
+  FiGithub,
+  FiCalendar,
   FiTag,
   FiStar,
   FiGitBranch,
@@ -35,8 +35,8 @@ const FiDatabase = ({ className }) => (
   </svg>
 );
 
-const ProjectDetailModal = ({ 
-  selectedProject, 
+const ProjectDetailModal = ({
+  selectedProject,
   setSelectedProject,
   favorites = [],
   toggleFavorite,
@@ -143,35 +143,35 @@ const ProjectDetailModal = ({
 
   // Safely get stats with fallbacks
   const stats = [
-    { 
-      icon: FiStar, 
-      label: 'GitHub Stars', 
-      value: selectedProject.stars?.toLocaleString() || selectedProject.github_stars?.toLocaleString() || '0' 
+    {
+      icon: FiStar,
+      label: 'GitHub Stars',
+      value: selectedProject.stars?.toLocaleString() || selectedProject.github_stars?.toLocaleString() || '0'
     },
-    { 
-      icon: FiGitBranch, 
-      label: 'Forks', 
-      value: selectedProject.forks?.toLocaleString() || selectedProject.github_forks?.toLocaleString() || '0' 
+    {
+      icon: FiGitBranch,
+      label: 'Forks',
+      value: selectedProject.forks?.toLocaleString() || selectedProject.github_forks?.toLocaleString() || '0'
     },
-    { 
-      icon: FiEye, 
-      label: 'Views', 
-      value: selectedProject.views?.toLocaleString() || selectedProject.views_count?.toLocaleString() || 'N/A' 
+    {
+      icon: FiEye,
+      label: 'Views',
+      value: selectedProject.views?.toLocaleString() || selectedProject.views_count?.toLocaleString() || 'N/A'
     },
-    { 
-      icon: FiUsers, 
-      label: 'Contributors', 
-      value: selectedProject.contributors || selectedProject.team_size || '1' 
+    {
+      icon: FiUsers,
+      label: 'Contributors',
+      value: selectedProject.contributors || selectedProject.team_size || '1'
     },
-    { 
-      icon: FiClock, 
-      label: 'Duration', 
-      value: selectedProject.developmentTime || selectedProject.duration || selectedProject.development_time || 'N/A' 
+    {
+      icon: FiClock,
+      label: 'Duration',
+      value: selectedProject.developmentTime || selectedProject.duration || selectedProject.development_time || 'N/A'
     },
-    { 
-      icon: FiDatabase, 
-      label: 'Dataset Size', 
-      value: selectedProject.datasetSize || selectedProject.dataset_size || 'N/A' 
+    {
+      icon: FiDatabase,
+      label: 'Dataset Size',
+      value: selectedProject.datasetSize || selectedProject.dataset_size || 'N/A'
     }
   ];
 
@@ -180,9 +180,9 @@ const ProjectDetailModal = ({
     if (!dateString) return 'Recently';
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', { 
-        month: 'short', 
-        year: 'numeric' 
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        year: 'numeric'
       });
     } catch {
       return 'Recently';
@@ -197,7 +197,7 @@ const ProjectDetailModal = ({
       className="fixed inset-0 z-50 overflow-y-auto"
     >
       {/* Backdrop */}
-      <div 
+      <div
         className="fixed inset-0 bg-black/80 backdrop-blur-sm"
         onClick={() => setSelectedProject(null)}
       />
@@ -213,18 +213,18 @@ const ProjectDetailModal = ({
           {/* Hero Section */}
           <div className="relative h-96 overflow-hidden">
             {/* Image with fallback */}
-            <img 
-              src={selectedProject.image || selectedProject.cover_image || '/default-project.jpg'} 
+            <img
+              src={selectedProject.image || selectedProject.cover_image || '/default-project.jpg'}
               alt={selectedProject.title}
               className="w-full h-full object-cover"
               onError={(e) => {
                 e.target.src = '/default-project.jpg';
               }}
             />
-            
+
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent" />
-            
+
             {/* Header Content */}
             <div className="absolute bottom-0 left-0 right-0 p-8">
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -239,20 +239,18 @@ const ProjectDetailModal = ({
                         {selectedProject.category || 'Project'}
                       </div>
                     </div>
-                    
+
                     {/* Status Badge */}
-                    <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full backdrop-blur-sm ${
-                      selectedProject.status === 'completed' || selectedProject.status === 'published'
+                    <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full backdrop-blur-sm ${selectedProject.status === 'completed' || selectedProject.status === 'published'
                         ? 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 text-green-300'
                         : 'bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30 text-blue-300'
-                    }`}>
-                      <div className={`w-2 h-2 rounded-full ${
-                        selectedProject.status === 'completed' || selectedProject.status === 'published' ? 'bg-green-400' : 'bg-blue-400'
-                      }`} />
+                      }`}>
+                      <div className={`w-2 h-2 rounded-full ${selectedProject.status === 'completed' || selectedProject.status === 'published' ? 'bg-green-400' : 'bg-blue-400'
+                        }`} />
                       <span className="text-xs font-medium">
-                        {selectedProject.status === 'completed' || selectedProject.status === 'published' ? 'Completed' : 
-                         selectedProject.status === 'in-progress' || selectedProject.status === 'draft' ? 'In Progress' :
-                         selectedProject.status === 'maintained' ? 'Maintained' : selectedProject.status || 'Active'}
+                        {selectedProject.status === 'completed' || selectedProject.status === 'published' ? 'Completed' :
+                          selectedProject.status === 'in-progress' || selectedProject.status === 'draft' ? 'In Progress' :
+                            selectedProject.status === 'maintained' ? 'Maintained' : selectedProject.status || 'Active'}
                       </span>
                     </div>
                   </div>
@@ -276,14 +274,14 @@ const ProjectDetailModal = ({
                   >
                     <FiHeart className={isFavorite ? 'fill-red-500 text-red-500' : ''} />
                   </button>
-                  
+
                   <button
                     onClick={handleBookmark}
                     className="p-3 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 rounded-xl hover:text-yellow-400 hover:border-yellow-500/30 transition-all duration-300"
                   >
                     <FiBookmark className={isBookmarked ? 'fill-yellow-500 text-yellow-500' : ''} />
                   </button>
-                  
+
                   <button
                     onClick={handleShare}
                     className="p-3 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 rounded-xl hover:text-primary-400 hover:border-primary-500/30 transition-all duration-300"
@@ -310,7 +308,7 @@ const ProjectDetailModal = ({
               {stats.map((stat, index) => {
                 const Icon = stat.icon;
                 return (
-                  <div 
+                  <div
                     key={index}
                     className="p-4 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-xl"
                   >
@@ -333,16 +331,15 @@ const ProjectDetailModal = ({
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
-                
+
                 return (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-2 px-4 py-3 rounded-xl whitespace-nowrap transition-all duration-300 ${
-                      isActive
+                    className={`flex items-center gap-2 px-4 py-3 rounded-xl whitespace-nowrap transition-all duration-300 ${isActive
                         ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white'
                         : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
-                    }`}
+                      }`}
                   >
                     <Icon className="text-sm" />
                     <span className="font-medium">{tab.label}</span>
@@ -364,7 +361,7 @@ const ProjectDetailModal = ({
                   <p className="text-gray-300 leading-relaxed text-lg">
                     {selectedProject.fullDescription || selectedProject.full_description || selectedProject.description || 'No detailed description available.'}
                   </p>
-                  
+
                   {/* Project Goals */}
                   {(selectedProject.goals || selectedProject.project_goals) && (
                     <div>
@@ -394,7 +391,7 @@ const ProjectDetailModal = ({
                     {(selectedProject.technologies || []).map((tech, idx) => {
                       const Icon = getTechIcon(tech);
                       return (
-                        <div 
+                        <div
                           key={idx}
                           className="p-4 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-xl hover:border-primary-500/30 transition-all duration-300"
                         >
@@ -408,7 +405,7 @@ const ProjectDetailModal = ({
                       );
                     })}
                   </div>
-                  
+
                   {/* Architecture */}
                   {(selectedProject.architecture || selectedProject.system_architecture) && (
                     <div>
@@ -431,7 +428,7 @@ const ProjectDetailModal = ({
                   <h2 className="text-2xl font-bold text-white mb-4">Key Features</h2>
                   <div className="grid md:grid-cols-2 gap-4">
                     {(selectedProject.features || []).map((feature, idx) => (
-                      <div 
+                      <div
                         key={idx}
                         className="p-4 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-xl hover:border-primary-500/30 transition-all duration-300"
                       >
@@ -457,7 +454,7 @@ const ProjectDetailModal = ({
                   <h2 className="text-2xl font-bold text-white mb-4">Challenges & Solutions</h2>
                   <div className="space-y-4">
                     {(selectedProject.challenges || []).map((challenge, idx) => (
-                      <div 
+                      <div
                         key={idx}
                         className="p-6 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-xl"
                       >
@@ -492,7 +489,7 @@ const ProjectDetailModal = ({
                   <h2 className="text-2xl font-bold text-white mb-4">Results & Impact</h2>
                   <div className="space-y-4">
                     {(selectedProject.results || selectedProject.project_results || []).map((result, idx) => (
-                      <div 
+                      <div
                         key={idx}
                         className="flex items-start gap-3 p-4 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-xl"
                       >
@@ -501,14 +498,14 @@ const ProjectDetailModal = ({
                       </div>
                     ))}
                   </div>
-                  
+
                   {/* Metrics */}
                   {selectedProject.metrics && (
                     <div>
                       <h3 className="text-xl font-semibold text-white mb-3">Performance Metrics</h3>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {Object.entries(selectedProject.metrics).map(([key, value], idx) => (
-                          <div 
+                          <div
                             key={idx}
                             className="p-4 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl"
                           >
@@ -550,7 +547,7 @@ const ProjectDetailModal = ({
                         </div>
                       </a>
                     )}
-                    
+
                     {(selectedProject.demoUrl || selectedProject.demo_url) && (
                       <a
                         href={selectedProject.demoUrl || selectedProject.demo_url}
@@ -570,7 +567,7 @@ const ProjectDetailModal = ({
                         </div>
                       </a>
                     )}
-                    
+
                     {(selectedProject.documentationUrl || selectedProject.documentation_url) && (
                       <a
                         href={selectedProject.documentationUrl || selectedProject.documentation_url}
@@ -590,7 +587,7 @@ const ProjectDetailModal = ({
                         </div>
                       </a>
                     )}
-                    
+
                     {(selectedProject.articleUrl || selectedProject.article_url) && (
                       <a
                         href={selectedProject.articleUrl || selectedProject.article_url}
@@ -629,7 +626,7 @@ const ProjectDetailModal = ({
                   <FiChevronRight className="group-hover:translate-x-1 transition-transform" />
                 </a>
               )}
-              
+
               {(selectedProject.githubUrl || selectedProject.github_url) && (
                 <a
                   href={selectedProject.githubUrl || selectedProject.github_url}
@@ -648,7 +645,7 @@ const ProjectDetailModal = ({
       </div>
 
       {/* Custom Scrollbar Hide */}
-      <style jsx>{`
+      <style>{`
         .scrollbar-hide {
           -ms-overflow-style: none;
           scrollbar-width: none;

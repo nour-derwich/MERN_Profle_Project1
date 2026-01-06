@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { 
-  FiMenu, FiX, FiHome, FiUser, FiBookOpen, FiBriefcase, 
+import {
+  FiMenu, FiX, FiHome, FiUser, FiBookOpen, FiBriefcase,
   FiAward, FiMail, FiCode, FiLayers, FiZap, FiTarget,
   FiChevronDown, FiExternalLink
 } from 'react-icons/fi';
@@ -32,47 +32,47 @@ const Nav = () => {
   }, [location]);
 
   const navLinks = [
-    { 
-      path: '/', 
-      label: 'Home', 
+    {
+      path: '/',
+      label: 'Home',
       icon: FiHome,
-      highlight: false 
+      highlight: false
     },
-    { 
-      path: '/skills', 
-      label: 'Skills', 
+    {
+      path: '/skills',
+      label: 'Skills',
       icon: FiAward,
-      highlight: true 
+      highlight: true
     },
-    { 
-      path: '/qualification', 
-      label: 'Qualification', 
+    {
+      path: '/qualification',
+      label: 'Qualification',
       icon: FiUser,
-      highlight: false 
+      highlight: false
     },
-    { 
-      path: '/formations', 
-      label: 'Training', 
+    {
+      path: '/formations',
+      label: 'Training',
       icon: FiBriefcase,
-      highlight: false 
+      highlight: false
     },
-    { 
-      path: '/projects', 
-      label: 'Projects', 
+    {
+      path: '/projects',
+      label: 'Projects',
       icon: FiCode,
       highlight: true
     },
-    { 
-      path: '/courses', 
-      label: 'Courses', 
+    {
+      path: '/courses',
+      label: 'Courses',
       icon: FiBookOpen,
-      highlight: false 
+      highlight: false
     },
-    { 
-      path: '/contact', 
-      label: 'Contact', 
+    {
+      path: '/contact',
+      label: 'Contact',
       icon: FiMail,
-      highlight: true 
+      highlight: true
     }
   ];
 
@@ -81,20 +81,19 @@ const Nav = () => {
   return (
     <>
       {/* Nav Background Blur */}
-      <div 
+      <div
         ref={navRef}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled 
-            ? 'bg-gray-900/95 backdrop-blur-xl border-b border-gray-800/50 py-2' 
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
+            ? 'bg-gray-900/95 backdrop-blur-xl border-b border-gray-800/50 py-2'
             : 'bg-gradient-to-b from-gray-900/90 to-transparent py-4'
-        }`}
+          }`}
       >
         {/* Animated Top Border */}
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500 to-transparent" />
-        
+
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between">
-            
+
             {/* Logo with Animation */}
             <Link
               to="/"
@@ -106,10 +105,9 @@ const Nav = () => {
                   {techIcons.map((Icon, index) => (
                     <div
                       key={index}
-                      className={`absolute inset-0 transition-all duration-700 ${
-                        isLoaded ? 'opacity-100' : 'opacity-0'
-                      }`}
-                      style={{ 
+                      className={`absolute inset-0 transition-all duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'
+                        }`}
+                      style={{
                         animationDelay: `${index * 200}ms`,
                         transform: isLoaded ? 'scale(1)' : 'scale(0.5)'
                       }}
@@ -120,11 +118,10 @@ const Nav = () => {
                     </div>
                   ))}
                 </div>
-                
+
                 <div className="flex flex-col">
-                  <span className={`text-xl font-bold transition-all duration-300 ${
-                    scrolled ? 'text-white' : 'text-white'
-                  }`}>
+                  <span className={`text-xl font-bold transition-all duration-300 ${scrolled ? 'text-white' : 'text-white'
+                    }`}>
                     NACEUR
                   </span>
                   <span className="text-xs text-primary-400 font-medium tracking-wider">
@@ -132,7 +129,7 @@ const Nav = () => {
                   </span>
                 </div>
               </div>
-              
+
               {/* Hover Effect */}
               <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
             </Link>
@@ -141,10 +138,10 @@ const Nav = () => {
             <div className="hidden lg:flex items-center gap-1">
               {navLinks.map((link) => {
                 const Icon = link.icon;
-                
+
                 if (link.dropdown) {
                   return (
-                    <div 
+                    <div
                       key={link.path}
                       className="relative group"
                       onMouseEnter={() => setActiveDropdown(link.path)}
@@ -159,16 +156,15 @@ const Nav = () => {
                       `}>
                         <Icon className={`${link.highlight ? 'text-primary-400' : ''}`} />
                         <span>{link.label}</span>
-                        <FiChevronDown className={`transition-transform duration-300 ${
-                          activeDropdown === link.path ? 'rotate-180' : ''
-                        }`} />
+                        <FiChevronDown className={`transition-transform duration-300 ${activeDropdown === link.path ? 'rotate-180' : ''
+                          }`} />
                       </button>
 
                       {/* Dropdown Menu */}
                       <div className={`
                         absolute top-full left-0 mt-2 min-w-[200px] transition-all duration-300 origin-top
-                        ${activeDropdown === link.path 
-                          ? 'opacity-100 scale-100 translate-y-0' 
+                        ${activeDropdown === link.path
+                          ? 'opacity-100 scale-100 translate-y-0'
                           : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
                         }
                       `}>
@@ -194,37 +190,37 @@ const Nav = () => {
                 }
 
                 return (
-                 <NavLink key={link.path} to={link.path}>
-              {({ isActive }) => (
-                <div
-                  className={`
+                  <NavLink key={link.path} to={link.path}>
+                    {({ isActive }) => (
+                      <div
+                        className={`
                     relative flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all duration-300 group
                     ${isActive
-                      ? 'text-white bg-gradient-to-r from-primary-500/20 to-blue-500/20 border border-primary-500/30'
-                      : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
-                    }
+                            ? 'text-white bg-gradient-to-r from-primary-500/20 to-blue-500/20 border border-primary-500/30'
+                            : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                          }
                   `}
-                >
-                  <Icon
-                    className={`
+                      >
+                        <Icon
+                          className={`
                       ${link.highlight ? 'text-primary-400 group-hover:scale-110 transition-transform' : ''}
                     `}
-                  />
-                  <span>{link.label}</span>
+                        />
+                        <span>{link.label}</span>
 
-                  {/* Animated Dot */}
-                  <div
-                    className={`
+                        {/* Animated Dot */}
+                        <div
+                          className={`
                       absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full transition-all duration-300
                       ${isActive
-                        ? 'bg-primary-400'
-                        : 'bg-transparent group-hover:bg-primary-400/50'
-                      }
+                              ? 'bg-primary-400'
+                              : 'bg-transparent group-hover:bg-primary-400/50'
+                            }
                     `}
-                  />
-                </div>
-              )}
-            </NavLink>
+                        />
+                      </div>
+                    )}
+                  </NavLink>
                 );
               })}
 
@@ -246,8 +242,8 @@ const Nav = () => {
               onClick={() => setIsOpen(!isOpen)}
               className={`
                 lg:hidden p-3 rounded-xl backdrop-blur-sm transition-all duration-300 relative overflow-hidden
-                ${scrolled 
-                  ? 'bg-gray-800/50 border border-gray-700/50 text-gray-300 hover:text-white hover:border-primary-500/30' 
+                ${scrolled
+                  ? 'bg-gray-800/50 border border-gray-700/50 text-gray-300 hover:text-white hover:border-primary-500/30'
                   : 'bg-gray-800/30 border border-gray-700/30 text-white'
                 }
               `}
@@ -266,15 +262,15 @@ const Nav = () => {
         <div
           className={`
             lg:hidden fixed inset-0 z-40 transition-all duration-500 ease-out
-            ${isOpen 
-              ? 'opacity-100 pointer-events-auto' 
+            ${isOpen
+              ? 'opacity-100 pointer-events-auto'
               : 'opacity-0 pointer-events-none'
             }
           `}
           onClick={() => setIsOpen(false)}
         >
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
-          
+
           <div
             className={`
               absolute top-0 right-0 h-full w-80 bg-gradient-to-b from-gray-900 to-black border-l border-gray-800/50
@@ -301,7 +297,7 @@ const Nav = () => {
               {navLinks.map((link) => {
                 const Icon = link.icon;
                 const isActive = location.pathname === link.path;
-                
+
                 return (
                   <React.Fragment key={link.path}>
                     <NavLink
@@ -317,19 +313,19 @@ const Nav = () => {
                     >
                       <Icon className={link.highlight ? 'text-primary-400' : ''} />
                       <span className="font-medium">{link.label}</span>
-                      
+
                       {isActive && (
                         <div className="absolute right-4 top-1/2 -translate-y-1/2 w-2 h-2 bg-primary-400 rounded-full" />
                       )}
                     </NavLink>
-                    
+
                     {/* Dropdown Items */}
                     {link.dropdown && (
                       <div className="ml-4 pl-4 border-l border-gray-800/50 space-y-1">
                         {link.dropdown.map((item) => {
                           const DropdownIcon = item.icon;
                           const isDropdownActive = location.pathname === item.path;
-                          
+
                           return (
                             <NavLink
                               key={item.path}
@@ -353,7 +349,7 @@ const Nav = () => {
                   </React.Fragment>
                 );
               })}
-              
+
               {/* Mobile CTA */}
               <Link
                 to="/contact"
@@ -383,7 +379,7 @@ const Nav = () => {
 
       {/* Page Progress Bar */}
       <div className="fixed top-0 left-0 right-0 h-1 z-50">
-        <div 
+        <div
           className="h-full bg-gradient-to-r from-primary-500 to-blue-500 transition-all duration-300"
           style={{
             width: `${(window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100}%`
@@ -392,7 +388,7 @@ const Nav = () => {
       </div>
 
       {/* Custom Styles */}
-      <style jsx>{`
+      <style>{`
         @keyframes float-icon {
           0%, 100% {
             transform: translateY(0) rotate(0deg);

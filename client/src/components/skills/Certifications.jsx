@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  FiAward, FiCheckCircle, FiBookOpen, FiCalendar, 
+import {
+  FiAward, FiCheckCircle, FiBookOpen, FiCalendar,
   FiClock, FiStar, FiExternalLink, FiFilter,
   FiChevronRight, FiShield, FiZap, FiTrendingUp
 } from 'react-icons/fi';
 import { FaPython, FaRobot, FaDatabase } from 'react-icons/fa';
 import { SiIbm, SiTensorflow, SiMicrosoftazure } from 'react-icons/si';
+import { useNavigate } from 'react-router-dom';
+
 
 const Certifications = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [hoveredCert, setHoveredCert] = useState(null);
   const [showDetails, setShowDetails] = useState(null);
+  const navigate = useNavigate();
+
 
   const certifications = [
     {
@@ -157,8 +161,8 @@ const Certifications = () => {
     { id: 'cloud-ai', label: 'Cloud AI', count: 1, icon: SiMicrosoftazure }
   ];
 
-  const filteredCerts = activeFilter === 'all' 
-    ? certifications 
+  const filteredCerts = activeFilter === 'all'
+    ? certifications
     : certifications.filter(cert => cert.category === activeFilter);
 
   const issuerStats = {
@@ -170,12 +174,12 @@ const Certifications = () => {
 
   return (
     <section className="relative py-24 bg-gradient-to-b from-gray-900 to-black overflow-hidden">
-      
+
       {/* Background Elements */}
       <div className="absolute inset-0">
         {/* Diploma Pattern */}
         <div className="absolute inset-0 opacity-5 bg-[radial-gradient(circle_at_50%_50%,#ffffff10_1px,transparent_1px)] bg-[size:50px_50px]" />
-        
+
         {/* Floating Awards */}
         <div className="absolute top-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-600/10 to-transparent rounded-full blur-3xl animate-pulse-slow" />
         <div className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-tl from-blue-600/10 to-transparent rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }} />
@@ -200,14 +204,14 @@ const Certifications = () => {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        
+
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500/20 to-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-primary-500/30 mb-6">
             <FiAward className="text-primary-300 animate-pulse" />
             <span className="text-primary-200 font-medium tracking-wider">PROFESSIONAL CREDENTIALS</span>
           </div>
-          
+
           <h2 className="text-5xl md:text-6xl font-bold mb-6">
             <span className="text-white">Certified</span>
             <br />
@@ -215,9 +219,9 @@ const Certifications = () => {
               Excellence
             </span>
           </h2>
-          
+
           <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Validated expertise through industry-recognized certifications in artificial intelligence, 
+            Validated expertise through industry-recognized certifications in artificial intelligence,
             machine learning, and data science from leading technology organizations.
           </p>
         </div>
@@ -258,22 +262,19 @@ const Certifications = () => {
               <button
                 key={filter.id}
                 onClick={() => setActiveFilter(filter.id)}
-                className={`group relative px-5 py-3 rounded-xl backdrop-blur-sm transition-all duration-300 flex items-center gap-2 ${
-                  activeFilter === filter.id
-                    ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white'
-                    : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
-                }`}
+                className={`group relative px-5 py-3 rounded-xl backdrop-blur-sm transition-all duration-300 flex items-center gap-2 ${activeFilter === filter.id
+                  ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white'
+                  : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
+                  }`}
               >
                 <Icon className={activeFilter === filter.id ? 'text-white' : 'text-gray-500'} />
                 <span className="font-semibold">{filter.label}</span>
-                <span className={`ml-1 text-sm ${
-                  activeFilter === filter.id ? 'text-white/80' : 'text-gray-500'
-                }`}>
+                <span className={`ml-1 text-sm ${activeFilter === filter.id ? 'text-white/80' : 'text-gray-500'
+                  }`}>
                   ({filter.count})
                 </span>
-                <div className={`absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 ${
-                  activeFilter === filter.id ? 'opacity-20' : 'group-hover:opacity-10'
-                } transition-opacity duration-500`} />
+                <div className={`absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 ${activeFilter === filter.id ? 'opacity-20' : 'group-hover:opacity-10'
+                  } transition-opacity duration-500`} />
               </button>
             );
           })}
@@ -285,7 +286,7 @@ const Certifications = () => {
             const Icon = cert.icon;
             const isHovered = hoveredCert === cert.id;
             const showDetail = showDetails === cert.id;
-            
+
             return (
               <div
                 key={cert.id}
@@ -298,26 +299,22 @@ const Certifications = () => {
                 onClick={() => setShowDetails(showDetail ? null : cert.id)}
               >
                 {/* Card Glow */}
-                <div className={`absolute -inset-0.5 bg-gradient-to-r ${cert.color} rounded-3xl blur opacity-0 ${
-                  isHovered ? 'opacity-30' : 'group-hover:opacity-20'
-                } transition-opacity duration-500`} />
-                
+                <div className={`absolute -inset-0.5 bg-gradient-to-r ${cert.color} rounded-3xl blur opacity-0 ${isHovered ? 'opacity-30' : 'group-hover:opacity-20'
+                  } transition-opacity duration-500`} />
+
                 {/* Main Card */}
-                <div className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${
-                  isHovered ? 'border-primary-500/50' : 'border-gray-700/50'
-                } rounded-3xl overflow-hidden backdrop-blur-sm transition-all duration-300 cursor-pointer ${
-                  showDetail ? 'h-auto' : 'h-full'
-                }`}>
-                  
+                <div className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${isHovered ? 'border-primary-500/50' : 'border-gray-700/50'
+                  } rounded-3xl overflow-hidden backdrop-blur-sm transition-all duration-300 cursor-pointer ${showDetail ? 'h-auto' : 'h-full'
+                  }`}>
+
                   {/* Header */}
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-4">
-                      <div className={`p-3 bg-gradient-to-br ${cert.color} rounded-xl transform ${
-                        isHovered ? 'scale-110 rotate-12' : 'group-hover:scale-110'
-                      } transition-all duration-300`}>
+                      <div className={`p-3 bg-gradient-to-br ${cert.color} rounded-xl transform ${isHovered ? 'scale-110 rotate-12' : 'group-hover:scale-110'
+                        } transition-all duration-300`}>
                         <Icon className="text-2xl text-white" />
                       </div>
-                      
+
                       <div className="text-right">
                         <div className="inline-flex items-center gap-1 px-2 py-1 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-full">
                           <FiStar className="text-yellow-400 text-xs" />
@@ -375,7 +372,7 @@ const Certifications = () => {
                           </span>
                         ))}
                       </div>
-                      
+
                       <button className="w-full group relative bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-700/50 text-gray-300 py-2 rounded-lg font-medium hover:text-white hover:border-primary-500/30 transition-all duration-300 flex items-center justify-center gap-2">
                         <span>View Credential</span>
                         <FiExternalLink className="group-hover:translate-x-1 transition-transform" />
@@ -391,18 +388,16 @@ const Certifications = () => {
                         <span>Verified Credential</span>
                       </div>
                       <button className="text-primary-400 hover:text-primary-300 transition-colors">
-                        <FiChevronRight className={`transform transition-transform duration-300 ${
-                          showDetail ? 'rotate-90' : ''
-                        }`} />
+                        <FiChevronRight className={`transform transition-transform duration-300 ${showDetail ? 'rotate-90' : ''
+                          }`} />
                       </button>
                     </div>
                   </div>
                 </div>
 
                 {/* Hover Effect */}
-                <div className={`absolute -bottom-2 left-4 right-4 h-1 bg-gradient-to-r ${cert.color} rounded-full transform ${
-                  isHovered ? 'scale-x-100' : 'scale-x-0'
-                } transition-transform duration-300`} />
+                <div className={`absolute -bottom-2 left-4 right-4 h-1 bg-gradient-to-r ${cert.color} rounded-full transform ${isHovered ? 'scale-x-100' : 'scale-x-0'
+                  } transition-transform duration-300`} />
               </div>
             );
           })}
@@ -431,10 +426,10 @@ const Certifications = () => {
               Continuously Learning & Evolving
             </h4>
             <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-              Staying at the forefront of AI and machine learning through ongoing education 
+              Staying at the forefront of AI and machine learning through ongoing education
               and professional development in emerging technologies.
             </p>
-            <button className="group relative bg-gradient-to-r from-primary-500 to-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 mx-auto">
+            <button onClick={() => navigate('/contact')} className="group relative bg-gradient-to-r from-primary-500 to-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 mx-auto">
               <FiBookOpen />
               <span>View Learning Path</span>
               <FiChevronRight className="group-hover:translate-x-2 transition-transform" />
@@ -444,7 +439,7 @@ const Certifications = () => {
       </div>
 
       {/* Custom Animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes pulse-slow {
           0%, 100% {
             opacity: 0.3;

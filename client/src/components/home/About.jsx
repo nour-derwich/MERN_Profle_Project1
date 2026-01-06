@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { 
   FiCode, FiTrendingUp, FiTarget, FiZap, 
   FiAward, FiCheckCircle, FiArrowRight,
   FiGlobe, FiCpu, FiPieChart, FiShield,
   FiUsers, FiBarChart2, FiCpu as FiChip
 } from 'react-icons/fi';
+import '../../styles/components/about.css';
 
 const About = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -14,6 +17,8 @@ const About = () => {
   const [totalProjects] = useState(15);
   const [totalCertifications] = useState(7);
   const sectionRef = useRef(null);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -348,12 +353,12 @@ const About = () => {
                 </p>
                 
                 <div className="space-y-4">
-                  <button className="group w-full bg-white text-gray-900 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-3">
+                  <button onClick={() => navigate('/contact')}  className="group w-full bg-white text-gray-900 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-3">
                     <span>Start Collaboration</span>
                     <FiArrowRight className="group-hover:translate-x-2 transition-transform" />
                   </button>
                   
-                  <button className="w-full bg-transparent border-2 border-white/30 text-white py-4 rounded-xl font-bold hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-3">
+                  <button onClick={() => navigate('/qualification')}  className="w-full bg-transparent border-2 border-white/30 text-white py-4 rounded-xl font-bold hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-3">
                     <span>View Portfolio</span>
                     <FiArrowRight />
                   </button>
@@ -390,46 +395,7 @@ const About = () => {
       </div>
 
       {/* Custom Animations */}
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0) rotate(0deg);
-          }
-          33% {
-            transform: translateY(-20px) rotate(120deg);
-          }
-          66% {
-            transform: translateY(-10px) rotate(240deg);
-          }
-        }
-        
-        @keyframes float-slow {
-          0%, 100% {
-            transform: translate(0, 0);
-          }
-          50% {
-            transform: translate(50px, 50px);
-          }
-        }
-        
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-        
-        .animate-float-slow {
-          animation: float-slow 15s ease-in-out infinite;
-        }
-        
-        @keyframes ping {
-          75%, 100% {
-            transform: scale(2);
-            opacity: 0;
-          }
-        }
-        .animate-pulse {
-          animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
-        }
-      `}</style>
+     
     </section>
   );
 };

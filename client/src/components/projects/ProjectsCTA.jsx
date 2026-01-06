@@ -541,8 +541,8 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
                               onClick={() => !isSubmitting && setFormData({ ...formData, projectType: project.title })}
                               disabled={isSubmitting}
                               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 disabled:opacity-50 ${formData.projectType === project.title
-                                  ? `bg-gradient-to-r ${project.color} text-white`
-                                  : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
+                                ? `bg-gradient-to-r ${project.color} text-white`
+                                : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
                                 }`}
                             >
                               <Icon />
@@ -652,7 +652,7 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
       )}
 
       {/* Custom Animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes float-slow {
           0%, 100% {
             transform: translate(0, 0) rotate(0deg);

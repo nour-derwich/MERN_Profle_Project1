@@ -24,7 +24,6 @@ CREATE TABLE users (
 -- ============================================
 -- PROJECTS TABLE
 -- ============================================
-
 CREATE TABLE projects (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     
@@ -60,7 +59,7 @@ CREATE TABLE projects (
     contributors INTEGER DEFAULT 1,
     
     -- Project Details
-    environment VARCHAR(100), -- Changed from "enverment"
+    environment VARCHAR(100),
     development_time VARCHAR(50),
     dataset_size VARCHAR(50),
     team_size VARCHAR(50),
@@ -70,7 +69,7 @@ CREATE TABLE projects (
     goals TEXT[],
     features TEXT[],
     results TEXT[],
-    metrics JSONB, -- JSON object for performance metrics
+    metrics JSONB,
     
     -- Architecture & Technical
     architecture TEXT,
@@ -94,7 +93,7 @@ CREATE TABLE projects (
 );
 
 -- ============================================
--- FORMATIONS TABLE
+-- FORMATIONS TABLE (Complete version)
 -- ============================================
 CREATE TABLE formations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -102,69 +101,54 @@ CREATE TABLE formations (
     description TEXT,
     short_description VARCHAR(500),
     cover_image TEXT,
-    category VARCHAR(50), -- web-dev, design, marketing, business
-    level VARCHAR(20), -- beginner, intermediate, advanced
+    category VARCHAR(50),
+    level VARCHAR(20),
     price DECIMAL(10, 2) DEFAULT 0.00,
+    original_price DECIMAL(10, 2),
+    installment_price DECIMAL(10, 2),
     currency VARCHAR(3) DEFAULT 'TND',
-    duration_hours INTEGER, -- Total duration in hours
+    duration_hours INTEGER,
     max_participants INTEGER,
     current_participants INTEGER DEFAULT 0,
+    spots_left INTEGER,
     start_date DATE,
     end_date DATE,
-    schedule TEXT, -- e.g., "Lundi/Mercredi 18h-20h"
-    program JSONB, -- JSON structure for modules/chapters
+    schedule TEXT,
+    weeks_duration VARCHAR(50),
+    hours_per_week VARCHAR(50),
+    format VARCHAR(50) DEFAULT 'Online',
+    location VARCHAR(100) DEFAULT 'Online',
+    live_sessions VARCHAR(100),
+    program JSONB,
+    modules JSONB,
     prerequisites TEXT,
     learning_objectives TEXT[],
-    status VARCHAR(20) DEFAULT 'draft', -- draft, published, full, completed
+    features TEXT[],
+    highlights TEXT[],
+    testimonials JSONB,
+    status VARCHAR(20) DEFAULT 'draft',
     featured BOOLEAN DEFAULT false,
     instructor_name VARCHAR(100),
+    instructor_title VARCHAR(100),
     instructor_bio TEXT,
     instructor_photo TEXT,
+    instructor_rating DECIMAL(3, 2),
+    instructor_reviews INTEGER DEFAULT 0,
+    instructor_students INTEGER DEFAULT 0,
+    instructor_verified BOOLEAN DEFAULT false,
     views_count INTEGER DEFAULT 0,
     rating DECIMAL(3, 2) DEFAULT 0.00,
     reviews_count INTEGER DEFAULT 0,
+    full_description TEXT,
+    tags VARCHAR(100)[],
+    meta_description VARCHAR(300),
+    meta_keywords VARCHAR(200),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
--- Add missing columns to formations table
-ALTER TABLE formations
-ADD COLUMN IF NOT EXISTS full_description TEXT,
-ADD COLUMN IF NOT EXISTS original_price DECIMAL(10, 2),
-ADD COLUMN IF NOT EXISTS installment_price DECIMAL(10, 2),
-ADD COLUMN IF NOT EXISTS weeks_duration VARCHAR(50),
-ADD COLUMN IF NOT EXISTS hours_per_week VARCHAR(50),
-ADD COLUMN IF NOT EXISTS spots_left INTEGER,
-ADD COLUMN IF NOT EXISTS format VARCHAR(50) DEFAULT 'Online',
-ADD COLUMN IF NOT EXISTS location VARCHAR(100) DEFAULT 'Online',
-ADD COLUMN IF NOT EXISTS live_sessions VARCHAR(100),
-ADD COLUMN IF NOT EXISTS features TEXT[],
-ADD COLUMN IF NOT EXISTS highlights TEXT[],
-ADD COLUMN IF NOT EXISTS modules JSONB,
-ADD COLUMN IF NOT EXISTS testimonials JSONB,
-ADD COLUMN IF NOT EXISTS instructor_title VARCHAR(100),
-ADD COLUMN IF NOT EXISTS instructor_rating DECIMAL(3, 2),
-ADD COLUMN IF NOT EXISTS instructor_reviews INTEGER DEFAULT 0,
-ADD COLUMN IF NOT EXISTS instructor_students INTEGER DEFAULT 0,
-ADD COLUMN IF NOT EXISTS instructor_verified BOOLEAN DEFAULT false,
-ADD COLUMN IF NOT EXISTS tags VARCHAR(100)[],
-ADD COLUMN IF NOT EXISTS meta_description VARCHAR(300),
-ADD COLUMN IF NOT EXISTS meta_keywords VARCHAR(200);
-
--- Update spots_left trigger
-CREATE OR REPLACE FUNCTION update_spots_left()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.spots_left = NEW.max_participants - NEW.current_participants;
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
-
-CREATE OR REPLACE TRIGGER update_spots_left_trigger
-BEFORE INSERT OR UPDATE OF max_participants, current_participants ON formations
-FOR EACH ROW EXECUTE FUNCTION update_spots_left();
 
 -- ============================================
--- COURSES (BOOKS) TABLE
+-- COURSES (BOOKS) TABLE (Complete version)
 -- ============================================
 CREATE TABLE courses (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -174,9 +158,10 @@ CREATE TABLE courses (
     short_description VARCHAR(500),
     cover_image TEXT,
     category VARCHAR(50),
-    level VARCHAR(20), -- beginner, intermediate, advanced
+    level VARCHAR(20),
     amazon_link TEXT,
     price DECIMAL(10, 2),
+    original_price DECIMAL(10, 2),
     currency VARCHAR(3) DEFAULT 'USD',
     rating DECIMAL(3, 2) DEFAULT 0.00,
     reviews_count INTEGER DEFAULT 0,
@@ -186,39 +171,22 @@ CREATE TABLE courses (
     pages INTEGER,
     language VARCHAR(20) DEFAULT 'French',
     featured BOOLEAN DEFAULT false,
+    personal_insight TEXT,
     clicks_count INTEGER DEFAULT 0,
+    time_to_read VARCHAR(50),
+    year INTEGER,
+    why_recommend TEXT[],
+    bestseller BOOLEAN DEFAULT false,
+    tags TEXT[],
+    reviews INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
--- ALTER TABLE courses to add missing columns
-ALTER TABLE courses 
-ADD COLUMN IF NOT EXISTS priority VARCHAR(50),
-ADD COLUMN IF NOT EXISTS personal_insight TEXT,
-ADD COLUMN IF NOT EXISTS time_to_read VARCHAR(50),
-ADD COLUMN IF NOT EXISTS year INTEGER,
-ADD COLUMN IF NOT EXISTS pages INTEGER,
-ADD COLUMN IF NOT EXISTS original_price DECIMAL(10, 2),
-ADD COLUMN IF NOT EXISTS why_recommend TEXT[], -- Array of reasons
-ADD COLUMN IF NOT EXISTS bestseller BOOLEAN DEFAULT false,
-ADD COLUMN IF NOT EXISTS tags TEXT[],
-ADD COLUMN IF NOT EXISTS reviews INTEGER DEFAULT 0;
-
 
 -- ============================================
--- REGISTRATIONS TABLE
+-- REGISTRATIONS TABLE (Fixed: current_role renamed to current_position)
 -- ============================================
-ALTER TABLE registrations 
-DROP COLUMN IF EXISTS payment_method,
-DROP COLUMN IF EXISTS payment_reference,
-DROP COLUMN IF EXISTS card_last4,
-DROP COLUMN IF EXISTS card_brand,
-DROP COLUMN IF EXISTS card_exp_month,
-DROP COLUMN IF EXISTS card_exp_year,
-DROP COLUMN IF EXISTS amount_paid,
-DROP COLUMN IF EXISTS payment_status,
-DROP COLUMN IF EXISTS currency;
-
-CREATE TABLE IF NOT EXISTS registrations (
+CREATE TABLE registrations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     formation_id UUID REFERENCES formations(id) ON DELETE CASCADE,
     full_name VARCHAR(100) NOT NULL,
@@ -226,18 +194,12 @@ CREATE TABLE IF NOT EXISTS registrations (
     phone VARCHAR(20),
     message TEXT,
     role VARCHAR(100),
-    current_role VARCHAR(100),
+    current_position VARCHAR(100), -- Changed from current_role (reserved keyword)
     terms_accepted BOOLEAN DEFAULT false,
-    
-    -- Status only (no payment status)
-    status VARCHAR(20) DEFAULT 'pending', -- pending, confirmed, cancelled, completed
-    
-    -- Verification fields
+    status VARCHAR(20) DEFAULT 'pending',
     verification_token VARCHAR(100),
     verification_token_expires TIMESTAMP,
     is_verified BOOLEAN DEFAULT false,
-    
-    -- Timestamps
     registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     confirmed_at TIMESTAMP,
     cancelled_at TIMESTAMP,
@@ -245,35 +207,34 @@ CREATE TABLE IF NOT EXISTS registrations (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 -- ============================================
--- MESSAGES (CONTACT) TABLE
+-- MESSAGES (CONTACT) TABLE (Complete version)
 -- ============================================
 CREATE TABLE messages (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     full_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
-    subject VARCHAR(200),
+    subject VARCHAR(500),
     message TEXT NOT NULL,
-    status VARCHAR(20) DEFAULT 'unread', -- unread, read, replied, archived
+    status VARCHAR(20) DEFAULT 'unread',
     replied_at TIMESTAMP,
     reply_message TEXT,
     ip_address VARCHAR(45),
     user_agent TEXT,
+    message_type VARCHAR(50) DEFAULT 'contact',
+    project_type VARCHAR(100),
+    timeline VARCHAR(100),
+    budget_range VARCHAR(100),
+    phone VARCHAR(20),
+    company VARCHAR(100),
+    website VARCHAR(200),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-ALTER TABLE messages 
-ADD COLUMN IF NOT EXISTS message_type VARCHAR(50) DEFAULT 'contact',
-ADD COLUMN IF NOT EXISTS project_type VARCHAR(100),
-ADD COLUMN IF NOT EXISTS timeline VARCHAR(100),
-ADD COLUMN IF NOT EXISTS budget_range VARCHAR(100),
-ADD COLUMN IF NOT EXISTS phone VARCHAR(20),
-ADD COLUMN IF NOT EXISTS company VARCHAR(100),
-ADD COLUMN IF NOT EXISTS website VARCHAR(200);
-ALTER TABLE messages ALTER COLUMN subject TYPE VARCHAR(500);
 
 -- ============================================
--- REVIEWS TABLE (for formations)
+-- REVIEWS TABLE
 -- ============================================
 CREATE TABLE reviews (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -294,8 +255,8 @@ CREATE TABLE reviews (
 -- ============================================
 CREATE TABLE analytics (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    event_type VARCHAR(50) NOT NULL, -- page_view, click, registration, etc.
-    entity_type VARCHAR(50), -- project, formation, course
+    event_type VARCHAR(50) NOT NULL,
+    entity_type VARCHAR(50),
     entity_id UUID,
     page_url TEXT,
     referrer TEXT,
@@ -304,28 +265,84 @@ CREATE TABLE analytics (
     country VARCHAR(50),
     city VARCHAR(100),
     session_id VARCHAR(100),
-    metadata JSONB, -- Additional data
+    metadata JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ============================================
--- SETTINGS TABLE (for site configuration)
+-- SETTINGS TABLE
 -- ============================================
 CREATE TABLE settings (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     key VARCHAR(100) UNIQUE NOT NULL,
     value TEXT,
-    type VARCHAR(20) DEFAULT 'text', -- text, number, boolean, json
+    type VARCHAR(20) DEFAULT 'text',
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ============================================
--- INDEXES for better performance
+-- TRIGGER FUNCTIONS
 -- ============================================
 
--- Projects
+-- Function to update spots_left in formations
+CREATE OR REPLACE FUNCTION update_spots_left()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.spots_left = NEW.max_participants - NEW.current_participants;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to update updated_at timestamp
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- ============================================
+-- TRIGGERS
+-- ============================================
+
+-- Spots left trigger for formations
+CREATE TRIGGER update_spots_left_trigger
+BEFORE INSERT OR UPDATE OF max_participants, current_participants ON formations
+FOR EACH ROW EXECUTE FUNCTION update_spots_left();
+
+-- Updated_at triggers for all tables
+CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
+FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_projects_updated_at BEFORE UPDATE ON projects
+FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_formations_updated_at BEFORE UPDATE ON formations
+FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_courses_updated_at BEFORE UPDATE ON courses
+FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_registrations_updated_at BEFORE UPDATE ON registrations
+FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_messages_updated_at BEFORE UPDATE ON messages
+FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_reviews_updated_at BEFORE UPDATE ON reviews
+FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_settings_updated_at BEFORE UPDATE ON settings
+FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- ============================================
+-- INDEXES
+-- ============================================
+
+-- Projects indexes
 CREATE INDEX idx_projects_category ON projects(category);
 CREATE INDEX idx_projects_status ON projects(status);
 CREATE INDEX idx_projects_featured ON projects(featured);
@@ -338,94 +355,45 @@ CREATE INDEX idx_projects_open_source ON projects(open_source);
 CREATE INDEX idx_projects_technologies ON projects USING GIN(technologies);
 CREATE INDEX idx_projects_tags ON projects USING GIN(tags);
 
--- Formations
+-- Formations indexes
 CREATE INDEX idx_formations_category ON formations(category);
 CREATE INDEX idx_formations_level ON formations(level);
 CREATE INDEX idx_formations_status ON formations(status);
 CREATE INDEX idx_formations_start_date ON formations(start_date);
 CREATE INDEX idx_formations_featured ON formations(featured);
 
--- Courses
+-- Courses indexes
 CREATE INDEX idx_courses_category ON courses(category);
 CREATE INDEX idx_courses_author ON courses(author);
 CREATE INDEX idx_courses_featured ON courses(featured);
-CREATE INDEX IF NOT EXISTS idx_courses_bestseller ON courses(bestseller);
-CREATE INDEX IF NOT EXISTS idx_courses_tags ON courses USING GIN(tags);
-CREATE INDEX IF NOT EXISTS idx_courses_why_recommend ON courses USING GIN(why_recommend);
+CREATE INDEX idx_courses_bestseller ON courses(bestseller);
+CREATE INDEX idx_courses_tags ON courses USING GIN(tags);
+CREATE INDEX idx_courses_why_recommend ON courses USING GIN(why_recommend);
 
--- Registrations
+-- Registrations indexes
 CREATE INDEX idx_registrations_formation_id ON registrations(formation_id);
 CREATE INDEX idx_registrations_email ON registrations(email);
 CREATE INDEX idx_registrations_status ON registrations(status);
 CREATE INDEX idx_registrations_date ON registrations(registration_date DESC);
 
--- Messages
+-- Messages indexes
 CREATE INDEX idx_messages_status ON messages(status);
 CREATE INDEX idx_messages_created_at ON messages(created_at DESC);
 CREATE INDEX idx_messages_email ON messages(email);
+CREATE INDEX idx_messages_message_type ON messages(message_type);
 
--- Reviews
+-- Reviews indexes
 CREATE INDEX idx_reviews_formation_id ON reviews(formation_id);
 CREATE INDEX idx_reviews_approved ON reviews(is_approved);
 CREATE INDEX idx_reviews_featured ON reviews(is_featured);
-CREATE INDEX IF NOT EXISTS idx_messages_message_type ON messages(message_type);
 
--- Analytics
+-- Analytics indexes
 CREATE INDEX idx_analytics_event_type ON analytics(event_type);
 CREATE INDEX idx_analytics_entity ON analytics(entity_type, entity_id);
 CREATE INDEX idx_analytics_created_at ON analytics(created_at DESC);
 
 -- ============================================
--- TRIGGERS for updated_at
--- ============================================
-
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
-
-CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_projects_updated_at BEFORE UPDATE ON projects
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_formations_updated_at BEFORE UPDATE ON formations
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_courses_updated_at BEFORE UPDATE ON courses
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_registrations_updated_at BEFORE UPDATE ON registrations
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_messages_updated_at BEFORE UPDATE ON messages
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_reviews_updated_at BEFORE UPDATE ON reviews
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_settings_updated_at BEFORE UPDATE ON settings
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
--- ============================================
--- SEED DATA (Initial Admin User)
--- ============================================
--- Password: admin123 (hashed with bcrypt)
-INSERT INTO users (username, email, password_hash, full_name, role)
-VALUES (
-    'admin',
-    'admin@example.com',
-    '$2b$10$rO5b9YhYPvPjvKvFqF9uOeKGvCJYq7qJZvXqZvXqZvXqZvXqZvXq', -- Replace with actual hash
-    'Naceur Keraani',
-    'admin'
-);
-
--- ============================================
--- VIEWS for easier queries
+-- VIEWS
 -- ============================================
 
 -- View for formation statistics
@@ -441,8 +409,7 @@ SELECT
     COUNT(DISTINCT r.id) as total_registrations,
     COUNT(DISTINCT CASE WHEN r.status = 'confirmed' THEN r.id END) as confirmed_registrations,
     COUNT(DISTINCT rev.id) as reviews_count,
-    AVG(rev.rating) as average_rating,
-    SUM(CASE WHEN r.payment_status = 'paid' THEN r.amount_paid ELSE 0 END) as total_revenue
+    AVG(rev.rating) as average_rating
 FROM formations f
 LEFT JOIN registrations r ON f.id = r.formation_id
 LEFT JOIN reviews rev ON f.id = rev.formation_id AND rev.is_approved = true
@@ -458,3 +425,16 @@ SELECT
 FROM analytics
 GROUP BY DATE_TRUNC('month', created_at), event_type, entity_type
 ORDER BY month DESC;
+
+-- ============================================
+-- SEED DATA
+-- ============================================
+-- Admin user (password: admin123)
+INSERT INTO users (username, email, password_hash, full_name, role)
+VALUES (
+    'admin',
+    'admin@portfolio.com',
+    '$2b$10$rO5b9YhYPvPjvKvFqF9uOeKGvCJYq7qJZvXqZvXqZvXqZvXqZvXq', -- bcrypt hash for 'admin123'
+    'Naceur Keraani',
+    'admin'
+);

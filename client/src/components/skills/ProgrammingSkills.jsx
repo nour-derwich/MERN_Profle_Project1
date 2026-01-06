@@ -113,23 +113,23 @@ const ProgrammingSkills = ({ isVisible }) => {
     { id: 'intermediate', label: 'Intermediate (65-74%)', count: 2 }
   ];
 
-  const filteredSkills = activeLevel === 'all' 
-    ? programmingSkills 
+  const filteredSkills = activeLevel === 'all'
+    ? programmingSkills
     : programmingSkills.filter(skill => {
-        if (activeLevel === 'expert') return skill.level >= 85;
-        if (activeLevel === 'advanced') return skill.level >= 75 && skill.level < 85;
-        if (activeLevel === 'intermediate') return skill.level >= 65 && skill.level < 75;
-        return true;
-      });
+      if (activeLevel === 'expert') return skill.level >= 85;
+      if (activeLevel === 'advanced') return skill.level >= 75 && skill.level < 85;
+      if (activeLevel === 'intermediate') return skill.level >= 65 && skill.level < 75;
+      return true;
+    });
 
   return (
     <section className="relative py-24 bg-gradient-to-b from-gray-900 to-black overflow-hidden">
-      
+
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-gradient-to-bl from-primary-900/20 to-transparent rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-tr from-blue-900/20 to-transparent rounded-full blur-3xl" />
-        
+
         {/* Code Pattern */}
         <div className="absolute inset-0 opacity-5 bg-[linear-gradient(0deg,#80808012_1px,transparent_1px),linear-gradient(90deg,#80808012_1px,transparent_1px)] bg-[size:30px_30px]" />
       </div>
@@ -153,14 +153,14 @@ const ProgrammingSkills = ({ isVisible }) => {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        
+
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500/20 to-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-primary-500/30 mb-6">
             <FiCode className="text-primary-300" />
             <span className="text-primary-200 font-medium tracking-wider">PROGRAMMING MASTERY</span>
           </div>
-          
+
           <h2 className="text-5xl md:text-6xl font-bold mb-6">
             <span className="text-white">Crafting Solutions in</span>
             <br />
@@ -168,9 +168,9 @@ const ProgrammingSkills = ({ isVisible }) => {
               Modern Languages
             </span>
           </h2>
-          
+
           <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Mastery across multiple programming paradigms and languages, enabling the 
+            Mastery across multiple programming paradigms and languages, enabling the
             creation of efficient, scalable, and innovative solutions for diverse challenges.
           </p>
         </div>
@@ -181,21 +181,18 @@ const ProgrammingSkills = ({ isVisible }) => {
             <button
               key={level.id}
               onClick={() => setActiveLevel(level.id)}
-              className={`group relative px-5 py-3 rounded-xl backdrop-blur-sm transition-all duration-300 ${
-                activeLevel === level.id
+              className={`group relative px-5 py-3 rounded-xl backdrop-blur-sm transition-all duration-300 ${activeLevel === level.id
                   ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white'
                   : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
-              }`}
+                }`}
             >
               <span className="font-semibold">{level.label}</span>
-              <span className={`ml-2 text-sm ${
-                activeLevel === level.id ? 'text-white/80' : 'text-gray-500'
-              }`}>
+              <span className={`ml-2 text-sm ${activeLevel === level.id ? 'text-white/80' : 'text-gray-500'
+                }`}>
                 ({level.count})
               </span>
-              <div className={`absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 ${
-                activeLevel === level.id ? 'opacity-20' : 'group-hover:opacity-10'
-              } transition-opacity duration-500`} />
+              <div className={`absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 ${activeLevel === level.id ? 'opacity-20' : 'group-hover:opacity-10'
+                } transition-opacity duration-500`} />
             </button>
           ))}
         </div>
@@ -205,7 +202,7 @@ const ProgrammingSkills = ({ isVisible }) => {
           {filteredSkills.map((skill, index) => {
             const Icon = skill.icon;
             const isHovered = hoveredSkill === skill.id;
-            
+
             return (
               <div
                 key={skill.id}
@@ -214,24 +211,21 @@ const ProgrammingSkills = ({ isVisible }) => {
                 onMouseLeave={() => setHoveredSkill(null)}
               >
                 {/* Card Glow Effect */}
-                <div className={`absolute -inset-0.5 bg-gradient-to-r ${skill.color} rounded-3xl blur opacity-0 ${
-                  isHovered ? 'opacity-30' : 'group-hover:opacity-20'
-                } transition-opacity duration-500`} />
-                
+                <div className={`absolute -inset-0.5 bg-gradient-to-r ${skill.color} rounded-3xl blur opacity-0 ${isHovered ? 'opacity-30' : 'group-hover:opacity-20'
+                  } transition-opacity duration-500`} />
+
                 {/* Main Card */}
-                <div className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${
-                  isHovered ? 'border-primary-500/50' : 'border-gray-700/50'
-                } rounded-3xl p-6 backdrop-blur-sm transition-all duration-300 ${
-                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-                } ${isHovered ? 'scale-105' : 'group-hover:scale-102'}`}
-                style={{ transitionDelay: `${index * 100}ms` }}>
-                  
+                <div className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${isHovered ? 'border-primary-500/50' : 'border-gray-700/50'
+                  } rounded-3xl p-6 backdrop-blur-sm transition-all duration-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                  } ${isHovered ? 'scale-105' : 'group-hover:scale-102'}`}
+                  style={{ transitionDelay: `${index * 100}ms` }}>
+
                   {/* Header */}
                   <div className="flex items-start justify-between mb-6">
                     <div className={`p-3 bg-gradient-to-br ${skill.color}/20 rounded-xl group-hover:scale-110 transition-transform duration-300`}>
                       <Icon className="text-3xl text-white" />
                     </div>
-                    
+
                     <div className="text-right">
                       <div className="text-2xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
                         {skill.level}%
@@ -255,9 +249,9 @@ const ProgrammingSkills = ({ isVisible }) => {
                       <span>{skill.level}%</span>
                     </div>
                     <div className="h-2 bg-gradient-to-r from-gray-700 to-gray-800 rounded-full overflow-hidden">
-                      <div 
+                      <div
                         className={`h-full bg-gradient-to-r ${skill.color} rounded-full transition-all duration-1000 ease-out`}
-                        style={{ 
+                        style={{
                           width: isVisible ? `${skill.level}%` : '0%',
                           transitionDelay: `${300 + index * 100}ms`
                         }}
@@ -290,15 +284,13 @@ const ProgrammingSkills = ({ isVisible }) => {
                   </div>
 
                   {/* Hover Overlay */}
-                  <div className={`absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/50 rounded-3xl opacity-0 ${
-                    isHovered ? 'opacity-100' : 'group-hover:opacity-50'
-                  } transition-opacity duration-300 pointer-events-none`} />
+                  <div className={`absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/50 rounded-3xl opacity-0 ${isHovered ? 'opacity-100' : 'group-hover:opacity-50'
+                    } transition-opacity duration-300 pointer-events-none`} />
                 </div>
 
                 {/* Floating Badge */}
-                <div className={`absolute -top-3 -right-3 px-3 py-1 bg-gradient-to-r ${skill.color} text-white text-xs font-bold rounded-full transform ${
-                  isHovered ? 'scale-100 rotate-0' : 'scale-0 rotate-45'
-                } transition-all duration-300`}>
+                <div className={`absolute -top-3 -right-3 px-3 py-1 bg-gradient-to-r ${skill.color} text-white text-xs font-bold rounded-full transform ${isHovered ? 'scale-100 rotate-0' : 'scale-0 rotate-45'
+                  } transition-all duration-300`}>
                   {skill.level}%
                 </div>
               </div>
@@ -328,7 +320,7 @@ const ProgrammingSkills = ({ isVisible }) => {
       </div>
 
       {/* Custom Animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes syntax-flow {
           0% {
             transform: translateY(0) translateX(0);

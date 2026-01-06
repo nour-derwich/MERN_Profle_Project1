@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/admin/Sidebar';
 import DataTable from '../../components/admin/DataTable';
-import { 
+import {
   FiSearch, FiFilter, FiDownload, FiRefreshCw,
   FiUsers, FiCheckCircle, FiClock, FiXCircle,
   FiMail, FiTrash2, FiEye, FiUserCheck, FiFileText
@@ -38,7 +38,7 @@ const AdminRegistrations = () => {
       setLoading(true);
       const filters = {};
       if (filterStatus !== 'all') filters.status = filterStatus;
-      
+
       const data = await registrationService.getAll(filters);
       setRegistrations(data.data || []);
     } catch (error) {
@@ -99,9 +99,7 @@ const AdminRegistrations = () => {
     }
   };
 
-  const handleView = (registration) => {
-    navigate(`/admin/registrations/${registration.id}`);
-  };
+
 
   const handleExport = async () => {
     try {
@@ -132,8 +130,8 @@ const AdminRegistrations = () => {
 
   const filteredRegistrations = registrations.filter(reg => {
     const matchesSearch = reg.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         reg.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         reg.phone?.toLowerCase().includes(searchTerm.toLowerCase());
+      reg.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      reg.phone?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesSearch;
   });
 
@@ -147,8 +145,8 @@ const AdminRegistrations = () => {
   };
 
   const columns = [
-    { 
-      key: 'full_name', 
+    {
+      key: 'full_name',
       title: 'Name',
       render: (item) => (
         <div>
@@ -157,36 +155,36 @@ const AdminRegistrations = () => {
         </div>
       )
     },
-    { 
-      key: 'phone', 
+    {
+      key: 'phone',
       title: 'Phone',
       render: (item) => (
         <span className="text-gray-700">{item.phone || '-'}</span>
       )
     },
-    { 
-      key: 'formation_title', 
+    {
+      key: 'formation_title',
       title: 'Formation',
       render: (item) => (
         <span className="text-gray-900 font-medium">{item.formation_title || 'N/A'}</span>
       )
     },
-    { 
-      key: 'role', 
+    {
+      key: 'role',
       title: 'Role',
       render: (item) => (
         <span className="text-gray-700">{item.role || '-'}</span>
       )
     },
-    { 
-      key: 'job_title', 
+    {
+      key: 'job_title',
       title: 'Current Position',
       render: (item) => (
         <span className="text-gray-700">{item.job_title || item.current_role || '-'}</span>
       )
     },
-    { 
-      key: 'status', 
+    {
+      key: 'status',
       title: 'Status',
       render: (item) => {
         const verification = getVerificationStatus(item);
@@ -197,13 +195,12 @@ const AdminRegistrations = () => {
                 e.stopPropagation();
                 handleStatusChange(item);
               }}
-              className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
-                item.status === 'confirmed' 
-                  ? 'bg-green-100 text-green-800 hover:bg-green-200' 
+              className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${item.status === 'confirmed'
+                  ? 'bg-green-100 text-green-800 hover:bg-green-200'
                   : item.status === 'pending'
-                  ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
-                  : 'bg-red-100 text-red-800 hover:bg-red-200'
-              }`}
+                    ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
+                    : 'bg-red-100 text-red-800 hover:bg-red-200'
+                }`}
             >
               {item.status}
             </button>
@@ -214,8 +211,8 @@ const AdminRegistrations = () => {
         );
       }
     },
-    { 
-      key: 'registration_date', 
+    {
+      key: 'registration_date',
       title: 'Date',
       render: (item) => (
         <span className="text-gray-600 text-sm">
@@ -226,11 +223,7 @@ const AdminRegistrations = () => {
   ];
 
   const tableActions = [
-    {
-      label: 'View',
-      handler: handleView,
-      color: 'bg-blue-500 text-white hover:bg-blue-600'
-    },
+
     {
       label: 'Change Status',
       handler: handleStatusChange,
@@ -246,7 +239,7 @@ const AdminRegistrations = () => {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/20 to-pink-50/20">
       <Sidebar />
-      
+
       <div className="flex-1 ml-64 p-8">
         {/* Header */}
         <div className="mb-8">
@@ -417,7 +410,6 @@ const AdminRegistrations = () => {
           <DataTable
             columns={columns}
             data={filteredRegistrations}
-            onRowClick={handleView}
             actions={tableActions}
           />
         )}

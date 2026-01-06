@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  FiTool, FiPackage, FiCpu, FiDatabase, 
+import {
+  FiTool, FiPackage, FiCpu, FiDatabase,
   FiServer, FiLayers, FiBarChart2, FiGrid,
   FiZap, FiMonitor, FiCode, FiSettings
 } from 'react-icons/fi';
-import { 
+import {
   SiPytorch, SiTensorflow, SiScikitlearn, SiPandas,
   SiNumpy, SiJupyter, SiAnaconda, SiDocker,
   SiKubernetes, SiGit, SiVisualstudiocode, SiPostman
@@ -177,18 +177,18 @@ const ToolsLibraries = ({ isVisible }) => {
     { id: 'other', label: 'Other', count: 2, icon: FiSettings }
   ];
 
-  const filteredTools = activeCategory === 'all' 
-    ? toolsLibraries 
+  const filteredTools = activeCategory === 'all'
+    ? toolsLibraries
     : toolsLibraries.filter(tool => tool.category === activeCategory);
 
   return (
     <section className="relative py-24 bg-gradient-to-b from-black to-gray-900 overflow-hidden">
-      
+
       {/* Background Elements */}
       <div className="absolute inset-0">
         {/* Grid Pattern */}
         <div className="absolute inset-0 opacity-5 bg-[linear-gradient(90deg,#80808012_1px,transparent_1px),linear-gradient(180deg,#80808012_1px,transparent_1px)] bg-[size:50px_50px]" />
-        
+
         {/* Floating Tools */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-primary-500/5 to-transparent rounded-full blur-3xl animate-float-slow" />
         <div className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-gradient-to-tl from-blue-500/5 to-transparent rounded-full blur-3xl animate-float-slow" style={{ animationDelay: '2s' }} />
@@ -217,14 +217,14 @@ const ToolsLibraries = ({ isVisible }) => {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        
+
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500/20 to-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-primary-500/30 mb-6">
             <FiTool className="text-primary-300" />
             <span className="text-primary-200 font-medium tracking-wider">TECHNICAL TOOLKIT</span>
           </div>
-          
+
           <h2 className="text-5xl md:text-6xl font-bold mb-6">
             <span className="text-white">Development</span>
             <br />
@@ -232,9 +232,9 @@ const ToolsLibraries = ({ isVisible }) => {
               Tools & Frameworks
             </span>
           </h2>
-          
+
           <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Mastering a comprehensive suite of tools and libraries that power modern 
+            Mastering a comprehensive suite of tools and libraries that power modern
             AI development, from data analysis to deployment.
           </p>
         </div>
@@ -247,22 +247,19 @@ const ToolsLibraries = ({ isVisible }) => {
               <button
                 key={category.id}
                 onClick={() => setActiveCategory(category.id)}
-                className={`group relative px-5 py-3 rounded-xl backdrop-blur-sm transition-all duration-300 flex items-center gap-2 ${
-                  activeCategory === category.id
+                className={`group relative px-5 py-3 rounded-xl backdrop-blur-sm transition-all duration-300 flex items-center gap-2 ${activeCategory === category.id
                     ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white'
                     : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
-                }`}
+                  }`}
               >
                 <Icon className={activeCategory === category.id ? 'text-white' : 'text-gray-500'} />
                 <span className="font-semibold">{category.label}</span>
-                <span className={`ml-1 text-sm ${
-                  activeCategory === category.id ? 'text-white/80' : 'text-gray-500'
-                }`}>
+                <span className={`ml-1 text-sm ${activeCategory === category.id ? 'text-white/80' : 'text-gray-500'
+                  }`}>
                   ({category.count})
                 </span>
-                <div className={`absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 ${
-                  activeCategory === category.id ? 'opacity-20' : 'group-hover:opacity-10'
-                } transition-opacity duration-500`} />
+                <div className={`absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 ${activeCategory === category.id ? 'opacity-20' : 'group-hover:opacity-10'
+                  } transition-opacity duration-500`} />
               </button>
             );
           })}
@@ -273,7 +270,7 @@ const ToolsLibraries = ({ isVisible }) => {
           {filteredTools.map((tool, index) => {
             const Icon = tool.icon;
             const isHovered = hoveredTool === tool.id;
-            
+
             return (
               <div
                 key={tool.id}
@@ -282,26 +279,22 @@ const ToolsLibraries = ({ isVisible }) => {
                 onMouseLeave={() => setHoveredTool(null)}
               >
                 {/* Glow Effect */}
-                <div className={`absolute -inset-0.5 bg-gradient-to-r ${tool.color} rounded-3xl blur opacity-0 ${
-                  isHovered ? 'opacity-30' : 'group-hover:opacity-20'
-                } transition-opacity duration-500`} />
-                
+                <div className={`absolute -inset-0.5 bg-gradient-to-r ${tool.color} rounded-3xl blur opacity-0 ${isHovered ? 'opacity-30' : 'group-hover:opacity-20'
+                  } transition-opacity duration-500`} />
+
                 {/* Main Card */}
-                <div className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${
-                  isHovered ? 'border-primary-500/50' : 'border-gray-700/50'
-                } rounded-3xl p-6 backdrop-blur-sm transition-all duration-300 ${
-                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-                } ${isHovered ? 'scale-105' : 'group-hover:scale-102'}`}
-                style={{ transitionDelay: `${index * 50}ms` }}>
-                  
+                <div className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${isHovered ? 'border-primary-500/50' : 'border-gray-700/50'
+                  } rounded-3xl p-6 backdrop-blur-sm transition-all duration-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                  } ${isHovered ? 'scale-105' : 'group-hover:scale-102'}`}
+                  style={{ transitionDelay: `${index * 50}ms` }}>
+
                   {/* Icon & Level */}
                   <div className="flex items-start justify-between mb-4">
-                    <div className={`p-3 bg-gradient-to-br ${tool.color}/20 rounded-xl transform ${
-                      isHovered ? 'rotate-12 scale-110' : 'group-hover:scale-110'
-                    } transition-all duration-300`}>
+                    <div className={`p-3 bg-gradient-to-br ${tool.color}/20 rounded-xl transform ${isHovered ? 'rotate-12 scale-110' : 'group-hover:scale-110'
+                      } transition-all duration-300`}>
                       <Icon className="text-2xl text-white" />
                     </div>
-                    
+
                     <div className="text-right">
                       <div className="text-2xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
                         {tool.level}%
@@ -330,7 +323,7 @@ const ToolsLibraries = ({ isVisible }) => {
                         strokeWidth="4"
                         fill="none"
                       />
-                      
+
                       {/* Progress Circle */}
                       <circle
                         cx="40"
@@ -342,13 +335,13 @@ const ToolsLibraries = ({ isVisible }) => {
                         strokeDasharray={`${2 * Math.PI * 36}`}
                         strokeDashoffset={`${2 * Math.PI * 36 * (1 - tool.level / 100)}`}
                         className="transition-all duration-1000 ease-out"
-                        style={{ 
+                        style={{
                           strokeDashoffset: isVisible ? `${2 * Math.PI * 36 * (1 - tool.level / 100)}` : `${2 * Math.PI * 36}`,
                           transitionDelay: `${200 + index * 50}ms`
                         }}
                         strokeLinecap="round"
                       />
-                      
+
                       <defs>
                         <linearGradient
                           id={`gradient-${tool.id}`}
@@ -360,14 +353,14 @@ const ToolsLibraries = ({ isVisible }) => {
                           <stop
                             offset="0%"
                             className={
-                              tool.color?.split(' ').find(c => c.startsWith('from-'))?.replace('from-', '') 
+                              tool.color?.split(' ').find(c => c.startsWith('from-'))?.replace('from-', '')
                               || 'gray-400'
                             }
                           />
                           <stop
                             offset="100%"
                             className={
-                              tool.color?.split(' ').find(c => c.startsWith('to-'))?.replace('to-', '') 
+                              tool.color?.split(' ').find(c => c.startsWith('to-'))?.replace('to-', '')
                               || 'gray-600'
                             }
                           />
@@ -375,7 +368,7 @@ const ToolsLibraries = ({ isVisible }) => {
                       </defs>
 
                     </svg>
-                    
+
                     {/* Center Text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <div className="text-sm font-bold text-white">{tool.level}%</div>
@@ -396,9 +389,8 @@ const ToolsLibraries = ({ isVisible }) => {
                 </div>
 
                 {/* Hover Effect Line */}
-                <div className={`absolute -bottom-2 left-1/4 right-1/4 h-0.5 bg-gradient-to-r ${tool.color} rounded-full transform ${
-                  isHovered ? 'scale-x-100' : 'scale-x-0'
-                } transition-transform duration-300`} />
+                <div className={`absolute -bottom-2 left-1/4 right-1/4 h-0.5 bg-gradient-to-r ${tool.color} rounded-full transform ${isHovered ? 'scale-x-100' : 'scale-x-0'
+                  } transition-transform duration-300`} />
               </div>
             );
           })}
@@ -411,7 +403,7 @@ const ToolsLibraries = ({ isVisible }) => {
             {categories.filter(c => c.id !== 'all').map((category) => {
               const categoryTools = toolsLibraries.filter(t => t.category === category.id);
               const avgLevel = categoryTools.reduce((sum, tool) => sum + tool.level, 0) / categoryTools.length;
-              
+
               return (
                 <div key={category.id} className="text-center p-4">
                   <div className="text-3xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent mb-1">
@@ -427,7 +419,7 @@ const ToolsLibraries = ({ isVisible }) => {
       </div>
 
       {/* Custom Animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes float-slow {
           0%, 100% {
             transform: translate(0, 0) scale(1);

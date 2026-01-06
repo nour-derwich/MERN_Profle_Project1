@@ -3,7 +3,7 @@ import { FiStar } from 'react-icons/fi';
 
 const StarRating = ({ rating = 0, size = 'md', showNumber = true, interactive = false, onRatingChange }) => {
   const [hoverRating, setHoverRating] = React.useState(0);
-  
+
   const handleClick = (value) => {
     if (interactive && onRatingChange) {
       onRatingChange(value);
@@ -31,19 +31,19 @@ const StarRating = ({ rating = 0, size = 'md', showNumber = true, interactive = 
 
   const getStarColor = (index) => {
     if (interactive && hoverRating > 0) {
-      return index < hoverRating 
-        ? 'from-yellow-400 to-orange-400' 
+      return index < hoverRating
+        ? 'from-yellow-400 to-orange-400'
         : 'from-gray-700 to-gray-800';
     }
-    
+
     if (index < Math.floor(rating)) {
       return 'from-yellow-400 to-orange-400';
     }
-    
+
     if (index < rating) {
       return 'from-yellow-300 to-yellow-400';
     }
-    
+
     return 'from-gray-700 to-gray-800';
   };
 
@@ -56,7 +56,7 @@ const StarRating = ({ rating = 0, size = 'md', showNumber = true, interactive = 
           const isActive = index < currentRating;
           const isHalfStar = index < currentRating && index + 1 > currentRating;
           const starColor = getStarColor(index);
-          
+
           return (
             <div
               key={index}
@@ -66,12 +66,11 @@ const StarRating = ({ rating = 0, size = 'md', showNumber = true, interactive = 
               onMouseLeave={handleMouseLeave}
             >
               {/* Star Glow */}
-              <div 
-                className={`absolute -inset-1 bg-gradient-to-r ${starColor} rounded-full blur-md opacity-0 ${
-                  (isActive || hoverRating > index) ? 'opacity-30' : ''
-                } transition-all duration-300`}
+              <div
+                className={`absolute -inset-1 bg-gradient-to-r ${starColor} rounded-full blur-md opacity-0 ${(isActive || hoverRating > index) ? 'opacity-30' : ''
+                  } transition-all duration-300`}
               />
-              
+
               {/* Star Background (for half stars) */}
               {isHalfStar && (
                 <div className="absolute inset-0 overflow-hidden w-1/2">
@@ -80,7 +79,7 @@ const StarRating = ({ rating = 0, size = 'md', showNumber = true, interactive = 
                   />
                 </div>
               )}
-              
+
               {/* Star Icon */}
               <FiStar
                 className={`
@@ -88,15 +87,14 @@ const StarRating = ({ rating = 0, size = 'md', showNumber = true, interactive = 
                   relative
                   transition-all duration-300
                   ${interactive ? 'hover:scale-125' : ''}
-                  ${
-                    isActive
-                      ? 'fill-yellow-400 text-yellow-400'
-                      : 'text-gray-600 group-hover/star:text-yellow-300'
+                  ${isActive
+                    ? 'fill-yellow-400 text-yellow-400'
+                    : 'text-gray-600 group-hover/star:text-yellow-300'
                   }
                   ${isHalfStar ? 'text-yellow-300' : ''}
                 `}
               />
-              
+
               {/* Interactive Hover Tooltip */}
               {interactive && (
                 <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-lg text-xs text-white opacity-0 group-hover/star:opacity-100 transition-opacity duration-300 whitespace-nowrap">
@@ -113,7 +111,7 @@ const StarRating = ({ rating = 0, size = 'md', showNumber = true, interactive = 
         <div className="relative">
           {/* Number Background Glow */}
           <div className={`absolute -inset-1 bg-gradient-to-r ${getStarColor(0)} rounded-md blur opacity-0 group-hover:opacity-20 transition-opacity duration-500`} />
-          
+
           {/* Rating Number */}
           <div className="relative px-3 py-1.5 bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg group-hover:border-yellow-500/30 transition-all duration-300">
             <span className="text-sm font-bold bg-gradient-to-r from-yellow-300 via-yellow-400 to-orange-400 bg-clip-text text-transparent">
@@ -139,7 +137,7 @@ const StarRating = ({ rating = 0, size = 'md', showNumber = true, interactive = 
 
 // Custom CSS for ping animation
 const StarRatingStyle = () => (
-  <style jsx>{`
+  <style>{`
     @keyframes ping-slow {
       0% {
         transform: scale(1);

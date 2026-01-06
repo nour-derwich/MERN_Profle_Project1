@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { 
-  FiHeart, 
-  FiExternalLink, 
-  FiBookOpen, 
-  FiClock, 
+import {
+  FiHeart,
+  FiExternalLink,
+  FiBookOpen,
+  FiClock,
   FiChevronRight,
   FiEye,
   FiFeather
@@ -11,11 +11,11 @@ import {
 import { FaAmazon } from 'react-icons/fa';
 import StarRating from './StarRating';
 
-const BookCard = ({ 
-  book, 
-  index, 
-  isVisible, 
-  favorites, 
+const BookCard = ({
+  book,
+  index,
+  isVisible,
+  favorites,
   toggleFavorite,
   onQuickView
 }) => {
@@ -53,10 +53,9 @@ const BookCard = ({
   };
 
   return (
-    <div 
-      className={`relative group transition-all duration-700 ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-      }`}
+    <div
+      className={`relative group transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
       style={{ transitionDelay: `${index * 50}ms` }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -66,7 +65,7 @@ const BookCard = ({
 
       {/* Main Card */}
       <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl overflow-hidden backdrop-blur-sm transition-all duration-500 group-hover:border-blue-500/30 group-hover:scale-[1.02]">
-        
+
         {/* Image Section with Overlay */}
         <div className="relative h-64 overflow-hidden">
           {/* Loading State */}
@@ -75,19 +74,18 @@ const BookCard = ({
           )}
 
           {/* Book Image */}
-          <img 
-            src={book.image} 
+          <img
+            src={book.image}
             alt={book.title}
-            className={`w-full h-full object-cover transition-all duration-700 ${
-              imageLoaded ? 'opacity-100' : 'opacity-0'
-            } ${isHovered ? 'scale-110' : 'scale-100'}`}
+            className={`w-full h-full object-cover transition-all duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'
+              } ${isHovered ? 'scale-110' : 'scale-100'}`}
             onLoad={() => setImageLoaded(true)}
             onError={handleImageError}
           />
-          
+
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent" />
-          
+
           {/* Floating Badges */}
           <div className="absolute top-4 left-4 flex flex-col gap-2">
             {book.bestseller && (
@@ -98,7 +96,7 @@ const BookCard = ({
                 </span>
               </div>
             )}
-            
+
             {book.featured && (
               <div className="relative">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full blur opacity-30" />
@@ -117,12 +115,11 @@ const BookCard = ({
               className="relative p-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-full backdrop-blur-sm hover:border-red-500/50 transition-all duration-300 group/btn"
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-pink-500 rounded-full blur opacity-0 group-hover/btn:opacity-30 transition-opacity duration-500" />
-              <FiHeart 
-                className={`relative text-lg ${
-                  favorites.includes(book.id) 
-                    ? 'fill-red-500 text-red-500 animate-heart-beat' 
+              <FiHeart
+                className={`relative text-lg ${favorites.includes(book.id)
+                    ? 'fill-red-500 text-red-500 animate-heart-beat'
                     : 'text-gray-400 group-hover/btn:text-red-400'
-                }`}
+                  }`}
               />
             </button>
 
@@ -153,13 +150,13 @@ const BookCard = ({
           <h3 className="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-blue-300 transition-colors duration-300">
             {book.title}
           </h3>
-          
+
           {/* Author */}
           <p className="text-sm text-gray-400 mb-3 flex items-center gap-2">
             <FiFeather className="text-blue-400" />
             <span>by {book.author}</span>
           </p>
-          
+
           {/* Description */}
           <p className="text-sm text-gray-500 mb-4 line-clamp-2 leading-relaxed">
             {book.short_description || book.description}
@@ -185,7 +182,7 @@ const BookCard = ({
           {book.tags && book.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
               {book.tags.slice(0, 3).map((tag, idx) => (
-                <span 
+                <span
                   key={idx}
                   className="px-2 py-1 bg-gray-800/50 text-gray-400 rounded-lg text-xs font-medium border border-gray-700/50 hover:border-blue-500/30 hover:text-blue-300 transition-all duration-300"
                 >
@@ -228,7 +225,7 @@ const BookCard = ({
                 </div>
               )}
             </div>
-            
+
             <div className="flex gap-2">
               <button className="relative group/btn2">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-xl blur opacity-0 group-hover/btn2:opacity-30 transition-opacity duration-500" />
@@ -252,16 +249,15 @@ const BookCard = ({
       </div>
 
       {/* 3D Floating Effect on Hover */}
-      <div className={`absolute inset-0 bg-gradient-to-r ${getCategoryColor(book.category)} rounded-2xl blur-xl -z-10 transition-all duration-500 ${
-        isHovered ? 'opacity-20 translate-y-2' : 'opacity-0'
-      }`} />
+      <div className={`absolute inset-0 bg-gradient-to-r ${getCategoryColor(book.category)} rounded-2xl blur-xl -z-10 transition-all duration-500 ${isHovered ? 'opacity-20 translate-y-2' : 'opacity-0'
+        }`} />
     </div>
   );
 };
 
 // Add custom animations
 const BookCardStyle = () => (
-  <style jsx>{`
+  <style>{`
     @keyframes heart-beat {
       0%, 100% {
         transform: scale(1);

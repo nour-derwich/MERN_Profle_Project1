@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  FiCode, 
-  FiGrid, 
-  FiList, 
-  FiChevronLeft, 
+import {
+  FiCode,
+  FiGrid,
+  FiList,
+  FiChevronLeft,
   FiChevronRight,
   FiLoader,
   FiSearch,
@@ -23,9 +23,9 @@ import { FaPython, FaReact, FaDocker } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProjectCard from './ProjectCard';
 
-const ProjectsGrid = ({ 
-  currentProjects, 
-  isVisible, 
+const ProjectsGrid = ({
+  currentProjects,
+  isVisible,
   setSelectedProject,
   favorites = [],
   toggleFavorite,
@@ -44,7 +44,7 @@ const ProjectsGrid = ({
 }) => {
   const [isGridLoaded, setIsGridLoaded] = useState(false);
   const [isHovered, setIsHovered] = useState(null);
-  
+
   // Calculate pagination
   const totalPages = Math.ceil(currentProjects.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -81,8 +81,8 @@ const ProjectsGrid = ({
 
   const statsVariants = {
     hidden: { opacity: 0, scale: 0.9 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       scale: 1,
       transition: { type: 'spring', stiffness: 50 }
     }
@@ -90,8 +90,8 @@ const ProjectsGrid = ({
 
   const noResultsVariants = {
     hidden: { scale: 0.9, opacity: 0 },
-    visible: { 
-      scale: 1, 
+    visible: {
+      scale: 1,
       opacity: 1,
       transition: { type: 'spring', stiffness: 50 }
     }
@@ -103,7 +103,7 @@ const ProjectsGrid = ({
     const completed = currentProjects.filter(p => p.status === 'completed').length;
     const popular = currentProjects.filter(p => p.stars > 100).length;
     const withDemo = currentProjects.filter(p => p.liveUrl).length;
-    
+
     return { featured, completed, popular, withDemo };
   };
 
@@ -117,7 +117,7 @@ const ProjectsGrid = ({
         techCount[tech] = (techCount[tech] || 0) + 1;
       });
     });
-    
+
     return Object.entries(techCount)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
@@ -132,7 +132,7 @@ const ProjectsGrid = ({
       <div className="absolute inset-0 overflow-hidden opacity-10">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-br from-primary-600/10 to-transparent rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-tl from-blue-600/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        
+
         {/* Code Pattern */}
         <div className="absolute inset-0 opacity-5">
           {Array.from({ length: 20 }).map((_, i) => (
@@ -152,9 +152,9 @@ const ProjectsGrid = ({
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        
+
         {/* Header with Stats */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={isVisible ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7 }}
@@ -189,7 +189,7 @@ const ProjectsGrid = ({
                       </span>
                     </div>
                   )}
-                  
+
                   {stats.completed > 0 && (
                     <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-lg">
                       <FiCheckCircle className="text-green-400" />
@@ -198,7 +198,7 @@ const ProjectsGrid = ({
                       </span>
                     </div>
                   )}
-                  
+
                   {stats.withDemo > 0 && (
                     <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 rounded-lg">
                       <FiEye className="text-blue-400" />
@@ -221,7 +221,7 @@ const ProjectsGrid = ({
                 >
                   <FiChevronLeft />
                 </button>
-                
+
                 <div className="flex items-center gap-1">
                   {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
                     const pageNumber = i + 1;
@@ -230,23 +230,22 @@ const ProjectsGrid = ({
                       if (i === 0) return <span key="first" className="px-1 text-gray-500">...</span>;
                       if (i === 4) return <span key="last" className="px-1 text-gray-500">...</span>;
                     }
-                    
+
                     return (
                       <button
                         key={pageNumber}
                         onClick={() => onPageChange && onPageChange(pageNumber)}
-                        className={`px-3 py-1 rounded-lg transition-all duration-300 ${
-                          currentPage === pageNumber
+                        className={`px-3 py-1 rounded-lg transition-all duration-300 ${currentPage === pageNumber
                             ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white'
                             : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
-                        }`}
+                          }`}
                       >
                         {pageNumber}
                       </button>
                     );
                   })}
                 </div>
-                
+
                 <button
                   onClick={() => onPageChange && onPageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
@@ -264,7 +263,7 @@ const ProjectsGrid = ({
               Showing {Math.min(startIndex + 1, currentProjects.length)}-{Math.min(endIndex, currentProjects.length)} of {currentProjects.length} projects
               {totalProjects > 0 && ` (${totalProjects} total)`}
             </div>
-            
+
             {onViewModeChange && (
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-400 hidden md:block">View:</span>
@@ -277,11 +276,10 @@ const ProjectsGrid = ({
                     <button
                       key={mode.id}
                       onClick={() => onViewModeChange(mode.id)}
-                      className={`p-2 rounded transition-all duration-300 ${
-                        viewMode === mode.id
+                      className={`p-2 rounded transition-all duration-300 ${viewMode === mode.id
                           ? 'bg-gradient-to-r from-primary-500/20 to-blue-500/20 text-primary-400'
                           : 'text-gray-400 hover:text-white'
-                      }`}
+                        }`}
                       title={`${mode.label} View`}
                     >
                       <mode.icon className="text-lg" />
@@ -313,22 +311,20 @@ const ProjectsGrid = ({
               variants={containerVariants}
               initial="hidden"
               animate={isGridLoaded ? "visible" : "hidden"}
-              className={`grid gap-6 ${
-                viewMode === 'grid' 
-                  ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
+              className={`grid gap-6 ${viewMode === 'grid'
+                  ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
                   : viewMode === 'list'
-                  ? 'grid-cols-1 lg:grid-cols-2'
-                  : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
-              }`}
+                    ? 'grid-cols-1 lg:grid-cols-2'
+                    : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+                }`}
             >
               {paginatedProjects.map((project, index) => (
                 <motion.div
                   key={project.id}
                   variants={itemVariants}
                   layout
-                  className={`${viewMode === 'list' ? 'col-span-1 lg:col-span-2' : ''} ${
-                    viewMode === 'compact' ? 'col-span-1' : ''
-                  }`}
+                  className={`${viewMode === 'list' ? 'col-span-1 lg:col-span-2' : ''} ${viewMode === 'compact' ? 'col-span-1' : ''
+                    }`}
                   onMouseEnter={() => setIsHovered(project.id)}
                   onMouseLeave={() => setIsHovered(null)}
                 >
@@ -400,7 +396,7 @@ const ProjectsGrid = ({
 
         {/* Pagination Footer */}
         {totalPages > 1 && !isLoading && paginatedProjects.length > 0 && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
@@ -410,7 +406,7 @@ const ProjectsGrid = ({
               <div className="text-sm text-gray-500">
                 Page {currentPage} of {totalPages} • {itemsPerPage} projects per page
               </div>
-              
+
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => onPageChange && onPageChange(currentPage - 1)}
@@ -420,7 +416,7 @@ const ProjectsGrid = ({
                   <FiChevronLeft className="group-hover:-translate-x-1 transition-transform" />
                   <span>Previous</span>
                 </button>
-                
+
                 <div className="flex items-center gap-2">
                   {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                     let pageNumber;
@@ -436,22 +432,21 @@ const ProjectsGrid = ({
                         pageNumber = currentPage - 2 + i;
                       }
                     }
-                    
+
                     return (
                       <button
                         key={pageNumber}
                         onClick={() => onPageChange && onPageChange(pageNumber)}
-                        className={`w-10 h-10 rounded-lg transition-all duration-300 ${
-                          currentPage === pageNumber
+                        className={`w-10 h-10 rounded-lg transition-all duration-300 ${currentPage === pageNumber
                             ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white shadow-lg'
                             : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
-                        }`}
+                          }`}
                       >
                         {pageNumber}
                       </button>
                     );
                   })}
-                  
+
                   {totalPages > 5 && currentPage < totalPages - 2 && (
                     <>
                       <span className="text-gray-600">...</span>
@@ -464,7 +459,7 @@ const ProjectsGrid = ({
                     </>
                   )}
                 </div>
-                
+
                 <button
                   onClick={() => onPageChange && onPageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
@@ -491,21 +486,20 @@ const ProjectsGrid = ({
               <h4 className="text-lg font-semibold text-white">Top Technologies</h4>
               <span className="text-sm text-gray-500">Most used in projects</span>
             </div>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               {topTechs.map((tech, index) => (
-                <div 
+                <div
                   key={tech.tech}
                   className="p-3 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-xl hover:border-primary-500/30 transition-all duration-300"
                 >
                   <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${
-                      tech.tech === 'Python' ? 'bg-blue-500/20' :
-                      tech.tech === 'React' ? 'bg-cyan-500/20' :
-                      tech.tech === 'TensorFlow' ? 'bg-orange-500/20' :
-                      tech.tech === 'Docker' ? 'bg-blue-600/20' :
-                      'bg-primary-500/20'
-                    }`}>
+                    <div className={`p-2 rounded-lg ${tech.tech === 'Python' ? 'bg-blue-500/20' :
+                        tech.tech === 'React' ? 'bg-cyan-500/20' :
+                          tech.tech === 'TensorFlow' ? 'bg-orange-500/20' :
+                            tech.tech === 'Docker' ? 'bg-blue-600/20' :
+                              'bg-primary-500/20'
+                      }`}>
                       {tech.tech === 'Python' && <FaPython className="text-blue-400" />}
                       {tech.tech === 'React' && <FaReact className="text-cyan-400" />}
                       {tech.tech === 'TensorFlow' && <FiTrendingUp className="text-orange-400" />}
@@ -556,7 +550,7 @@ const ProjectsGrid = ({
 
       {/* Missing FiCheckCircle icon */}
       {!FiCheckCircle && (
-        <style jsx>{`
+        <style>{`
           .FiCheckCircle {
             width: 1em;
             height: 1em;

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  FiExternalLink, 
-  FiMail, 
-  FiMessageSquare, 
+import {
+  FiExternalLink,
+  FiMail,
+  FiMessageSquare,
   FiCalendar,
   FiChevronRight,
   FiStar,
@@ -60,13 +60,13 @@ const CoursesBooksCTA = ({ isVisible = true }) => {
 
   return (
     <section className="relative py-24 overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-900">
-      
+
       {/* Animated Background */}
       <div className="absolute inset-0">
         {/* Main Gradient Orbs */}
         <div className="absolute top-1/3 left-10 w-96 h-96 bg-gradient-to-br from-primary-600/20 to-blue-600/20 rounded-full blur-3xl animate-float-slow" />
         <div className="absolute bottom-1/4 right-10 w-80 h-80 bg-gradient-to-tl from-purple-600/20 to-pink-600/20 rounded-full blur-3xl animate-float-slow" style={{ animationDelay: '2s' }} />
-        
+
         {/* Floating Elements */}
         {floatingElements.map((element, index) => {
           const Icon = element.icon;
@@ -85,13 +85,13 @@ const CoursesBooksCTA = ({ isVisible = true }) => {
             </div>
           );
         })}
-        
+
         {/* Grid Pattern */}
         <div className="absolute inset-0 opacity-5 bg-[linear-gradient(90deg,#ffffff12_1px,transparent_1px),linear-gradient(180deg,#ffffff12_1px,transparent_1px)] bg-[size:60px_60px]" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        
+
         {/* Decorative Elements */}
         <div className="flex justify-center mb-12">
           <div className="relative">
@@ -102,13 +102,13 @@ const CoursesBooksCTA = ({ isVisible = true }) => {
           </div>
         </div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={isVisible ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
           className="max-w-4xl mx-auto text-center"
         >
-          
+
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500/20 to-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-primary-500/30 mb-8 group hover:border-primary-500/50 transition-all duration-300">
             <FiMessageSquare className="text-primary-300" />
@@ -139,8 +139,8 @@ const CoursesBooksCTA = ({ isVisible = true }) => {
 
           {/* Description */}
           <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed mb-12">
-            Navigating the vast world of AI and ML resources can be overwhelming. 
-            Share your learning goals, current level, and timeline, and I'll curate 
+            Navigating the vast world of AI and ML resources can be overwhelming.
+            Share your learning goals, current level, and timeline, and I'll curate
             a personalized reading list specifically for you.
           </p>
 
@@ -159,7 +159,7 @@ const CoursesBooksCTA = ({ isVisible = true }) => {
                   className="relative group"
                 >
                   <div className={`absolute -inset-0.5 bg-gradient-to-r ${index % 2 === 0 ? 'from-primary-500 to-blue-500' : 'from-purple-500 to-pink-500'} rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-500`} />
-                  
+
                   <div className="relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6 hover:border-primary-500/30 transition-all duration-300">
                     <div className="flex flex-col items-center gap-3">
                       <div className={`p-3 bg-gradient-to-br ${index % 2 === 0 ? 'from-primary-500/20 to-blue-500/20' : 'from-purple-500/20 to-pink-500/20'} rounded-xl`}>
@@ -177,7 +177,7 @@ const CoursesBooksCTA = ({ isVisible = true }) => {
           </div>
 
           {/* Main CTA */}
-          <motion.div 
+          <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="relative inline-block mb-8"
@@ -185,10 +185,9 @@ const CoursesBooksCTA = ({ isVisible = true }) => {
             onMouseLeave={() => setIsHovered(false)}
           >
             {/* Button Glow */}
-            <div className={`absolute -inset-1 bg-gradient-to-r from-primary-500 to-blue-500 rounded-2xl blur transition-all duration-700 ${
-              isHovered ? 'opacity-70' : 'opacity-30'
-            }`} />
-            
+            <div className={`absolute -inset-1 bg-gradient-to-r from-primary-500 to-blue-500 rounded-2xl blur transition-all duration-700 ${isHovered ? 'opacity-70' : 'opacity-30'
+              }`} />
+
             {/* Main Button */}
             <button
               onClick={() => setIsFormVisible(true)}
@@ -197,11 +196,11 @@ const CoursesBooksCTA = ({ isVisible = true }) => {
               <FiMail className="text-xl" />
               <span className="text-lg">Get Personalized Recommendations</span>
               <FiChevronRight className="group-hover/btn:translate-x-2 transition-transform" />
-              
+
               {/* Hover Overlay */}
               <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 rounded-2xl" />
             </button>
-            
+
             {/* Sparkle Animation */}
             {isHovered && (
               <div className="absolute -top-4 -right-4">
@@ -228,13 +227,13 @@ const CoursesBooksCTA = ({ isVisible = true }) => {
       {isFormVisible && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           {/* Backdrop */}
-          <div 
+          <div
             className="absolute inset-0 bg-black/80 backdrop-blur-sm"
             onClick={() => setIsFormVisible(false)}
           />
-          
+
           {/* Form Modal */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 50 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 50 }}
@@ -255,7 +254,7 @@ const CoursesBooksCTA = ({ isVisible = true }) => {
                 </button>
               </div>
             </div>
-            
+
             {/* Form Content */}
             <form onSubmit={handleSubmit} className="p-6">
               <div className="space-y-6">
@@ -269,19 +268,18 @@ const CoursesBooksCTA = ({ isVisible = true }) => {
                       <button
                         key={goal}
                         type="button"
-                        onClick={() => setFormData({...formData, goal})}
-                        className={`px-4 py-3 rounded-xl transition-all duration-300 ${
-                          formData.goal === goal
+                        onClick={() => setFormData({ ...formData, goal })}
+                        className={`px-4 py-3 rounded-xl transition-all duration-300 ${formData.goal === goal
                             ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white'
                             : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
-                        }`}
+                          }`}
                       >
                         {goal}
                       </button>
                     ))}
                   </div>
                 </div>
-                
+
                 {/* Current Level */}
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-3">
@@ -292,19 +290,18 @@ const CoursesBooksCTA = ({ isVisible = true }) => {
                       <button
                         key={level}
                         type="button"
-                        onClick={() => setFormData({...formData, level})}
-                        className={`px-4 py-3 rounded-xl transition-all duration-300 ${
-                          formData.level === level
+                        onClick={() => setFormData({ ...formData, level })}
+                        className={`px-4 py-3 rounded-xl transition-all duration-300 ${formData.level === level
                             ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white'
                             : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-green-500/30'
-                        }`}
+                          }`}
                       >
                         {level}
                       </button>
                     ))}
                   </div>
                 </div>
-                
+
                 {/* Timeframe */}
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-3">
@@ -315,19 +312,18 @@ const CoursesBooksCTA = ({ isVisible = true }) => {
                       <button
                         key={time}
                         type="button"
-                        onClick={() => setFormData({...formData, timeframe: time})}
-                        className={`px-4 py-3 rounded-xl transition-all duration-300 ${
-                          formData.timeframe === time
+                        onClick={() => setFormData({ ...formData, timeframe: time })}
+                        className={`px-4 py-3 rounded-xl transition-all duration-300 ${formData.timeframe === time
                             ? 'bg-gradient-to-r from-orange-500 to-yellow-600 text-white'
                             : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-orange-500/30'
-                        }`}
+                          }`}
                       >
                         {time}
                       </button>
                     ))}
                   </div>
                 </div>
-                
+
                 {/* Email */}
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-3">
@@ -337,13 +333,13 @@ const CoursesBooksCTA = ({ isVisible = true }) => {
                     type="email"
                     placeholder="your.email@example.com"
                     value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-white rounded-xl placeholder-gray-500 focus:outline-none focus:border-primary-500/50 transition-all duration-300"
                     required
                   />
                 </div>
               </div>
-              
+
               {/* Form Actions */}
               <div className="flex gap-3 mt-8 pt-6 border-t border-gray-700/50">
                 <button
@@ -367,7 +363,7 @@ const CoursesBooksCTA = ({ isVisible = true }) => {
       )}
 
       {/* Custom Animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes float-slow {
           0%, 100% {
             transform: translate(0, 0) rotate(0deg);

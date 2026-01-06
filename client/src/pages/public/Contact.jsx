@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { 
+import {
   FiMail, FiPhone, FiMapPin, FiSend, FiUser, FiMessageSquare,
-  FiCheckCircle, FiClock, FiGlobe, FiLinkedin, FiGithub, 
+  FiCheckCircle, FiClock, FiGlobe, FiLinkedin, FiGithub,
   FiTwitter, FiCalendar, FiArrowRight, FiChevronRight,
-  FiZap, FiTerminal, FiTarget
+  FiZap, FiTerminal, FiTarget, FiLoader, FiAlertCircle
 } from 'react-icons/fi';
-import { SiUpwork, SiFiverr } from 'react-icons/si';
 import { FaWhatsapp, FaTelegramPlane } from 'react-icons/fa';
+import messageService from '../../services/messageService';
+import toast from 'react-hot-toast';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,7 @@ const Contact = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [activeMethod, setActiveMethod] = useState('email');
   const [hoveredLink, setHoveredLink] = useState(null);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     // Add binary code animation
@@ -29,24 +31,93 @@ const Contact = () => {
     });
   }, []);
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email';
+    }
+
+    if (!formData.subject) {
+      newErrors.subject = 'Subject is required';
+    }
+
+    if (!formData.message.trim()) {
+      newErrors.message = 'Message is required';
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = 'Message must be at least 10 characters';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      toast.error('Please fix the errors in the form');
+      return;
+    }
+
     setIsSubmitting(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Form submitted:', formData);
+
+    try {
+      const messageData = {
+        full_name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+        message_type: 'contact',
+        phone: formData.phone || undefined
+      };
+
+      const result = await messageService.send(messageData);
+
+      if (result.success) {
+        setIsSubmitted(true);
+        toast.success('Message sent successfully! I\'ll get back to you soon.');
+
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: ''
+        });
+        setErrors({});
+
+        // Reset success message after 5 seconds
+        setTimeout(() => setIsSubmitted(false), 5000);
+      } else {
+        throw new Error(result.error || 'Failed to send message');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast.error('Failed to send message. Please try again.');
+    } finally {
       setIsSubmitting(false);
-      setIsSubmitted(true);
-      setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
-      
-      // Reset success message after 5 seconds
-      setTimeout(() => setIsSubmitted(false), 5000);
-    }, 1500);
+    }
   };
 
   // Contact Methods
@@ -69,7 +140,7 @@ const Contact = () => {
       gradient: 'from-green-500 to-emerald-500',
       delay: 'Instant',
       description: 'Quick conversations',
-      link: 'https://api.whatsapp.com/send?phone=0021695881709&text=Hello, more information!'
+      link: 'https://api.whatsapp.com/send?phone=0021695881709&text=Hello, I\'d like to discuss a project'
     },
     {
       id: 'telegram',
@@ -89,7 +160,7 @@ const Contact = () => {
       gradient: 'from-purple-500 to-pink-500',
       delay: 'Remote',
       description: 'Available worldwide',
-      link: '#'
+      link: 'https://maps.google.com/?q=Tunis,Tunisia'
     }
   ];
 
@@ -100,7 +171,7 @@ const Contact = () => {
       description: 'Discuss your AI project requirements',
       icon: FiTerminal,
       button: 'Schedule a Call',
-      link: 'https://calendly.com/yourprofile',
+      link: 'https://calendly.com/naceurkeraani/30min',
       gradient: 'from-blue-500 to-cyan-500'
     },
     {
@@ -123,27 +194,27 @@ const Contact = () => {
 
   // Social Links
   const socialLinks = [
-    { 
-      icon: FiLinkedin, 
-      url: 'https://linkedin.com/in/keraani-naceur-49523a175/', 
+    {
+      icon: FiLinkedin,
+      url: 'https://linkedin.com/in/keraani-naceur-49523a175/',
       label: 'LinkedIn',
       gradient: 'from-blue-500 to-blue-700'
     },
-    { 
-      icon: FiGithub, 
-      url: 'https://github.com', 
+    {
+      icon: FiGithub,
+      url: 'https://github.com/naceur-keraani',
       label: 'GitHub',
       gradient: 'from-gray-800 to-black'
     },
-    { 
-      icon: FiTwitter, 
-      url: 'https://twitter.com', 
+    {
+      icon: FiTwitter,
+      url: 'https://twitter.com',
       label: 'Twitter',
       gradient: 'from-sky-500 to-blue-500'
     },
-    { 
-      icon: FaWhatsapp, 
-      url: 'https://api.whatsapp.com/send?phone=0021695881709', 
+    {
+      icon: FaWhatsapp,
+      url: 'https://api.whatsapp.com/send?phone=0021695881709',
       label: 'WhatsApp',
       gradient: 'from-green-500 to-emerald-600'
     }
@@ -158,15 +229,15 @@ const Contact = () => {
 
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 overflow-hidden">
-      
+
       {/* Animated Background */}
       <div className="absolute inset-0">
         {/* Gradient Mesh */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary-900/30 via-black/50 to-blue-900/30" />
-        
+
         {/* Circuit Pattern */}
         <div className="absolute inset-0 opacity-10 bg-[linear-gradient(45deg,#80808012_25%,transparent_25%),linear-gradient(-45deg,#80808012_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#80808012_75%),linear-gradient(-45deg,transparent_75%,#80808012_75%)] bg-[size:20px_20px]" />
-        
+
         {/* Floating Particles */}
         <div className="absolute inset-0">
           {Array.from({ length: 15 }).map((_, i) => (
@@ -182,7 +253,7 @@ const Contact = () => {
             />
           ))}
         </div>
-        
+
         {/* Binary Code Animation */}
         <div className="absolute inset-0 overflow-hidden opacity-5">
           {Array.from({ length: 30 }).map((_, i) => (
@@ -205,7 +276,7 @@ const Contact = () => {
       <section className="relative py-20 overflow-hidden">
         <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-blue-500/10 to-transparent rounded-full blur-3xl" />
-        
+
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-primary-500/20 to-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-primary-500/30 mb-6">
@@ -219,7 +290,7 @@ const Contact = () => {
               </span>
             </h1>
             <p className="text-xl text-gray-400 leading-relaxed">
-              Have a project in mind? Let's discuss how we can work together to 
+              Have a project in mind? Let's discuss how we can work together to
               bring your AI and Machine Learning ideas to life.
             </p>
           </div>
@@ -230,7 +301,7 @@ const Contact = () => {
       <section className="relative py-10">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-3 gap-8">
-            
+
             {/* Left Column - Contact Methods */}
             <div className="lg:col-span-1 space-y-6">
               {/* Contact Methods Cards */}
@@ -243,32 +314,29 @@ const Contact = () => {
                   {contactMethods.map((method, index) => {
                     const Icon = method.icon;
                     const isActive = activeMethod === method.id;
-                    
+
                     return (
                       <button
                         key={index}
                         onClick={() => setActiveMethod(method.id)}
-                        className={`group relative p-4 rounded-xl backdrop-blur-sm transition-all duration-300 ${
-                          isActive 
-                            ? 'bg-gradient-to-br from-gray-800 to-gray-900 border border-primary-500/50' 
-                            : 'bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 hover:border-primary-500/30'
-                        }`}
+                        className={`group relative p-4 rounded-xl backdrop-blur-sm transition-all duration-300 ${isActive
+                          ? 'bg-gradient-to-br from-gray-800 to-gray-900 border border-primary-500/50'
+                          : 'bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 hover:border-primary-500/30'
+                          }`}
                       >
-                        <div className={`absolute inset-0 bg-gradient-to-r ${method.gradient} rounded-xl opacity-0 ${
-                          isActive ? 'opacity-10' : 'group-hover:opacity-5'
-                        } transition-opacity duration-300`} />
-                        
+                        <div className={`absolute inset-0 bg-gradient-to-r ${method.gradient} rounded-xl opacity-0 ${isActive ? 'opacity-10' : 'group-hover:opacity-5'
+                          } transition-opacity duration-300`} />
+
                         <div className="relative z-10">
-                          <div className={`inline-flex p-2 rounded-lg mb-3 ${
-                            isActive ? `bg-gradient-to-r ${method.gradient}` : 'bg-gray-800'
-                          }`}>
+                          <div className={`inline-flex p-2 rounded-lg mb-3 ${isActive ? `bg-gradient-to-r ${method.gradient}` : 'bg-gray-800'
+                            }`}>
                             <Icon className={`text-lg ${isActive ? 'text-white' : 'text-gray-400'}`} />
                           </div>
-                          
+
                           <h4 className={`text-sm font-bold mb-1 ${isActive ? 'text-white' : 'text-gray-300'}`}>
                             {method.title}
                           </h4>
-                          
+
                           <div className={`text-xs ${isActive ? 'text-gray-300' : 'text-gray-500'}`}>
                             {method.value}
                           </div>
@@ -287,7 +355,7 @@ const Contact = () => {
                     {contactMethods.find(m => m.id === activeMethod)?.delay}
                   </div>
                 </div>
-                
+
                 <div className="space-y-4">
                   {contactMethods
                     .filter(m => m.id === activeMethod)
@@ -304,7 +372,7 @@ const Contact = () => {
                               <div className="text-gray-300 text-sm">{method.value}</div>
                             </div>
                           </div>
-                          
+
                           <a
                             href={method.link}
                             target={method.id !== 'email' && method.id !== 'location' ? '_blank' : '_self'}
@@ -313,14 +381,14 @@ const Contact = () => {
                           >
                             <button className="w-full group relative bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-700/50 text-gray-300 py-3 rounded-xl font-semibold hover:text-white hover:border-primary-500/30 transition-all duration-300 flex items-center justify-center gap-2">
                               <span>
-                                {method.id === 'email' ? 'Send Email' : 
-                                 method.id === 'whatsapp' ? 'Open WhatsApp' : 
-                                 method.id === 'telegram' ? 'Open Telegram' : 'View Location'}
+                                {method.id === 'email' ? 'Send Email' :
+                                  method.id === 'whatsapp' ? 'Open WhatsApp' :
+                                    method.id === 'telegram' ? 'Open Telegram' : 'View Location'}
                               </span>
                               <FiChevronRight className="group-hover:translate-x-1 transition-transform" />
                             </button>
                           </a>
-                          
+
                           <div className="text-xs text-gray-500 text-center">
                             {method.description}
                           </div>
@@ -335,14 +403,14 @@ const Contact = () => {
                 {stats.map((stat, index) => {
                   const Icon = stat.icon;
                   return (
-                    <div 
+                    <div
                       key={index}
-                      className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-3 text-center"
+                      className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-3 text-center group hover:border-primary-500/30 transition-all duration-300"
                     >
-                      <div className="text-lg font-bold bg-gradient-to-r bg-clip-text text-transparent mb-1">
+                      <div className={`text-lg font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-1 group-hover:scale-110 transition-transform duration-300`}>
                         {stat.value}
                       </div>
-                      <div className="text-xs text-gray-500">{stat.label}</div>
+                      <div className="text-xs text-gray-500 group-hover:text-gray-300">{stat.label}</div>
                     </div>
                   );
                 })}
@@ -362,7 +430,7 @@ const Contact = () => {
                     <p className="text-gray-400 text-sm">Get a response within 24 hours</p>
                   </div>
                 </div>
-                
+
                 {isSubmitted ? (
                   <div className="text-center py-12">
                     <div className="inline-flex p-4 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-full mb-4">
@@ -371,6 +439,7 @@ const Contact = () => {
                     <h3 className="text-2xl font-bold text-white mb-2">Message Sent!</h3>
                     <p className="text-gray-400 mb-6">
                       Thank you for reaching out. I'll review your message and get back to you within 24 hours.
+                      Check your email for confirmation.
                     </p>
                     <button
                       onClick={() => setIsSubmitted(false)}
@@ -393,9 +462,14 @@ const Contact = () => {
                           value={formData.name}
                           onChange={handleChange}
                           required
-                          className="w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl text-white placeholder-gray-500 focus:border-primary-500/50 focus:outline-none transition-all"
+                          disabled={isSubmitting}
+                          className={`w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border ${errors.name ? 'border-red-500/50' : 'border-gray-700/50'
+                            } rounded-xl text-white placeholder-gray-500 focus:border-primary-500/50 focus:outline-none transition-all disabled:opacity-50`}
                           placeholder="Enter your full name"
                         />
+                        {errors.name && (
+                          <p className="mt-1 text-sm text-red-400">{errors.name}</p>
+                        )}
                       </div>
 
                       <div>
@@ -409,9 +483,14 @@ const Contact = () => {
                           value={formData.email}
                           onChange={handleChange}
                           required
-                          className="w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl text-white placeholder-gray-500 focus:border-primary-500/50 focus:outline-none transition-all"
+                          disabled={isSubmitting}
+                          className={`w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border ${errors.email ? 'border-red-500/50' : 'border-gray-700/50'
+                            } rounded-xl text-white placeholder-gray-500 focus:border-primary-500/50 focus:outline-none transition-all disabled:opacity-50`}
                           placeholder="your.email@example.com"
                         />
+                        {errors.email && (
+                          <p className="mt-1 text-sm text-red-400">{errors.email}</p>
+                        )}
                       </div>
                     </div>
 
@@ -426,7 +505,8 @@ const Contact = () => {
                           name="phone"
                           value={formData.phone}
                           onChange={handleChange}
-                          className="w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl text-white placeholder-gray-500 focus:border-primary-500/50 focus:outline-none transition-all"
+                          disabled={isSubmitting}
+                          className="w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl text-white placeholder-gray-500 focus:border-primary-500/50 focus:outline-none transition-all disabled:opacity-50"
                           placeholder="+216 XX XXX XXX"
                         />
                       </div>
@@ -440,15 +520,20 @@ const Contact = () => {
                           value={formData.subject}
                           onChange={handleChange}
                           required
-                          className="w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl text-white focus:border-primary-500/50 focus:outline-none transition-all"
+                          disabled={isSubmitting}
+                          className={`w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border ${errors.subject ? 'border-red-500/50' : 'border-gray-700/50'
+                            } rounded-xl text-white focus:border-primary-500/50 focus:outline-none transition-all disabled:opacity-50`}
                         >
                           <option value="">Select a subject</option>
-                          <option value="AI Project">AI/ML Project Consultation</option>
-                          <option value="Training">Training Program</option>
-                          <option value="Collaboration">Business Collaboration</option>
-                          <option value="Freelance">Freelance Work</option>
-                          <option value="Other">Other Inquiry</option>
+                          <option value="AI/ML Project Consultation">AI/ML Project Consultation</option>
+                          <option value="Training Program Inquiry">Training Program Inquiry</option>
+                          <option value="Business Collaboration">Business Collaboration</option>
+                          <option value="Freelance Work">Freelance Work</option>
+                          <option value="General Inquiry">General Inquiry</option>
                         </select>
+                        {errors.subject && (
+                          <p className="mt-1 text-sm text-red-400">{errors.subject}</p>
+                        )}
                       </div>
                     </div>
 
@@ -462,10 +547,18 @@ const Contact = () => {
                         value={formData.message}
                         onChange={handleChange}
                         required
+                        disabled={isSubmitting}
                         rows="6"
-                        className="w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl text-white placeholder-gray-500 focus:border-primary-500/50 focus:outline-none transition-all resize-none"
+                        className={`w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border ${errors.message ? 'border-red-500/50' : 'border-gray-700/50'
+                          } rounded-xl text-white placeholder-gray-500 focus:border-primary-500/50 focus:outline-none transition-all resize-none disabled:opacity-50`}
                         placeholder="Tell me about your project, timeline, and budget..."
                       />
+                      {errors.message && (
+                        <p className="mt-1 text-sm text-red-400">{errors.message}</p>
+                      )}
+                      <div className="mt-1 text-xs text-gray-500">
+                        {formData.message.length}/2000 characters
+                      </div>
                     </div>
 
                     <div className="flex items-center space-x-4">
@@ -476,7 +569,7 @@ const Contact = () => {
                       >
                         {isSubmitting ? (
                           <>
-                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            <FiLoader className="animate-spin" />
                             <span>Sending...</span>
                           </>
                         ) : (
@@ -492,6 +585,10 @@ const Contact = () => {
                     <div className="flex items-center gap-3 text-sm text-gray-500">
                       <FiClock className="text-primary-400" />
                       <span>Typical response time: 4-6 hours</span>
+                    </div>
+
+                    <div className="text-xs text-gray-500 text-center pt-4 border-t border-gray-700/50">
+                      By submitting, you agree to our privacy policy. You'll receive a confirmation email.
                     </div>
                   </form>
                 )}
@@ -551,7 +648,7 @@ const Contact = () => {
                       >
                         <div className={`absolute inset-0 bg-gradient-to-br ${social.gradient} rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
                         <Icon className="text-gray-400 group-hover:text-white transition-colors relative z-10" />
-                        
+
                         {/* Tooltip */}
                         <div className={`
                           absolute -top-10 left-1/2 -translate-x-1/2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 px-3 py-1 rounded-lg text-xs font-medium text-white whitespace-nowrap
@@ -579,17 +676,17 @@ const Contact = () => {
               <FiCalendar className="text-primary-300" />
               <span className="text-primary-200 font-medium tracking-wider">READY TO INNOVATE?</span>
             </div>
-            
+
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
               Let's Start Your AI Journey
             </h2>
             <p className="text-xl text-gray-400 mb-8">
-              Whether you're looking to implement AI solutions or enhance your team's skills, 
+              Whether you're looking to implement AI solutions or enhance your team's skills,
               I'm here to help you succeed.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button 
-                onClick={() => window.open('https://calendly.com/yourprofile', '_blank')}
+              <button
+                onClick={() => window.open('https://calendly.com/naceurkeraani/30min', '_blank')}
                 className="group relative bg-gradient-to-r from-primary-500 to-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center space-x-2"
               >
                 <FiCalendar />
@@ -609,7 +706,7 @@ const Contact = () => {
       </section>
 
       {/* Custom Animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes binary-fall {
           0% {
             transform: translateY(-100%);
@@ -645,19 +742,6 @@ const Contact = () => {
         
         .animate-float {
           animation: float 6s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-        
-        .animate-spin {
-          animation: spin 1s linear infinite;
         }
       `}</style>
     </div>

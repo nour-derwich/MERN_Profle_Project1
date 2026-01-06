@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  FiCode, 
-  FiCpu, 
-  FiDatabase, 
-  FiTrendingUp, 
+import {
+  FiCode,
+  FiCpu,
+  FiDatabase,
+  FiTrendingUp,
   FiChevronRight,
   FiGlobe,
   FiLayers,
@@ -95,44 +95,40 @@ const ProjectsHero = ({ isVisible = true }) => {
 
   const TechCard = ({ tech, index, isActive }) => {
     const Icon = tech.icon;
-    
+
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: index * 0.1 }}
-        className={`relative cursor-pointer transition-all duration-500 ${
-          isActive ? 'scale-110' : 'scale-90 opacity-60'
-        }`}
+        className={`relative cursor-pointer transition-all duration-500 ${isActive ? 'scale-110' : 'scale-90 opacity-60'
+          }`}
         onClick={() => setActiveTech(index)}
         onMouseEnter={() => setIsHovered(index)}
         onMouseLeave={() => setIsHovered(null)}
       >
         {/* Card Glow */}
-        <div className={`absolute -inset-0.5 bg-gradient-to-r ${tech.color} rounded-2xl blur-xl opacity-0 ${
-          isActive || isHovered === index ? 'opacity-30' : ''
-        } transition-opacity duration-500`} />
-        
+        <div className={`absolute -inset-0.5 bg-gradient-to-r ${tech.color} rounded-2xl blur-xl opacity-0 ${isActive || isHovered === index ? 'opacity-30' : ''
+          } transition-opacity duration-500`} />
+
         {/* Card */}
-        <div className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${
-          isActive ? 'border-primary-500/50' : 'border-gray-700/50'
-        } rounded-xl p-6 backdrop-blur-sm hover:border-primary-500/30 transition-all duration-300`}>
-          
+        <div className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${isActive ? 'border-primary-500/50' : 'border-gray-700/50'
+          } rounded-xl p-6 backdrop-blur-sm hover:border-primary-500/30 transition-all duration-300`}>
+
           {/* Icon */}
           <div className={`relative p-4 bg-gradient-to-br ${tech.color}/20 rounded-xl w-fit mb-4 mx-auto`}>
             <Icon className="text-3xl text-white" />
           </div>
-          
+
           {/* Content */}
           <div className="text-center">
             <h3 className="text-lg font-bold text-white mb-2">{tech.name}</h3>
             <p className="text-xs text-gray-400">{tech.description}</p>
           </div>
-          
+
           {/* Active Indicator */}
-          <div className={`absolute -right-2 -top-2 w-4 h-4 bg-gradient-to-r ${tech.color} rounded-full border-2 border-gray-900 opacity-0 ${
-            isActive ? 'opacity-100' : ''
-          } transition-opacity duration-300`} />
+          <div className={`absolute -right-2 -top-2 w-4 h-4 bg-gradient-to-r ${tech.color} rounded-full border-2 border-gray-900 opacity-0 ${isActive ? 'opacity-100' : ''
+            } transition-opacity duration-300`} />
         </div>
       </motion.div>
     );
@@ -140,20 +136,20 @@ const ProjectsHero = ({ isVisible = true }) => {
 
   return (
     <section className="relative min-h-[90vh] overflow-hidden bg-gradient-to-b from-gray-900 via-black to-gray-900">
-      
+
       {/* Animated Background */}
       <div className="absolute inset-0">
         {/* Gradient Orbs */}
         <div className="absolute top-1/4 left-10 w-96 h-96 bg-gradient-to-br from-primary-600/20 to-blue-600/20 rounded-full blur-3xl animate-float-slow" />
         <div className="absolute bottom-1/4 right-10 w-80 h-80 bg-gradient-to-tl from-purple-600/20 to-pink-600/20 rounded-full blur-3xl animate-float-slow" style={{ animationDelay: '2s' }} />
-        
+
         {/* Code Pattern */}
         <div className="absolute inset-0 opacity-5 bg-[linear-gradient(90deg,#ffffff12_1px,transparent_1px),linear-gradient(180deg,#ffffff12_1px,transparent_1px)] bg-[size:60px_60px]" />
-        
+
         {/* Floating Code Blocks */}
         <div className="absolute top-20 right-1/4 w-40 h-40 bg-gradient-to-br from-primary-500/5 to-transparent rounded-lg blur-3xl rotate-45 animate-float-slow" />
         <div className="absolute bottom-20 left-1/4 w-32 h-32 bg-gradient-to-tl from-blue-500/5 to-transparent rounded-lg blur-3xl -rotate-12 animate-float-slow" style={{ animationDelay: '1s' }} />
-        
+
         {/* Code Lines Animation */}
         <div className="absolute inset-0 overflow-hidden">
           {Array.from({ length: 10 }).map((_, i) => (
@@ -175,7 +171,7 @@ const ProjectsHero = ({ isVisible = true }) => {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="pt-32 pb-20">
-          
+
           {/* Tech Stack Carousel */}
           <div className="relative mb-16">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-6xl mx-auto">
@@ -188,22 +184,20 @@ const ProjectsHero = ({ isVisible = true }) => {
                 />
               ))}
             </div>
-            
+
             {/* Navigation Dots */}
             <div className="flex justify-center gap-2 mt-8">
               {techStack.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setActiveTech(index)}
-                  className={`relative transition-all duration-300 ${
-                    activeTech === index ? 'scale-125' : ''
-                  }`}
+                  className={`relative transition-all duration-300 ${activeTech === index ? 'scale-125' : ''
+                    }`}
                 >
-                  <div className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    activeTech === index
+                  <div className={`w-2 h-2 rounded-full transition-all duration-300 ${activeTech === index
                       ? 'bg-gradient-to-r from-primary-400 to-blue-400'
                       : 'bg-gray-700 hover:bg-gray-600'
-                  }`} />
+                    }`} />
                   {activeTech === index && (
                     <div className="absolute -inset-2 bg-gradient-to-r from-primary-400/20 to-blue-400/20 rounded-full animate-ping" />
                   )}
@@ -213,13 +207,13 @@ const ProjectsHero = ({ isVisible = true }) => {
           </div>
 
           {/* Main Content */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={isVisible ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
             className="text-center max-w-6xl mx-auto"
           >
-            
+
             {/* Badge */}
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500/20 to-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-primary-500/30 mb-8 group hover:border-primary-500/50 transition-all duration-300">
               <div className="relative">
@@ -252,8 +246,8 @@ const ProjectsHero = ({ isVisible = true }) => {
 
             {/* Description */}
             <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed mb-12">
-              Explore my collection of production-ready projects that solve real problems. 
-              From machine learning models to full-stack applications, each project demonstrates 
+              Explore my collection of production-ready projects that solve real problems.
+              From machine learning models to full-stack applications, each project demonstrates
               technical expertise and practical problem-solving.
             </p>
 
@@ -271,13 +265,13 @@ const ProjectsHero = ({ isVisible = true }) => {
                   >
                     {/* Glow Effect */}
                     <div className={`absolute -inset-0.5 bg-gradient-to-r ${stat.color} rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
-                    
+
                     {/* Card */}
                     <div className="relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6 hover:border-primary-500/30 transition-all duration-300 group-hover:scale-105">
                       <div className="flex flex-col items-center gap-3">
                         <div className={`p-3 bg-gradient-to-br ${stat.color}/20 rounded-xl`}>
-                            <Icon className="text-xl text-white" />
-                          </div>
+                          <Icon className="text-xl text-white" />
+                        </div>
                         <div className="text-3xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
                           {stat.value}
                         </div>
@@ -308,7 +302,7 @@ const ProjectsHero = ({ isVisible = true }) => {
             </div>
 
             {/* CTA */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.8 }}
@@ -321,7 +315,7 @@ const ProjectsHero = ({ isVisible = true }) => {
                   <FiChevronRight className="group-hover:translate-x-2 transition-transform" />
                   <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
                 </button>
-                
+
                 <button className="group relative bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 px-8 py-4 rounded-xl font-bold hover:text-white hover:border-primary-500/30 transition-all duration-300 hover:scale-105 flex items-center gap-3">
                   <FiLayers />
                   <span>View GitHub</span>
@@ -331,7 +325,7 @@ const ProjectsHero = ({ isVisible = true }) => {
             </motion.div>
 
             {/* Scroll Indicator */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.2 }}
@@ -349,7 +343,7 @@ const ProjectsHero = ({ isVisible = true }) => {
       </div>
 
       {/* Custom Animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes float-slow {
           0%, 100% {
             transform: translate(0, 0) rotate(0deg);

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  FiAward, 
-  FiChevronRight, 
-  FiBook, 
-  FiTrendingUp, 
+import {
+  FiAward,
+  FiChevronRight,
+  FiBook,
+  FiTrendingUp,
   FiClock,
   FiCheckCircle,
   FiStar,
@@ -13,7 +13,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import StarRating from './StarRating';
 
-const CoursesBooksRecommendations = ({ 
+const CoursesBooksRecommendations = ({
   fetchRecommendations,
   favorites = [],
   toggleFavorite,
@@ -28,14 +28,14 @@ const CoursesBooksRecommendations = ({
   useEffect(() => {
     setIsVisible(true);
     loadRecommendations();
-    
+
     // Auto-rotate recommendations
     const interval = setInterval(() => {
       if (recommendations.length > 0) {
         setActiveIndex((prev) => (prev + 1) % recommendations.length);
       }
     }, 5000);
-    
+
     return () => clearInterval(interval);
   }, [recommendations.length]);
 
@@ -43,7 +43,7 @@ const CoursesBooksRecommendations = ({
     try {
       setLoading(true);
       const data = await fetchRecommendations();
-      
+
       // Format the data for frontend
       const formattedRecommendations = data.map(book => ({
         id: book.id,
@@ -66,7 +66,7 @@ const CoursesBooksRecommendations = ({
         why_recommend: book.why_recommend || ['Practical', 'Career', 'Foundation'],
         tags: book.tags || []
       }));
-      
+
       setRecommendations(formattedRecommendations);
     } catch (error) {
       console.error('Error loading recommendations:', error);
@@ -125,21 +125,21 @@ const CoursesBooksRecommendations = ({
 
   return (
     <section className="relative py-20 overflow-hidden bg-gradient-to-b from-gray-900 via-black to-gray-900">
-      
+
       {/* Background Effects */}
       <div className="absolute inset-0">
         {/* Gradient Orbs */}
         <div className="absolute top-1/4 left-10 w-72 h-72 bg-gradient-to-br from-yellow-600/10 to-orange-600/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-1/4 right-10 w-80 h-80 bg-gradient-to-tl from-blue-600/10 to-cyan-600/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        
+
         {/* Pattern Overlay */}
         <div className="absolute inset-0 opacity-5 bg-[radial-gradient(circle_at_30%_30%,#ffffff12_2px,transparent_2px)] bg-[length:40px_40px]" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        
+
         {/* Header */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -167,16 +167,16 @@ const CoursesBooksRecommendations = ({
 
           {/* Subtitle */}
           <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Books that have profoundly shaped my understanding of AI and Machine Learning. 
+            Books that have profoundly shaped my understanding of AI and Machine Learning.
             Each recommendation comes with personal insights and specific use cases.
           </p>
         </motion.div>
 
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
+
           {/* Left: Featured Book */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
@@ -185,7 +185,7 @@ const CoursesBooksRecommendations = ({
             <AnimatePresence mode="wait">
               {recommendations.map((book, index) => {
                 if (index !== activeIndex) return null;
-                
+
                 return (
                   <motion.div
                     key={book.id}
@@ -199,10 +199,10 @@ const CoursesBooksRecommendations = ({
                     <div className="relative group">
                       {/* Glow Effect */}
                       <div className="absolute -inset-4 bg-gradient-to-r from-yellow-600/30 to-orange-600/30 rounded-3xl blur-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500" />
-                      
+
                       {/* Main Card */}
                       <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-yellow-500/30 rounded-2xl overflow-hidden backdrop-blur-sm p-8">
-                        
+
                         {/* Header */}
                         <div className="flex items-start justify-between mb-6">
                           <div>
@@ -217,30 +217,29 @@ const CoursesBooksRecommendations = ({
                             <h3 className="text-3xl font-bold text-white mb-2">{book.title}</h3>
                             <p className="text-lg text-gray-400">by {book.author}</p>
                           </div>
-                          
+
                           {/* Favorite Button */}
                           <button
                             onClick={() => toggleFavorite && toggleFavorite(book.id)}
                             className="relative p-3 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl hover:border-red-500/50 transition-all duration-300 group/btn"
                           >
                             <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl blur opacity-0 group-hover/btn:opacity-30 transition-opacity duration-500" />
-                            <FiHeart 
-                              className={`text-xl ${
-                                favorites.includes(book.id) 
-                                  ? 'fill-red-500 text-red-500 animate-heart-beat' 
+                            <FiHeart
+                              className={`text-xl ${favorites.includes(book.id)
+                                  ? 'fill-red-500 text-red-500 animate-heart-beat'
                                   : 'text-gray-400 group-hover/btn:text-red-400'
-                              }`}
+                                }`}
                             />
                           </button>
                         </div>
 
                         {/* Content Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                          
+
                           {/* Book Image */}
                           <div className="relative overflow-hidden rounded-xl">
-                            <img 
-                              src={book.image} 
+                            <img
+                              src={book.image}
                               alt={book.title}
                               className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700"
                               onError={(e) => {
@@ -249,7 +248,7 @@ const CoursesBooksRecommendations = ({
                               }}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent" />
-                            
+
                             {/* Year Badge */}
                             {book.year && (
                               <div className="absolute bottom-4 left-4">
@@ -269,7 +268,7 @@ const CoursesBooksRecommendations = ({
                             <p className="text-gray-400 mb-6 leading-relaxed">
                               {book.personal_insight || book.description}
                             </p>
-                            
+
                             {/* Stats */}
                             <div className="grid grid-cols-2 gap-4 mb-6">
                               <div className="flex items-center gap-3">
@@ -281,7 +280,7 @@ const CoursesBooksRecommendations = ({
                                   <div className="text-white font-medium">{book.time_to_read}</div>
                                 </div>
                               </div>
-                              
+
                               <div className="flex items-center gap-3">
                                 <div className="p-2 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-lg">
                                   <FiTrendingUp className="text-green-400" />
@@ -297,7 +296,7 @@ const CoursesBooksRecommendations = ({
                             {book.why_recommend && book.why_recommend.length > 0 && (
                               <div className="flex flex-wrap gap-2">
                                 {book.why_recommend.map((reason, idx) => (
-                                  <span 
+                                  <span
                                     key={idx}
                                     className={`px-3 py-1.5 bg-gradient-to-br ${getWhyColor(reason)}/20 border ${getWhyColor(reason).replace('from-', 'border-').replace(' to-', '/30 to-')} text-gray-300 rounded-lg text-xs font-medium`}
                                   >
@@ -322,13 +321,13 @@ const CoursesBooksRecommendations = ({
                                 </div>
                               )}
                             </div>
-                            
+
                             <div className="flex items-center gap-2">
                               <StarRating rating={book.rating} />
                               <span className="text-sm text-gray-400">({book.reviews.toLocaleString()} reviews)</span>
                             </div>
                           </div>
-                          
+
                           <div className="flex gap-3">
                             <button
                               onClick={() => handleBookClick(book)}
@@ -356,7 +355,7 @@ const CoursesBooksRecommendations = ({
           </motion.div>
 
           {/* Right: Recommendations List */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -366,7 +365,7 @@ const CoursesBooksRecommendations = ({
               <FiCheckCircle className="text-green-400" />
               <span>All Recommendations</span>
             </h3>
-            
+
             {recommendations.map((book, index) => (
               <motion.div
                 key={book.id}
@@ -376,51 +375,47 @@ const CoursesBooksRecommendations = ({
                 onMouseEnter={() => setIsHovered(index)}
                 onMouseLeave={() => setIsHovered(null)}
               >
-                <div 
+                <div
                   onClick={() => setActiveIndex(index)}
-                  className={`relative cursor-pointer transition-all duration-300 ${
-                    activeIndex === index 
-                      ? 'transform scale-105' 
+                  className={`relative cursor-pointer transition-all duration-300 ${activeIndex === index
+                      ? 'transform scale-105'
                       : 'opacity-80 hover:opacity-100'
-                  }`}
+                    }`}
                 >
                   {/* Selection Indicator */}
                   {activeIndex === index && (
                     <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-1 h-10 bg-gradient-to-b from-yellow-400 to-orange-400 rounded-full" />
                   )}
-                  
+
                   {/* Card */}
-                  <div className={`p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 ${
-                    activeIndex === index
+                  <div className={`p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 ${activeIndex === index
                       ? 'bg-gradient-to-br from-gray-800 to-gray-900 border-yellow-500/30'
                       : 'bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-gray-600/50'
-                  }`}>
+                    }`}>
                     <div className="flex items-center gap-4">
                       {/* Number Badge */}
-                      <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center font-bold transition-all duration-300 ${
-                        activeIndex === index
+                      <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center font-bold transition-all duration-300 ${activeIndex === index
                           ? 'bg-gradient-to-r from-yellow-500 to-orange-600 text-white'
                           : 'bg-gradient-to-br from-gray-700 to-gray-800 text-gray-400'
-                      }`}>
+                        }`}>
                         {index + 1}
                       </div>
-                      
+
                       {/* Content */}
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold text-white truncate">{book.title}</h4>
                         <div className="flex items-center justify-between mt-2">
                           <span className="text-sm text-gray-400 truncate">{book.author}</span>
-                          <span className={`text-sm font-bold ${
-                            activeIndex === index 
-                              ? 'text-yellow-400' 
+                          <span className={`text-sm font-bold ${activeIndex === index
+                              ? 'text-yellow-400'
                               : 'text-gray-500'
-                          }`}>
+                            }`}>
                             ${book.price.toFixed(2)}
                           </span>
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Hover Actions */}
                     {isHovered === index && (
                       <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-700/30">
@@ -452,15 +447,13 @@ const CoursesBooksRecommendations = ({
             <button
               key={index}
               onClick={() => setActiveIndex(index)}
-              className={`relative transition-all duration-300 ${
-                activeIndex === index ? 'scale-125' : ''
-              }`}
+              className={`relative transition-all duration-300 ${activeIndex === index ? 'scale-125' : ''
+                }`}
             >
-              <div className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                activeIndex === index
+              <div className={`w-3 h-3 rounded-full transition-all duration-300 ${activeIndex === index
                   ? 'bg-gradient-to-r from-yellow-400 to-orange-400'
                   : 'bg-gray-700 hover:bg-gray-600'
-              }`} />
+                }`} />
               {activeIndex === index && (
                 <div className="absolute -inset-2 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 rounded-full animate-ping" />
               )}
@@ -474,7 +467,7 @@ const CoursesBooksRecommendations = ({
 
 // Custom animations
 const RecommendationsStyle = () => (
-  <style jsx>{`
+  <style>{`
     @keyframes heart-beat {
       0%, 100% {
         transform: scale(1);

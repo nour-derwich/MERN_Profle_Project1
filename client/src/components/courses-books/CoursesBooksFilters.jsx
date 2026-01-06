@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  FiSearch, FiFilter, FiChevronDown, FiX, 
+import {
+  FiSearch, FiFilter, FiChevronDown, FiX,
   FiStar, FiTrendingUp, FiClock, FiDollarSign,
   FiBookOpen, FiCheck, FiGrid, FiList,
   FiRefreshCw, FiHash, FiLoader
@@ -22,7 +22,7 @@ const CoursesBooksFilters = ({
   viewMode = 'grid',
   setViewMode,
   categories = [],
-  filteredBooks = [],   
+  filteredBooks = [],
   onClearFilters
 }) => {
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
@@ -42,15 +42,15 @@ const CoursesBooksFilters = ({
       setLoadingLevels(true);
       const response = await axios.get('/api/courses/levels');
       const levelsData = response.data.data || [];
-      
+
       // Format levels for frontend
       const formattedLevels = [
         { id: 'all', label: 'All Levels', color: 'from-gray-600 to-gray-800' },
         ...levelsData.map(level => {
           const levelLower = level.toLowerCase();
           let color = 'from-gray-600 to-gray-800';
-          
-          switch(levelLower) {
+
+          switch (levelLower) {
             case 'beginner':
               color = 'from-green-500 to-emerald-600';
               break;
@@ -66,7 +66,7 @@ const CoursesBooksFilters = ({
             default:
               color = 'from-gray-600 to-gray-800';
           }
-          
+
           return {
             id: level,
             label: level.charAt(0).toUpperCase() + level.slice(1),
@@ -74,7 +74,7 @@ const CoursesBooksFilters = ({
           };
         })
       ];
-      
+
       setLevels(formattedLevels);
     } catch (error) {
       console.error('Error fetching levels:', error);
@@ -131,19 +131,19 @@ const CoursesBooksFilters = ({
   return (
     <section className="relative py-6 bg-gradient-to-b from-gray-800 to-gray-900 border-b border-gray-700/50 sticky top-0 z-40 backdrop-blur-xl">
       <div className="container mx-auto px-4">
-        
+
         {/* Search Bar - Modern Design */}
         <div className="relative max-w-2xl mx-auto mb-6">
           <div className="relative group">
             {/* Search Glow Effect */}
             <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
-            
+
             {/* Search Container */}
             <div className="relative flex items-center bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl overflow-hidden backdrop-blur-sm group-hover:border-blue-500/30 transition-all duration-300">
               <div className="pl-4 pr-3">
                 <FiSearch className="text-gray-400 group-hover:text-blue-400 transition-colors duration-300" />
               </div>
-              
+
               <input
                 type="text"
                 placeholder="Search books, authors, topics, or keywords..."
@@ -151,7 +151,7 @@ const CoursesBooksFilters = ({
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 px-3 py-4 bg-transparent text-white placeholder-gray-500 focus:outline-none text-sm"
               />
-              
+
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
@@ -160,31 +160,31 @@ const CoursesBooksFilters = ({
                   <FiX className="text-sm" />
                 </button>
               )}
-              
+
               {/* Search Suggestions */}
               <div className="absolute top-full left-0 right-0 mt-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl shadow-2xl opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-300 z-50">
                 <div className="p-3">
                   <div className="text-xs text-gray-500 mb-2 px-2">Quick filters</div>
                   <div className="flex flex-wrap gap-2">
-                    <button 
+                    <button
                       onClick={() => handleQuickFilter('Machine Learning')}
                       className="px-3 py-1.5 bg-gradient-to-br from-gray-700 to-gray-800 text-gray-300 text-xs rounded-lg hover:text-white hover:border-blue-500/30 border border-gray-700/50 transition-all duration-300"
                     >
                       Machine Learning
                     </button>
-                    <button 
+                    <button
                       onClick={() => handleQuickFilter('Python')}
                       className="px-3 py-1.5 bg-gradient-to-br from-gray-700 to-gray-800 text-gray-300 text-xs rounded-lg hover:text-white hover:border-blue-500/30 border border-gray-700/50 transition-all duration-300"
                     >
                       Python
                     </button>
-                    <button 
+                    <button
                       onClick={() => handleQuickFilter('Deep Learning')}
                       className="px-3 py-1.5 bg-gradient-to-br from-gray-700 to-gray-800 text-gray-300 text-xs rounded-lg hover:text-white hover:border-blue-500/30 border border-gray-700/50 transition-all duration-300"
                     >
                       Deep Learning
                     </button>
-                    <button 
+                    <button
                       onClick={() => handleQuickFilter('Data Science')}
                       className="px-3 py-1.5 bg-gradient-to-br from-gray-700 to-gray-800 text-gray-300 text-xs rounded-lg hover:text-white hover:border-blue-500/30 border border-gray-700/50 transition-all duration-300"
                     >
@@ -199,23 +199,21 @@ const CoursesBooksFilters = ({
 
         {/* Main Filters Bar */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-          
+
           {/* Left: Filter Controls */}
           <div className="flex items-center gap-4">
             {/* Filter Toggle */}
             <button
               onClick={() => setIsFiltersExpanded(!isFiltersExpanded)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl backdrop-blur-sm transition-all duration-300 ${
-                isFiltersExpanded
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl backdrop-blur-sm transition-all duration-300 ${isFiltersExpanded
                   ? 'bg-gradient-to-r from-blue-500 to-cyan-600 text-white'
                   : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-blue-500/30'
-              }`}
+                }`}
             >
               <FiFilter className={isFiltersExpanded ? 'text-white' : 'text-gray-400'} />
               <span className="font-medium">Filters</span>
-              <FiChevronDown className={`transition-transform duration-300 ${
-                isFiltersExpanded ? 'rotate-180' : ''
-              }`} />
+              <FiChevronDown className={`transition-transform duration-300 ${isFiltersExpanded ? 'rotate-180' : ''
+                }`} />
             </button>
 
             {/* View Mode Toggle */}
@@ -223,16 +221,15 @@ const CoursesBooksFilters = ({
               {viewModes.map((mode) => {
                 const Icon = mode.icon;
                 const isActive = viewMode === mode.id;
-                
+
                 return (
                   <button
                     key={mode.id}
                     onClick={() => setViewMode(mode.id)}
-                    className={`p-2 rounded-lg transition-all duration-300 ${
-                      isActive
+                    className={`p-2 rounded-lg transition-all duration-300 ${isActive
                         ? 'bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-400'
                         : 'text-gray-400 hover:text-white'
-                    }`}
+                      }`}
                     title={mode.label}
                   >
                     <Icon className="text-lg" />
@@ -274,16 +271,15 @@ const CoursesBooksFilters = ({
                 {sortOptions.map((option) => {
                   const Icon = option.icon;
                   const isActive = sortBy === option.id;
-                  
+
                   return (
                     <button
                       key={option.id}
                       onClick={() => setSortBy(option.id)}
-                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm border-b border-gray-700/50 last:border-b-0 transition-all duration-300 ${
-                        isActive
+                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm border-b border-gray-700/50 last:border-b-0 transition-all duration-300 ${isActive
                           ? 'text-blue-400 bg-blue-500/10'
                           : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
-                      }`}
+                        }`}
                     >
                       <Icon className={isActive ? 'text-blue-400' : 'text-gray-500'} />
                       <span className="flex-1 text-left">{option.label}</span>
@@ -308,11 +304,10 @@ const CoursesBooksFilters = ({
             {/* Advanced Filters Toggle */}
             <button
               onClick={() => setShowAdvanced(!showAdvanced)}
-              className={`hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl backdrop-blur-sm transition-all duration-300 ${
-                showAdvanced
+              className={`hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl backdrop-blur-sm transition-all duration-300 ${showAdvanced
                   ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white'
                   : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-purple-500/30'
-              }`}
+                }`}
             >
               <FiHash className="text-sm" />
               <span className="font-medium">Advanced</span>
@@ -324,7 +319,7 @@ const CoursesBooksFilters = ({
         {isFiltersExpanded && (
           <div className="mt-4 p-4 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-xl backdrop-blur-sm animate-slide-down">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              
+
               {/* Category Filter */}
               <div>
                 <div className="flex items-center justify-between mb-3">
@@ -340,16 +335,14 @@ const CoursesBooksFilters = ({
                       onClick={() => setSelectedCategory(category.value)}
                       onMouseEnter={() => setActiveFilter(`category-${category.value}`)}
                       onMouseLeave={() => setActiveFilter(null)}
-                      className={`group relative px-3 py-2 rounded-lg transition-all duration-300 ${
-                        selectedCategory === category.value
+                      className={`group relative px-3 py-2 rounded-lg transition-all duration-300 ${selectedCategory === category.value
                           ? 'bg-gradient-to-r from-blue-500 to-cyan-600 text-white'
                           : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-blue-500/30'
-                      }`}
+                        }`}
                     >
                       <span className="text-sm">{category.label}</span>
-                      <div className={`absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg blur opacity-0 ${
-                        selectedCategory === category.value ? 'opacity-20' : 'group-hover:opacity-10'
-                      } transition-opacity duration-500`} />
+                      <div className={`absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg blur opacity-0 ${selectedCategory === category.value ? 'opacity-20' : 'group-hover:opacity-10'
+                        } transition-opacity duration-500`} />
                     </button>
                   ))}
                   {categories.length === 0 && !loadingCategories && (
@@ -373,16 +366,14 @@ const CoursesBooksFilters = ({
                       onClick={() => setSelectedLevel(level.id)}
                       onMouseEnter={() => setActiveFilter(`level-${level.id}`)}
                       onMouseLeave={() => setActiveFilter(null)}
-                      className={`group relative px-3 py-2 rounded-lg transition-all duration-300 ${
-                        selectedLevel === level.id
+                      className={`group relative px-3 py-2 rounded-lg transition-all duration-300 ${selectedLevel === level.id
                           ? `bg-gradient-to-r ${level.color} text-white`
                           : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-gray-600/50'
-                      }`}
+                        }`}
                     >
                       <span className="text-sm">{level.label}</span>
-                      <div className={`absolute -inset-0.5 bg-gradient-to-r ${level.color} rounded-lg blur opacity-0 ${
-                        selectedLevel === level.id ? 'opacity-20' : 'group-hover:opacity-10'
-                      } transition-opacity duration-500`} />
+                      <div className={`absolute -inset-0.5 bg-gradient-to-r ${level.color} rounded-lg blur opacity-0 ${selectedLevel === level.id ? 'opacity-20' : 'group-hover:opacity-10'
+                        } transition-opacity duration-500`} />
                     </button>
                   ))}
                   {levels.length === 0 && !loadingLevels && (
@@ -401,11 +392,10 @@ const CoursesBooksFilters = ({
                       onClick={() => setPriceRange(range.id)}
                       onMouseEnter={() => setActiveFilter(`price-${range.id}`)}
                       onMouseLeave={() => setActiveFilter(null)}
-                      className={`group relative px-3 py-2 rounded-lg transition-all duration-300 ${
-                        priceRange === range.id
+                      className={`group relative px-3 py-2 rounded-lg transition-all duration-300 ${priceRange === range.id
                           ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white'
                           : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-green-500/30'
-                      }`}
+                        }`}
                     >
                       <div className="flex flex-col items-start">
                         <span className="text-sm">{range.label}</span>
@@ -413,9 +403,8 @@ const CoursesBooksFilters = ({
                           {range.range}
                         </span>
                       </div>
-                      <div className={`absolute -inset-0.5 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg blur opacity-0 ${
-                        priceRange === range.id ? 'opacity-20' : 'group-hover:opacity-10'
-                      } transition-opacity duration-500`} />
+                      <div className={`absolute -inset-0.5 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg blur opacity-0 ${priceRange === range.id ? 'opacity-20' : 'group-hover:opacity-10'
+                        } transition-opacity duration-500`} />
                     </button>
                   ))}
                 </div>
@@ -436,7 +425,7 @@ const CoursesBooksFilters = ({
                 <FiX className="text-sm" />
               </button>
             </div>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
               {advancedFilters.map((filter) => (
                 <button
@@ -469,7 +458,7 @@ const CoursesBooksFilters = ({
                   </button>
                 </div>
               )}
-              
+
               {selectedLevel !== 'all' && (
                 <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-600/50 text-gray-300 rounded-lg text-sm">
                   <span>{levels.find(l => l.id === selectedLevel)?.label || selectedLevel}</span>
@@ -481,7 +470,7 @@ const CoursesBooksFilters = ({
                   </button>
                 </div>
               )}
-              
+
               {priceRange !== 'all' && (
                 <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 text-green-300 rounded-lg text-sm">
                   <FiDollarSign className="text-xs" />
@@ -494,7 +483,7 @@ const CoursesBooksFilters = ({
                   </button>
                 </div>
               )}
-              
+
               {searchQuery && (
                 <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-purple-300 rounded-lg text-sm">
                   <FiSearch className="text-xs" />
@@ -513,7 +502,7 @@ const CoursesBooksFilters = ({
       </div>
 
       {/* Custom Animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes slide-down {
           0% {
             opacity: 0;

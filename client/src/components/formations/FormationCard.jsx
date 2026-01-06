@@ -1,10 +1,10 @@
 import Naceurimage from '../../assets/images/naceeiruhncf.JPG';
 import React, { useState } from 'react';
-import { 
-  FiClock, 
-  FiCalendar, 
-  FiUsers, 
-  FiMapPin, 
+import {
+  FiClock,
+  FiCalendar,
+  FiUsers,
+  FiMapPin,
   FiDollarSign,
   FiChevronRight,
   FiBook,
@@ -28,10 +28,10 @@ import { FaPython, FaGraduationCap } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import StatusBadge from './StatusBadge';
 
-const FormationCard = ({ 
-  formation, 
-  onClick, 
-  index, 
+const FormationCard = ({
+  formation,
+  onClick,
+  index,
   isVisible,
   favorites = [],
   toggleFavorite,
@@ -47,10 +47,10 @@ const FormationCard = ({
     try {
       const date = new Date(dateString);
       if (isNaN(date.getTime())) return 'TBD';
-      return date.toLocaleDateString('en-US', { 
-        month: 'short', 
-        day: 'numeric', 
-        year: 'numeric' 
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
       });
     } catch (error) {
       return 'TBD';
@@ -100,20 +100,20 @@ const FormationCard = ({
   const formatCurrency = (amount, currency = 'USD') => {
     // Handle null, undefined, or non-numeric values
     if (amount === null || amount === undefined) return 'Free';
-    
+
     // Convert to number if it's a string
     const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-    
+
     // Check if it's a valid number
     if (isNaN(numAmount)) return 'Free';
-    
+
     if (numAmount === 0) return 'Free';
-    
+
     // Format the number
-    const formattedAmount = Number.isInteger(numAmount) 
-      ? numAmount.toString() 
+    const formattedAmount = Number.isInteger(numAmount)
+      ? numAmount.toString()
       : numAmount.toFixed(2);
-    
+
     if (currency === 'USD') return `$${formattedAmount}`;
     if (currency === 'EUR') return `€${formattedAmount}`;
     return `${formattedAmount} ${currency}`;
@@ -125,14 +125,14 @@ const FormationCard = ({
       const spots = parseInt(formation.spots_left);
       return isNaN(spots) ? 0 : spots;
     }
-    
+
     const maxParticipants = parseInt(formation.max_participants || 0);
     const currentParticipants = parseInt(formation.current_participants || 0);
-    
+
     if (isNaN(maxParticipants) || isNaN(currentParticipants)) {
       return 0;
     }
-    
+
     return Math.max(0, maxParticipants - currentParticipants);
   };
 
@@ -157,14 +157,14 @@ const FormationCard = ({
     const num = typeof value === 'string' ? parseFloat(value) : value;
     return isNaN(num) ? defaultValue : num;
   };
-  
+
   // Get instructor avatar - use Naceur's photo for specific name
   const getInstructorAvatar = (instructorName, title = '') => {
     // If the instructor is Naceur Keraani, use your imported image
     if (instructorName && instructorName.toLowerCase().includes('naceur')) {
       return Naceurimage;
     }
-    
+
     // For other instructors, use DiceBear
     const seed = instructorName || 'instructor';
     const backgroundColors = {
@@ -178,9 +178,9 @@ const FormationCard = ({
       'AI Researcher': '10b981',
       'Default': '4f46e5'
     };
-    
+
     const bgColor = backgroundColors[title] || backgroundColors['Default'];
-    
+
     return `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(seed)}&size=128&backgroundColor=${bgColor}`;
   };
 
@@ -255,7 +255,7 @@ const FormationCard = ({
 
       {/* Main Card */}
       <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl overflow-hidden backdrop-blur-sm transition-all duration-500 group-hover:border-primary-500/30 group-hover:scale-[1.02]">
-        
+
         {/* Image Section */}
         <div className="relative h-56 overflow-hidden">
           {/* Loading State */}
@@ -264,32 +264,31 @@ const FormationCard = ({
           )}
 
           {/* Formation Image */}
-          <img 
-            src={formationData.cover_image} 
+          <img
+            src={formationData.cover_image}
             alt={formationData.title}
-            className={`w-full h-full object-cover transition-all duration-700 ${
-              imageLoaded ? 'opacity-100' : 'opacity-0'
-            } ${isHovered ? 'scale-110' : 'scale-100'}`}
+            className={`w-full h-full object-cover transition-all duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'
+              } ${isHovered ? 'scale-110' : 'scale-100'}`}
             onLoad={() => setImageLoaded(true)}
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&q=80';
             }}
           />
-          
+
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent" />
-          
+
           {/* Top Badges */}
           <div className="absolute top-4 left-4 flex flex-col gap-2">
-            <StatusBadge 
-              status={formationData.status} 
+            <StatusBadge
+              status={formationData.status}
               spotsLeft={formationData.spots_left}
               size="sm"
               showIcon={false}
               interactive={true}
             />
-            
+
             {formationData.featured && (
               <div className="relative">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full blur opacity-30" />
@@ -308,12 +307,11 @@ const FormationCard = ({
               className="relative p-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-full backdrop-blur-sm hover:border-red-500/50 transition-all duration-300 group/btn"
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-pink-500 rounded-full blur opacity-0 group-hover/btn:opacity-30 transition-opacity duration-500" />
-              <FiHeart 
-                className={`relative text-lg ${
-                  isFavorite 
-                    ? 'fill-red-500 text-red-500 animate-heart-beat' 
+              <FiHeart
+                className={`relative text-lg ${isFavorite
+                    ? 'fill-red-500 text-red-500 animate-heart-beat'
                     : 'text-gray-400 group-hover/btn:text-red-400'
-                }`}
+                  }`}
               />
             </button>
 
@@ -352,12 +350,12 @@ const FormationCard = ({
           <h3 className="text-xl font-bold text-white mb-3 line-clamp-2 group-hover:text-primary-300 transition-colors duration-300">
             {formationData.title}
           </h3>
-          
+
           {/* Instructor */}
           {formationData.instructor && (
             <div className="flex items-center gap-2 mb-3">
-              <img 
-                src={formationData.instructor.avatar} 
+              <img
+                src={formationData.instructor.avatar}
                 alt={formationData.instructor.name}
                 className="w-6 h-6 rounded-full object-cover border-2 border-primary-500/30"
                 onError={(e) => {
@@ -378,7 +376,7 @@ const FormationCard = ({
               )}
             </div>
           )}
-          
+
           {/* Description */}
           <p className="text-sm text-gray-500 mb-4 line-clamp-2 leading-relaxed">
             {formationData.description}
@@ -397,7 +395,7 @@ const FormationCard = ({
                 </div>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3">
               <div className="p-2 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-lg">
                 <FiCalendar className="text-green-400" />
@@ -407,7 +405,7 @@ const FormationCard = ({
                 <div className="text-white font-medium">{formationData.start_date}</div>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3">
               <div className="p-2 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg">
                 <FiUsers className="text-purple-400" />
@@ -419,7 +417,7 @@ const FormationCard = ({
                 </div>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3">
               <div className="p-2 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-lg">
                 <FiMapPin className="text-orange-400" />
@@ -434,7 +432,7 @@ const FormationCard = ({
           {/* Features Tags */}
           <div className="flex flex-wrap gap-2 mb-6">
             {formationData.features?.slice(0, 3).map((feature, idx) => (
-              <span 
+              <span
                 key={idx}
                 className="px-2 py-1 bg-gray-800/50 text-gray-400 rounded-lg text-xs font-medium border border-gray-700/50 hover:border-primary-500/30 hover:text-primary-300 transition-all duration-300"
               >
@@ -442,7 +440,7 @@ const FormationCard = ({
               </span>
             ))}
             {formationData.highlights?.slice(0, 1).map((highlight, idx) => (
-              <span 
+              <span
                 key={`highlight-${idx}`}
                 className="px-2 py-1 bg-primary-500/10 text-primary-300 rounded-lg text-xs font-medium border border-primary-500/30"
               >
@@ -473,9 +471,9 @@ const FormationCard = ({
                 </div>
               )}
             </div>
-            
+
             <div className="flex gap-2">
-              <button 
+              <button
                 className="relative group/btn"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -497,13 +495,12 @@ const FormationCard = ({
             <div className="flex items-center gap-2">
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
-                  <FiStar 
+                  <FiStar
                     key={i}
-                    className={`text-sm ${
-                      i < Math.floor(formationData.rating || 0)
+                    className={`text-sm ${i < Math.floor(formationData.rating || 0)
                         ? 'fill-yellow-400 text-yellow-400'
                         : 'text-gray-700'
-                    }`}
+                      }`}
                   />
                 ))}
               </div>
@@ -523,9 +520,8 @@ const FormationCard = ({
       </div>
 
       {/* 3D Floating Effect on Hover */}
-      <div className={`absolute inset-0 bg-gradient-to-r ${getLevelColor(formationData.level)} rounded-2xl blur-xl -z-10 transition-all duration-500 ${
-        isHovered ? 'opacity-20 translate-y-2' : 'opacity-0'
-      }`} />
+      <div className={`absolute inset-0 bg-gradient-to-r ${getLevelColor(formationData.level)} rounded-2xl blur-xl -z-10 transition-all duration-500 ${isHovered ? 'opacity-20 translate-y-2' : 'opacity-0'
+        }`} />
 
       {/* Enrollment Warning */}
       {formationData.spots_left > 0 && formationData.spots_left <= 5 && (
@@ -560,7 +556,7 @@ const FormationCard = ({
 
 // Custom animations
 const FormationCardStyle = () => (
-  <style jsx>{`
+  <style>{`
     @keyframes heart-beat {
       0%, 100% {
         transform: scale(1);

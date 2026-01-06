@@ -188,11 +188,7 @@ const Projects = () => {
   ];
 
   const tableActions = [
-    {
-      label: 'View',
-      handler: (project) => window.open(`/projects/${project.id}`, '_blank'),
-      color: 'bg-blue-500 text-white hover:bg-blue-600'
-    },
+   
     {
       label: 'Edit',
       handler: (project) => window.location.href = `/admin/projects/edit/${project.id}`,

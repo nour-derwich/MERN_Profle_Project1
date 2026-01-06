@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { 
-  FiFilter, 
-  FiSearch, 
-  FiChevronDown, 
-  FiX, 
+import {
+  FiFilter,
+  FiSearch,
+  FiChevronDown,
+  FiX,
   FiTrendingUp,
   FiClock,
   FiStar,
@@ -45,7 +45,7 @@ const ProjectsFilters = ({
   filteredProjects = [],
   onClearFilters,
   onAdvancedFilter,
-  setCurrentPage = () => {},
+  setCurrentPage = () => { },
   showBookmarks = false,
   toggleBookmark,
   bookmarks = [],
@@ -68,10 +68,15 @@ const ProjectsFilters = ({
     { value: 'AI Finance', label: 'AI Finance', icon: FiTrendingUp, color: 'from-teal-500 to-emerald-600', count: Array.isArray(filteredProjects) ? filteredProjects.filter(p => p.category === 'AI Finance').length : 0 }
   ];
 
-  const allCategories = categories.length > 0 ? [
-    { value: 'all', label: 'All Projects', icon: FiLayers, color: 'from-gray-600 to-gray-800', count: Array.isArray(filteredProjects) ? filteredProjects.length : 0 },
-    ...categories
-  ] : defaultCategories;
+  const allCategories = categories.length > 0
+    ? [
+      ...(categories.some(cat => cat.value === 'all')
+        ? []
+        : [{ value: 'all', label: 'All Projects', icon: FiLayers, color: 'from-gray-600 to-gray-800', count: Array.isArray(filteredProjects) ? filteredProjects.length : 0 }]
+      ),
+      ...categories
+    ]
+    : defaultCategories;
 
   const complexities = [
     { id: 'all', label: 'All Levels', color: 'from-gray-600 to-gray-800' },
@@ -114,7 +119,7 @@ const ProjectsFilters = ({
   ];
 
   const techQuickFilters = [
-    'Python', 'TensorFlow', 'PyTorch', 'React', 'FastAPI', 
+    'Python', 'TensorFlow', 'PyTorch', 'React', 'FastAPI',
     'Docker', 'PostgreSQL', 'MongoDB', 'AWS', 'GitHub'
   ];
 
@@ -125,7 +130,7 @@ const ProjectsFilters = ({
 
   const getFilterColor = (type, value) => {
     if (value === 'all') return 'from-gray-600 to-gray-800';
-    
+
     const colorMap = {
       category: {
         // Real categories from your projects
@@ -174,23 +179,21 @@ const ProjectsFilters = ({
   return (
     <section className="relative py-6 bg-gradient-to-b from-gray-800 to-gray-900 border-b border-gray-700/50 sticky top-0 z-50 backdrop-blur-xl">
       <div className="container mx-auto px-4">
-        
+
         {/* Modern Search Bar */}
         <div className="relative max-w-3xl mx-auto mb-6">
           <div className="relative group">
             {/* Search Glow */}
             <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
-            
+
             {/* Search Container */}
-            <div className={`relative flex items-center bg-gradient-to-br from-gray-800 to-gray-900 border ${
-              isSearchFocused ? 'border-primary-500/50' : 'border-gray-700/50'
-            } rounded-xl overflow-hidden backdrop-blur-sm transition-all duration-300`}>
+            <div className={`relative flex items-center bg-gradient-to-br from-gray-800 to-gray-900 border ${isSearchFocused ? 'border-primary-500/50' : 'border-gray-700/50'
+              } rounded-xl overflow-hidden backdrop-blur-sm transition-all duration-300`}>
               <div className="pl-4 pr-3">
-                <FiSearch className={`text-lg ${
-                  isSearchFocused ? 'text-primary-400' : 'text-gray-400'
-                } transition-colors duration-300`} />
+                <FiSearch className={`text-lg ${isSearchFocused ? 'text-primary-400' : 'text-gray-400'
+                  } transition-colors duration-300`} />
               </div>
-              
+
               <input
                 type="text"
                 placeholder="Search projects, technologies, or keywords..."
@@ -200,7 +203,7 @@ const ProjectsFilters = ({
                 onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
                 className="flex-1 px-3 py-4 bg-transparent text-white placeholder-gray-500 focus:outline-none text-base"
               />
-              
+
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
@@ -242,23 +245,21 @@ const ProjectsFilters = ({
 
         {/* Main Filters Bar */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-          
+
           {/* Left: Filter Controls */}
           <div className="flex items-center gap-4">
             {/* Filter Toggle */}
             <button
               onClick={() => setIsFiltersExpanded(!isFiltersExpanded)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl backdrop-blur-sm transition-all duration-300 ${
-                isFiltersExpanded
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl backdrop-blur-sm transition-all duration-300 ${isFiltersExpanded
                   ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white'
                   : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
-              }`}
+                }`}
             >
               <FiFilter className="text-lg" />
               <span className="font-medium">Filters</span>
-              <FiChevronDown className={`transition-transform duration-300 ${
-                isFiltersExpanded ? 'rotate-180' : ''
-              }`} />
+              <FiChevronDown className={`transition-transform duration-300 ${isFiltersExpanded ? 'rotate-180' : ''
+                }`} />
             </button>
 
             {/* View Mode Toggle */}
@@ -266,16 +267,15 @@ const ProjectsFilters = ({
               {viewModes.map((mode) => {
                 const Icon = mode.icon;
                 const isActive = viewMode === mode.id;
-                
+
                 return (
                   <button
                     key={mode.id}
                     onClick={() => setViewMode(mode.id)}
-                    className={`p-2 rounded-lg transition-all duration-300 ${
-                      isActive
+                    className={`p-2 rounded-lg transition-all duration-300 ${isActive
                         ? 'bg-gradient-to-r from-primary-500/20 to-blue-500/20 text-primary-400'
                         : 'text-gray-400 hover:text-white'
-                    }`}
+                      }`}
                     title={mode.label}
                   >
                     <Icon className="text-lg" />
@@ -298,7 +298,7 @@ const ProjectsFilters = ({
           <div className="flex items-center gap-4">
             {/* Sort Dropdown */}
             <div className="relative">
-              <button 
+              <button
                 onClick={() => setShowSortDropdown(!showSortDropdown)}
                 className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30 rounded-xl backdrop-blur-sm transition-all duration-300"
               >
@@ -327,7 +327,7 @@ const ProjectsFilters = ({
                     {sortOptions.map((option) => {
                       const Icon = option.icon;
                       const isActive = sortBy === option.id;
-                      
+
                       return (
                         <button
                           key={option.id}
@@ -335,11 +335,10 @@ const ProjectsFilters = ({
                             setSortBy(option.id);
                             setShowSortDropdown(false);
                           }}
-                          className={`w-full flex items-center gap-3 px-4 py-3 text-sm border-b border-gray-700/50 last:border-b-0 transition-all duration-300 ${
-                            isActive
+                          className={`w-full flex items-center gap-3 px-4 py-3 text-sm border-b border-gray-700/50 last:border-b-0 transition-all duration-300 ${isActive
                               ? 'text-primary-400 bg-primary-500/10'
                               : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
-                          }`}
+                            }`}
                         >
                           <Icon className={isActive ? 'text-primary-400' : 'text-gray-500'} />
                           <span className="flex-1 text-left">{option.label}</span>
@@ -366,11 +365,10 @@ const ProjectsFilters = ({
             {/* Advanced Filters Toggle */}
             <button
               onClick={() => setShowAdvanced(!showAdvanced)}
-              className={`hidden lg:flex items-center gap-2 px-4 py-2.5 rounded-xl backdrop-blur-sm transition-all duration-300 ${
-                showAdvanced
+              className={`hidden lg:flex items-center gap-2 px-4 py-2.5 rounded-xl backdrop-blur-sm transition-all duration-300 ${showAdvanced
                   ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white'
                   : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-purple-500/30'
-              }`}
+                }`}
             >
               <FiHash className="text-sm" />
               <span className="font-medium">Advanced</span>
@@ -383,7 +381,7 @@ const ProjectsFilters = ({
           {allCategories.map((category) => {
             const Icon = category.icon;
             const isActive = selectedCategory === category.value;
-            
+
             return (
               <button
                 key={category.value}
@@ -391,28 +389,24 @@ const ProjectsFilters = ({
                   setSelectedCategory(category.value);
                   setCurrentPage(1);
                 }}
-                className={`relative group flex-shrink-0 transition-all duration-300 ${
-                  isActive ? 'scale-105' : ''
-                }`}
+                className={`relative group flex-shrink-0 transition-all duration-300 ${isActive ? 'scale-105' : ''
+                  }`}
               >
                 {/* Glow Effect */}
-                <div className={`absolute -inset-0.5 bg-gradient-to-r ${getFilterColor('category', category.value)} rounded-xl blur opacity-0 ${
-                  isActive ? 'opacity-30' : 'group-hover:opacity-20'
-                } transition-opacity duration-500`} />
-                
+                <div className={`absolute -inset-0.5 bg-gradient-to-r ${getFilterColor('category', category.value)} rounded-xl blur opacity-0 ${isActive ? 'opacity-30' : 'group-hover:opacity-20'
+                  } transition-opacity duration-500`} />
+
                 {/* Button */}
-                <div className={`relative flex items-center gap-2 px-4 py-3 rounded-xl backdrop-blur-sm transition-all duration-300 ${
-                  isActive
+                <div className={`relative flex items-center gap-2 px-4 py-3 rounded-xl backdrop-blur-sm transition-all duration-300 ${isActive
                     ? `bg-gradient-to-r ${getFilterColor('category', category.value)} text-white`
                     : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
-                }`}>
+                  }`}>
                   <Icon className="text-lg" />
                   <span className="font-semibold whitespace-nowrap">{category.label}</span>
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    isActive
+                  <span className={`px-2 py-1 rounded-full text-xs ${isActive
                       ? 'bg-white/20'
                       : 'bg-gray-700/50 group-hover:bg-gray-700'
-                  }`}>
+                    }`}>
                     {category.count}
                   </span>
                 </div>
@@ -432,7 +426,7 @@ const ProjectsFilters = ({
             >
               <div className="mt-4 p-6 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-xl backdrop-blur-sm">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  
+
                   {/* Complexity Filter */}
                   <div>
                     <div className="text-sm font-semibold text-gray-400 mb-4 flex items-center gap-2">
@@ -446,11 +440,10 @@ const ProjectsFilters = ({
                           <button
                             key={complexity.id}
                             onClick={() => setSelectedComplexity(complexity.id)}
-                            className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-300 flex items-center justify-between group ${
-                              isActive
+                            className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-300 flex items-center justify-between group ${isActive
                                 ? `bg-gradient-to-r ${getFilterColor('complexity', complexity.id)} text-white`
                                 : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-blue-500/30'
-                            }`}
+                              }`}
                           >
                             <span className="text-sm">{complexity.label}</span>
                             <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-white' : 'bg-gray-700 group-hover:bg-gray-600'}`} />
@@ -473,11 +466,10 @@ const ProjectsFilters = ({
                           <button
                             key={status.id}
                             onClick={() => setSelectedStatus(status.id)}
-                            className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-300 flex items-center justify-between group ${
-                              isActive
+                            className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-300 flex items-center justify-between group ${isActive
                                 ? `bg-gradient-to-r ${getFilterColor('status', status.id)} text-white`
                                 : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-green-500/30'
-                            }`}
+                              }`}
                           >
                             <span className="text-sm">{status.label}</span>
                             <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-white' : 'bg-gray-700 group-hover:bg-gray-600'}`} />
@@ -534,7 +526,7 @@ const ProjectsFilters = ({
                     <FiX className="text-lg" />
                   </button>
                 </div>
-                
+
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                   {advancedFilters.map((filter) => {
                     const Icon = filter.icon;
@@ -579,7 +571,7 @@ const ProjectsFilters = ({
                   </button>
                 </div>
               )}
-              
+
               {selectedCategory !== 'all' && (
                 <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-600/50 text-gray-300 rounded-lg text-sm">
                   {(() => {
@@ -596,7 +588,7 @@ const ProjectsFilters = ({
                   </button>
                 </div>
               )}
-              
+
               {selectedComplexity !== 'all' && (
                 <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 text-blue-300 rounded-lg text-sm">
                   <FiTrendingUp className="text-xs" />
@@ -609,7 +601,7 @@ const ProjectsFilters = ({
                   </button>
                 </div>
               )}
-              
+
               {selectedStatus !== 'all' && (
                 <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 text-green-300 rounded-lg text-sm">
                   <FiClock className="text-xs" />
@@ -628,7 +620,7 @@ const ProjectsFilters = ({
       </div>
 
       {/* Custom Scrollbar Hide */}
-      <style jsx>{`
+      <style>{`
         .scrollbar-hide {
           -ms-overflow-style: none;
           scrollbar-width: none;

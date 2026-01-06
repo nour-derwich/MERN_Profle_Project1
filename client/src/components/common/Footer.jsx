@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  FiFacebook, FiTwitter, FiLinkedin, FiGithub, FiMail, 
+import {
+  FiFacebook, FiTwitter, FiLinkedin, FiGithub, FiMail,
   FiPhone, FiMapPin, FiHeart, FiZap, FiCode, FiChevronRight,
   FiSend, FiArrowUpRight, FiShield, FiTerminal
 } from 'react-icons/fi';
@@ -40,27 +40,27 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { 
-      icon: FiLinkedin, 
-      url: 'https://linkedin.com/in/keraani-naceur-49523a175/', 
+    {
+      icon: FiLinkedin,
+      url: 'https://linkedin.com/in/keraani-naceur-49523a175/',
       label: 'LinkedIn',
       gradient: 'from-blue-500 to-blue-700'
     },
-    { 
-      icon: FiGithub, 
-      url: 'https://github.com', 
+    {
+      icon: FiGithub,
+      url: 'https://github.com',
       label: 'GitHub',
       gradient: 'from-gray-800 to-black'
     },
-    { 
-      icon: FiTwitter, 
-      url: 'https://twitter.com', 
+    {
+      icon: FiTwitter,
+      url: 'https://twitter.com',
       label: 'Twitter',
       gradient: 'from-sky-500 to-blue-500'
     },
-    { 
-      icon: FaWhatsapp, 
-      url: 'https://api.whatsapp.com/send?phone=0021695881709', 
+    {
+      icon: FaWhatsapp,
+      url: 'https://api.whatsapp.com/send?phone=0021695881709',
       label: 'WhatsApp',
       gradient: 'from-green-500 to-emerald-600'
     }
@@ -77,12 +77,12 @@ const Footer = () => {
 
   return (
     <footer className="relative bg-gradient-to-b from-gray-900 to-black border-t border-gray-800/50 overflow-hidden">
-      
+
       {/* Background Elements */}
       <div className="absolute inset-0">
         {/* Circuit Pattern */}
         <div className="absolute inset-0 opacity-5 bg-[linear-gradient(90deg,#80808012_1px,transparent_1px),linear-gradient(180deg,#80808012_1px,transparent_1px)] bg-[size:40px_40px]" />
-        
+
         {/* Gradient Orbs */}
         <div className="absolute -top-20 -left-20 w-96 h-96 bg-gradient-to-br from-primary-500/5 to-transparent rounded-full blur-3xl" />
         <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-gradient-to-tl from-blue-500/5 to-transparent rounded-full blur-3xl" />
@@ -106,10 +106,10 @@ const Footer = () => {
       </div>
 
       <div className="container mx-auto px-4 py-12 relative z-10">
-        
+
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-12">
-          
+
           {/* Logo & About */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-6">
@@ -124,12 +124,12 @@ const Footer = () => {
                 <div className="text-sm text-primary-400 font-medium tracking-wider">AI & ML DEVELOPER</div>
               </div>
             </div>
-            
+
             <p className="text-gray-400 mb-6 leading-relaxed">
-              Transforming complex data into intelligent solutions through cutting-edge 
+              Transforming complex data into intelligent solutions through cutting-edge
               machine learning algorithms and innovative AI applications. Building the future, one algorithm at a time.
             </p>
-            
+
             {/* Tech Stack */}
             <div className="mb-6">
               <div className="text-sm text-gray-500 uppercase tracking-wider mb-3">Tech Stack</div>
@@ -137,7 +137,7 @@ const Footer = () => {
                 {techStack.map((tech, index) => {
                   const Icon = tech.icon;
                   return (
-                    <div 
+                    <div
                       key={index}
                       className="group relative"
                       title={tech.label}
@@ -169,7 +169,7 @@ const Footer = () => {
                   >
                     <div className={`absolute inset-0 bg-gradient-to-br ${social.gradient} rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
                     <Icon className="text-gray-400 group-hover:text-white transition-colors relative z-10" />
-                    
+
                     {/* Tooltip */}
                     <div className={`
                       absolute -top-10 left-1/2 -translate-x-1/2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 px-3 py-1 rounded-lg text-xs font-medium text-white whitespace-nowrap
@@ -245,7 +245,7 @@ const Footer = () => {
               <div className="w-1 h-6 bg-gradient-to-b from-cyan-500 to-blue-500 rounded-full" />
               Stay Updated
             </h4>
-            
+
             {isSubscribed ? (
               <div className="p-4 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-xl">
                 <div className="flex items-center gap-3">
@@ -297,7 +297,7 @@ const Footer = () => {
                   </div>
                 </div>
               </a>
-              
+
               <a
                 href="tel:+21695881709"
                 className="flex items-center gap-3 p-3 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-xl hover:border-green-500/30 transition-all duration-300 group"
@@ -328,24 +328,24 @@ const Footer = () => {
               <span>Based in Tunis, Tunisia</span>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-1 text-gray-500 text-sm">
             <span>Crafted with passion</span>
             <div className="w-1 h-1 bg-gray-600 rounded-full mx-2" />
             <FiTerminal className="text-primary-400" />
             <span>Powered by Nourderouich159@gmail.com</span>
           </div>
-          
+
           <div className="flex items-center gap-6 text-sm">
-            <Link 
-              to="/privacy" 
+            <Link
+              to="/privacy"
               className="text-gray-400 hover:text-white transition-colors flex items-center gap-1 group"
             >
               <FiShield className="text-gray-500 group-hover:text-primary-400" />
               <span>Privacy</span>
             </Link>
-            <Link 
-              to="/terms" 
+            <Link
+              to="/terms"
               className="text-gray-400 hover:text-white transition-colors flex items-center gap-1 group"
             >
               <FiTerminal className="text-gray-500 group-hover:text-blue-400" />
@@ -369,7 +369,7 @@ const Footer = () => {
       </div>
 
       {/* Custom Animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes binary-fall {
           0% {
             transform: translateY(-100%);

@@ -1,13 +1,16 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { 
-  FiLinkedin, FiFacebook, FiMail, FiPhone, FiMapPin, 
+import {
+  FiLinkedin, FiFacebook, FiMail, FiPhone, FiMapPin,
   FiArrowRight, FiDownload, FiAward, FiBriefcase,
-  FiGithub, FiTwitter, FiZap, FiChevronRight
+  FiGithub, FiZap, FiChevronRight
 } from 'react-icons/fi';
+import { FaXTwitter } from 'react-icons/fa6';
 import { FaWhatsapp, FaPython, FaReact } from 'react-icons/fa';
 import { SiPytorch, SiTensorflow } from 'react-icons/si';
 import Button from '../common/Button';
 import Naceurimage from '../../assets/images/naceeiruhncf.JPG';
+import { useNavigate } from 'react-router-dom';
+import '../../styles/components/hero.css';
 
 const Hero = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -18,6 +21,8 @@ const Hero = () => {
   const [activeTech, setActiveTech] = useState(0);
   const canvasRef = useRef(null);
   const sectionRef = useRef(null);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -30,7 +35,7 @@ const Hero = () => {
     const currentYear = new Date().getFullYear();
     const totalYears = currentYear - startYear;
     const duration = 2000;
-    
+
     // Years counter
     let yearsCounter = 0;
     const yearsInterval = setInterval(() => {
@@ -77,23 +82,23 @@ const Hero = () => {
   ];
 
   const stats = [
-    { 
-      icon: FiAward, 
-      label: 'Years Experience', 
+    {
+      icon: FiAward,
+      label: 'Years Experience',
       value: yearsExperience,
       suffix: '+',
       description: 'Building AI solutions'
     },
-    { 
-      icon: FiBriefcase, 
-      label: 'Projects Delivered', 
+    {
+      icon: FiBriefcase,
+      label: 'Projects Delivered',
       value: projectsCount,
       suffix: '+',
       description: 'Successful implementations'
     },
-    { 
-      icon: FiZap, 
-      label: 'IBM Certifications', 
+    {
+      icon: FiZap,
+      label: 'IBM Certifications',
       value: '07',
       suffix: '+',
       description: 'Professional credentials'
@@ -101,27 +106,27 @@ const Hero = () => {
   ];
 
   const socialLinks = [
-    { 
-      icon: FiLinkedin, 
-      url: 'https://www.linkedin.com/in/keraani-naceur-49523a175/', 
+    {
+      icon: FiLinkedin,
+      url: 'https://www.linkedin.com/in/keraani-naceur-49523a175/',
       label: 'LinkedIn',
       gradient: 'from-blue-500 to-blue-700'
     },
-    { 
-      icon: FiGithub, 
-      url: 'https://github.com', 
+    {
+      icon: FiGithub,
+      url: 'https://github.com',
       label: 'GitHub',
       gradient: 'from-gray-800 to-black'
     },
-    { 
-      icon: FiTwitter, 
-      url: 'https://twitter.com', 
+    {
+      icon: FaXTwitter,
+      url: 'https://twitter.com',
       label: 'Twitter',
       gradient: 'from-sky-500 to-blue-500'
     },
-    { 
-      icon: FaWhatsapp, 
-      url: 'https://api.whatsapp.com/send?phone=0021695881709&text=Hello, more information!', 
+    {
+      icon: FaWhatsapp,
+      url: 'https://api.whatsapp.com/send?phone=0021695881709&text=Hello, more information!',
       label: 'WhatsApp',
       gradient: 'from-green-500 to-emerald-600'
     }
@@ -138,15 +143,15 @@ const Hero = () => {
 
   return (
     <section ref={sectionRef} className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-      
+
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Gradient Mesh */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary-900/20 via-transparent to-blue-900/20" />
-        
+
         {/* Animated Grid */}
         <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:60px_60px]" />
-        
+
         {/* Floating Orbs */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-3xl animate-float-slow" />
         <div className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-gradient-to-tl from-blue-500/10 to-transparent rounded-full blur-3xl animate-float-slow" style={{ animationDelay: '2s' }} />
@@ -175,7 +180,7 @@ const Hero = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 pt-24 pb-16 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          
+
           {/* Left Content - Creative Layout */}
           <div className="relative">
             {/* Floating Tech Badges */}
@@ -187,9 +192,8 @@ const Hero = () => {
                   return (
                     <div
                       key={index}
-                      className={`absolute inset-0 transition-all duration-700 ease-out ${
-                        isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-50'
-                      }`}
+                      className={`absolute inset-0 transition-all duration-700 ease-out ${isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-50'
+                        }`}
                     >
                       <div className={`p-4 bg-gradient-to-br ${tech.color} rounded-2xl shadow-2xl transform rotate-12 hover:rotate-0 transition-transform duration-500`}>
                         <Icon className="text-3xl text-white" />
@@ -215,7 +219,7 @@ const Hero = () => {
                   KERAANI
                 </span>
               </h1>
-              
+
               <div className="flex items-center gap-4 mb-6">
                 <div className="h-1 w-16 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full" />
                 <div className="relative">
@@ -246,23 +250,21 @@ const Hero = () => {
               {stats.map((stat, index) => {
                 const Icon = stat.icon;
                 return (
-                  <div 
+                  <div
                     key={index}
                     className="group relative"
                   >
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-500" />
                     <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl p-4 backdrop-blur-sm hover:border-primary-500/50 transition-all duration-300">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className={`p-2 ${
-                          stat.icon === FiAward ? 'bg-yellow-500/20' : 
-                          stat.icon === FiBriefcase ? 'bg-green-500/20' : 
-                          'bg-blue-500/20'
-                        } rounded-lg`}>
-                          <Icon className={`${
-                            stat.icon === FiAward ? 'text-yellow-400' : 
-                            stat.icon === FiBriefcase ? 'text-green-400' : 
-                            'text-blue-400'
-                          }`} />
+                        <div className={`p-2 ${stat.icon === FiAward ? 'bg-yellow-500/20' :
+                          stat.icon === FiBriefcase ? 'bg-green-500/20' :
+                            'bg-blue-500/20'
+                          } rounded-lg`}>
+                          <Icon className={`${stat.icon === FiAward ? 'text-yellow-400' :
+                            stat.icon === FiBriefcase ? 'text-green-400' :
+                              'text-blue-400'
+                            }`} />
                         </div>
                         <div>
                           <div className="text-2xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
@@ -280,12 +282,12 @@ const Hero = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-wrap gap-4 mb-10">
-              <button className="group relative bg-gradient-to-r from-primary-500 to-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 overflow-hidden">
+              <button onClick={() => navigate('/projects')} className="group relative bg-gradient-to-r from-primary-500 to-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 overflow-hidden">
                 <span>Start a Project</span>
                 <FiChevronRight className="group-hover:translate-x-2 transition-transform" />
                 <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </button>
-              
+
               <button className="group relative bg-transparent border-2 border-gray-700 text-gray-300 px-8 py-4 rounded-xl font-bold hover:border-primary-500 hover:text-white transition-all duration-300 flex items-center gap-3">
                 <FiDownload />
                 <span>Download CV</span>
@@ -330,11 +332,10 @@ const Hero = () => {
                     return (
                       <div
                         key={index}
-                        className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-300 ${
-                          isActive 
-                            ? 'bg-gradient-to-r from-gray-700 to-gray-800 border border-primary-500/30' 
-                            : 'bg-gray-800/50'
-                        }`}
+                        className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-300 ${isActive
+                          ? 'bg-gradient-to-r from-gray-700 to-gray-800 border border-primary-500/30'
+                          : 'bg-gray-800/50'
+                          }`}
                       >
                         <div className={`p-2 rounded-lg ${isActive ? tech.color.replace('from-', 'bg-gradient-to-br ') : 'bg-gray-700'}`}>
                           <Icon className={`text-lg ${isActive ? 'text-white' : 'text-gray-400'}`} />
@@ -353,28 +354,28 @@ const Hero = () => {
             <div className="relative">
               {/* Outer Glow */}
               <div className="absolute -inset-4 bg-gradient-to-br from-primary-500/20 via-blue-500/20 to-cyan-500/20 rounded-3xl blur-xl" />
-              
+
               {/* Image Container */}
               <div className="relative z-10 group">
                 {/* Animated Border */}
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 via-blue-500 to-cyan-500 rounded-3xl opacity-70 group-hover:opacity-100 animate-border-rotate" />
-                
+
                 {/* Image */}
                 <div className="relative bg-gradient-to-br from-gray-900 to-black rounded-3xl p-1.5">
                   <div className="relative overflow-hidden rounded-2xl">
-                    <img 
-                      src={Naceurimage} 
+                    <img
+                      src={Naceurimage}
                       alt="Naceur Keraani"
                       className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700"
                     />
-                    
+
                     {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    
+
                     {/* Scan Lines Effect */}
                     <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.3)_50%)] bg-[size:100%_4px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   </div>
-                  
+
                   {/* Corner Accents */}
                   <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-primary-400 rounded-tl-lg" />
                   <div className="absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 border-blue-400 rounded-tr-lg" />
@@ -396,9 +397,9 @@ const Hero = () => {
                   <div className="w-1 h-8 bg-gradient-to-b from-primary-500 to-blue-500 rounded-full" />
                   <span>Get In Touch</span>
                 </h3>
-                
+
                 <div className="space-y-4">
-                  <a 
+                  <a
                     href={`mailto:${infoData.email}`}
                     className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-gray-800/50 to-gray-900/50 hover:from-primary-500/10 hover:to-blue-500/10 transition-all duration-300 border border-gray-700/50 hover:border-primary-500/30"
                   >
@@ -413,8 +414,8 @@ const Hero = () => {
                     </div>
                     <FiChevronRight className="text-gray-500 group-hover:text-primary-400 group-hover:translate-x-1 transition-all" />
                   </a>
-                  
-                  <a 
+
+                  <a
                     href={`tel:${infoData.phone.replace(/\s/g, '')}`}
                     className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-gray-800/50 to-gray-900/50 hover:from-green-500/10 hover:to-emerald-500/10 transition-all duration-300 border border-gray-700/50 hover:border-green-500/30"
                   >
@@ -446,105 +447,7 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Custom Animations */}
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0) rotate(0deg);
-          }
-          33% {
-            transform: translateY(-20px) rotate(120deg);
-          }
-          66% {
-            transform: translateY(-10px) rotate(240deg);
-          }
-        }
-        
-        @keyframes float-slow {
-          0%, 100% {
-            transform: translate(0, 0) scale(1);
-          }
-          50% {
-            transform: translate(30px, 30px) scale(1.1);
-          }
-        }
-        
-        @keyframes scroll {
-          0% {
-            opacity: 0;
-            transform: translateY(-100%);
-          }
-          50% {
-            opacity: 1;
-          }
-          100% {
-            opacity: 0;
-            transform: translateY(100%);
-          }
-        }
-        
-        @keyframes border-rotate {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-        
-        @keyframes binary-scroll {
-          0% {
-            transform: translateY(-100%);
-          }
-          100% {
-            transform: translateY(100%);
-          }
-        }
-        
-        @keyframes bounce-slow {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-        
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-        
-        .animate-float-slow {
-          animation: float-slow 15s ease-in-out infinite;
-        }
-        
-        .animate-scroll {
-          animation: scroll 2s ease-in-out infinite;
-        }
-        
-        .animate-border-rotate {
-          animation: border-rotate 3s linear infinite;
-        }
-        
-        .animate-binary-scroll {
-          animation: binary-scroll 20s linear infinite;
-        }
-        
-        .animate-bounce-slow {
-          animation: bounce-slow 3s ease-in-out infinite;
-        }
-        
-        .animate-pulse {
-          animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
-        }
-        
-        @keyframes ping {
-          75%, 100% {
-            transform: scale(2);
-            opacity: 0;
-          }
-        }
-      `}</style>
+
     </section>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { 
+import {
   FiLayers, FiArrowRight, FiClock, FiCalendar,
   FiUsers, FiTrendingUp, FiZap, FiStar,
   FiChevronLeft, FiChevronRight, FiBook, FiCode
@@ -7,6 +7,8 @@ import {
 import { FaPython, FaBrain, FaChartLine, FaReact } from 'react-icons/fa';
 import { SiPytorch, SiTensorflow, SiJupyter, SiJavascript } from 'react-icons/si';
 import formationService from '../../services/formationService';
+import { useNavigate } from 'react-router-dom';
+
 
 const LatestFormations = () => {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -14,6 +16,8 @@ const LatestFormations = () => {
   const [formations, setFormations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
 
   // Fetch formations from backend
   useEffect(() => {
@@ -25,9 +29,9 @@ const LatestFormations = () => {
           limit: 12,
           sortBy: 'featured'
         });
-        
+
         console.log('📚 Formations response:', response);
-        
+
         if (response.success && response.data) {
           setFormations(response.data);
         } else {
@@ -74,7 +78,7 @@ const LatestFormations = () => {
         'Mobile Development': [SiJavascript, FaReact, FaPython],
         'default': [FaPython, FiCode, FiBook]
       };
-      
+
       return techMap[category] || techMap.default;
     };
 
@@ -169,8 +173,8 @@ const LatestFormations = () => {
       }))
   ];
 
-  const filteredFormations = activeCategory === 'all' 
-    ? displayFormations 
+  const filteredFormations = activeCategory === 'all'
+    ? displayFormations
     : displayFormations.filter(f => f.categorySlug === activeCategory);
 
   const nextSlide = () => {
@@ -186,7 +190,7 @@ const LatestFormations = () => {
   };
 
   const handleEnrollClick = (formationId) => {
-    window.location.href = `/formations/${formationId}`;
+    window.location.href = `/formations/`;
   };
 
   if (loading) {
@@ -198,7 +202,7 @@ const LatestFormations = () => {
               <FiLayers className="text-primary-300" />
               <span className="text-primary-200 font-medium tracking-wider">EXPERT LED TRAINING</span>
             </div>
-            
+
             <h2 className="text-5xl md:text-6xl font-bold mb-6">
               <span className="text-white">Master AI with</span>
               <br />
@@ -206,7 +210,7 @@ const LatestFormations = () => {
                 Hands-On Training
               </span>
             </h2>
-            
+
             <div className="flex justify-center mt-8">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
             </div>
@@ -225,7 +229,7 @@ const LatestFormations = () => {
               <FiLayers className="text-primary-300" />
               <span className="text-primary-200 font-medium tracking-wider">EXPERT LED TRAINING</span>
             </div>
-            
+
             <h2 className="text-5xl md:text-6xl font-bold mb-6">
               <span className="text-white">Master AI with</span>
               <br />
@@ -233,10 +237,10 @@ const LatestFormations = () => {
                 Hands-On Training
               </span>
             </h2>
-            
+
             <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 max-w-2xl mx-auto">
               <p className="text-red-300 mb-4">{error}</p>
-              <button 
+              <button
                 onClick={() => window.location.reload()}
                 className="px-6 py-2 bg-gradient-to-r from-primary-500 to-blue-600 text-white rounded-xl font-semibold hover:shadow-2xl transition-all duration-300"
               >
@@ -251,12 +255,12 @@ const LatestFormations = () => {
 
   return (
     <section className="relative py-24 bg-gradient-to-b from-gray-900 to-black overflow-hidden">
-      
+
       {/* Animated Background */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-0 w-1/3 h-1/3 bg-gradient-to-br from-primary-900/20 to-transparent rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-gradient-to-tl from-blue-900/20 to-transparent rounded-full blur-3xl" />
-        
+
         {/* Grid Pattern */}
         <div className="absolute inset-0 opacity-5 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px]" />
       </div>
@@ -266,14 +270,14 @@ const LatestFormations = () => {
       <div className="absolute bottom-1/4 right-10 w-96 h-96 bg-gradient-to-tl from-blue-500/5 to-transparent rounded-full blur-2xl animate-float-slow" style={{ animationDelay: '2s' }} />
 
       <div className="container mx-auto px-4 relative z-10">
-        
+
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500/20 to-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-primary-500/30 mb-6">
             <FiLayers className="text-primary-300" />
             <span className="text-primary-200 font-medium tracking-wider">EXPERT LED TRAINING</span>
           </div>
-          
+
           <h2 className="text-5xl md:text-6xl font-bold mb-6">
             <span className="text-white">Master AI with</span>
             <br />
@@ -281,9 +285,9 @@ const LatestFormations = () => {
               Hands-On Training
             </span>
           </h2>
-          
+
           <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Transform your career with comprehensive training programs designed and taught by 
+            Transform your career with comprehensive training programs designed and taught by
             industry expert Naceur Keraani. Learn cutting-edge AI technologies through practical projects.
           </p>
         </div>
@@ -298,21 +302,18 @@ const LatestFormations = () => {
                   setActiveCategory(category.id);
                   setCurrentSlide(0);
                 }}
-                className={`group relative px-6 py-3 rounded-xl backdrop-blur-sm transition-all duration-300 ${
-                  activeCategory === category.id
+                className={`group relative px-6 py-3 rounded-xl backdrop-blur-sm transition-all duration-300 ${activeCategory === category.id
                     ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white'
                     : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
-                }`}
+                  }`}
               >
                 <span className="font-semibold">{category.label}</span>
-                <span className={`ml-2 text-sm ${
-                  activeCategory === category.id ? 'text-white/80' : 'text-gray-500'
-                }`}>
+                <span className={`ml-2 text-sm ${activeCategory === category.id ? 'text-white/80' : 'text-gray-500'
+                  }`}>
                   ({category.count})
                 </span>
-                <div className={`absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 ${
-                  activeCategory === category.id ? 'opacity-20' : 'group-hover:opacity-10'
-                } transition-opacity duration-500`} />
+                <div className={`absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 ${activeCategory === category.id ? 'opacity-20' : 'group-hover:opacity-10'
+                  } transition-opacity duration-500`} />
               </button>
             ))}
           </div>
@@ -323,7 +324,7 @@ const LatestFormations = () => {
           <h3 className="text-2xl font-bold text-white">
             Featured Programs <span className="text-primary-400">({filteredFormations.length})</span>
           </h3>
-          
+
           {filteredFormations.length > 3 && (
             <div className="flex items-center gap-4">
               <button
@@ -354,7 +355,7 @@ const LatestFormations = () => {
         ) : (
           <>
             <div className="relative overflow-hidden">
-              <div 
+              <div
                 className="flex transition-transform duration-500 ease-out"
                 style={{ transform: `translateX(-${currentSlide * 100}%)` }}
               >
@@ -363,14 +364,14 @@ const LatestFormations = () => {
                     <div className="group relative h-full">
                       {/* Card Glow Effect */}
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-3xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-500" />
-                      
+
                       {/* Main Card */}
                       <div className="relative h-full bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-3xl overflow-hidden backdrop-blur-sm hover:border-primary-500/30 transition-all duration-500 group-hover:scale-105">
-                        
+
                         {/* Image Section */}
                         <div className="relative h-56 overflow-hidden">
-                          <img 
-                            src={formation.image} 
+                          <img
+                            src={formation.image}
                             alt={formation.title}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                             onError={(e) => {
@@ -378,19 +379,19 @@ const LatestFormations = () => {
                               e.target.src = getDefaultImage(formation.category);
                             }}
                           />
-                          
+
                           {/* Gradient Overlay */}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                          
+
                           {/* Badge */}
                           <div className={`absolute top-4 right-4 bg-gradient-to-r ${formation.badgeColor} text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg`}>
                             {formation.badge}
                           </div>
-                          
+
                           {/* Tech Stack Icons */}
                           <div className="absolute bottom-4 left-4 flex items-center gap-2">
                             {formation.tech.slice(0, 3).map((Icon, index) => (
-                              <div 
+                              <div
                                 key={index}
                                 className="p-2 bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-sm border border-gray-700/50 rounded-lg"
                               >
@@ -465,15 +466,14 @@ const LatestFormations = () => {
                                 {formation.spots > 0 ? `${formation.spots} spots left` : 'Sold out'}
                               </div>
                             </div>
-                            
-                            <button 
+
+                            <button
                               onClick={() => handleEnrollClick(formation.id)}
                               disabled={formation.spots === 0}
-                              className={`group relative px-5 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 overflow-hidden ${
-                                formation.spots === 0
+                              className={`group relative px-5 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 overflow-hidden ${formation.spots === 0
                                   ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
                                   : 'bg-gradient-to-r from-primary-500 to-blue-600 text-white hover:shadow-2xl'
-                              }`}
+                                }`}
                             >
                               <span>{formation.spots === 0 ? 'Full' : 'Enroll'}</span>
                               {formation.spots > 0 && <FiArrowRight className="group-hover:translate-x-1 transition-transform" />}
@@ -500,11 +500,10 @@ const LatestFormations = () => {
                   <button
                     key={index}
                     onClick={() => setCurrentSlide(index)}
-                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                      index === currentSlide 
-                        ? 'w-8 bg-gradient-to-r from-primary-500 to-blue-500' 
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentSlide
+                        ? 'w-8 bg-gradient-to-r from-primary-500 to-blue-500'
                         : 'bg-gray-700 hover:bg-gray-600'
-                    }`}
+                      }`}
                   />
                 ))}
               </div>
@@ -521,7 +520,7 @@ const LatestFormations = () => {
             <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
               Contact us for customized corporate training programs tailored to your organization's needs.
             </p>
-            <button className="group relative bg-gradient-to-r from-primary-500 to-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 mx-auto">
+            <button onClick={() => navigate('/contact')} className="group relative bg-gradient-to-r from-primary-500 to-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 mx-auto">
               <span>Request Custom Training</span>
               <FiArrowRight className="group-hover:translate-x-2 transition-transform" />
             </button>
@@ -530,7 +529,7 @@ const LatestFormations = () => {
       </div>
 
       {/* Custom Animations */}
-      <style jsx>{`
+      <style >{`
         @keyframes float-slow {
           0%, 100% {
             transform: translate(0, 0) scale(1);

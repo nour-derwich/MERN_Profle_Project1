@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { 
-  FiExternalLink, 
-  FiGithub, 
-  FiStar, 
+import {
+  FiExternalLink,
+  FiGithub,
+  FiStar,
   FiGitBranch,
   FiEye,
   FiHeart,
@@ -29,10 +29,10 @@ const FiDatabase = ({ className }) => (
   </svg>
 );
 
-const ProjectCard = ({ 
-  project, 
-  index, 
-  isVisible, 
+const ProjectCard = ({
+  project,
+  index,
+  isVisible,
   setSelectedProject,
   favorites = [],
   toggleFavorite,
@@ -151,7 +151,7 @@ const ProjectCard = ({
 
       {/* Main Card */}
       <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl overflow-hidden backdrop-blur-sm transition-all duration-500 group-hover:border-primary-500/30 group-hover:scale-[1.02]">
-        
+
         {/* Image/Header Section */}
         <div className="relative h-56 overflow-hidden">
           {/* Loading State */}
@@ -160,22 +160,21 @@ const ProjectCard = ({
           )}
 
           {/* Project Image */}
-          <img 
-            src={project.image || project.cover_image || '/default-project.jpg'} 
+          <img
+            src={project.image || project.cover_image || '/default-project.jpg'}
             alt={project.title}
-            className={`w-full h-full object-cover transition-all duration-700 ${
-              imageLoaded ? 'opacity-100' : 'opacity-0'
-            } ${isHovered ? 'scale-110' : 'scale-100'}`}
+            className={`w-full h-full object-cover transition-all duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'
+              } ${isHovered ? 'scale-110' : 'scale-100'}`}
             onLoad={() => setImageLoaded(true)}
             onError={(e) => {
               e.target.src = '/default-project.jpg';
               setImageLoaded(true);
             }}
           />
-          
+
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent" />
-          
+
           {/* Top Badges */}
           <div className="absolute top-4 left-4 flex flex-col gap-2">
             {/* Featured Badge */}
@@ -188,7 +187,7 @@ const ProjectCard = ({
                 </span>
               </div>
             )}
-            
+
             {/* Complexity Badge */}
             <div className={`relative px-3 py-1 bg-gradient-to-r ${getComplexityColor(project.complexity)} text-white text-xs font-bold rounded-full backdrop-blur-sm`}>
               {project.complexity || 'Intermediate'}
@@ -203,12 +202,11 @@ const ProjectCard = ({
               className="relative p-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-full backdrop-blur-sm hover:border-red-500/50 transition-all duration-300 group/btn"
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-pink-500 rounded-full blur opacity-0 group-hover/btn:opacity-30 transition-opacity duration-500" />
-              <FiHeart 
-                className={`relative text-lg ${
-                  isFavorite 
-                    ? 'fill-red-500 text-red-500 animate-heart-beat' 
+              <FiHeart
+                className={`relative text-lg ${isFavorite
+                    ? 'fill-red-500 text-red-500 animate-heart-beat'
                     : 'text-gray-400 group-hover/btn:text-red-400'
-                }`}
+                  }`}
               />
             </button>
 
@@ -218,12 +216,11 @@ const ProjectCard = ({
               className="relative p-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-full backdrop-blur-sm hover:border-yellow-500/50 transition-all duration-300 group/btn"
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full blur opacity-0 group-hover/btn:opacity-30 transition-opacity duration-500" />
-              <FiBookmark 
-                className={`relative text-lg ${
-                  isBookmarked 
-                    ? 'fill-yellow-500 text-yellow-500' 
+              <FiBookmark
+                className={`relative text-lg ${isBookmarked
+                    ? 'fill-yellow-500 text-yellow-500'
                     : 'text-gray-400 group-hover/btn:text-yellow-400'
-                }`}
+                  }`}
               />
             </button>
 
@@ -250,22 +247,20 @@ const ProjectCard = ({
 
           {/* Status Indicator */}
           <div className="absolute bottom-4 right-4">
-            <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full backdrop-blur-sm ${
-              project.status === 'completed' || project.status === 'published'
+            <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full backdrop-blur-sm ${project.status === 'completed' || project.status === 'published'
                 ? 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 text-green-300'
                 : project.status === 'in-progress' || project.status === 'draft'
-                ? 'bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30 text-blue-300'
-                : 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 text-yellow-300'
-            }`}>
-              <div className={`w-2 h-2 rounded-full ${
-                project.status === 'completed' || project.status === 'published' ? 'bg-green-400' :
-                project.status === 'in-progress' || project.status === 'draft' ? 'bg-blue-400 animate-pulse' :
-                'bg-yellow-400'
-              }`} />
+                  ? 'bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30 text-blue-300'
+                  : 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 text-yellow-300'
+              }`}>
+              <div className={`w-2 h-2 rounded-full ${project.status === 'completed' || project.status === 'published' ? 'bg-green-400' :
+                  project.status === 'in-progress' || project.status === 'draft' ? 'bg-blue-400 animate-pulse' :
+                    'bg-yellow-400'
+                }`} />
               <span className="text-xs font-medium">
-                {project.status === 'completed' || project.status === 'published' ? 'Completed' : 
-                 project.status === 'in-progress' || project.status === 'draft' ? 'In Progress' : 
-                 project.status === 'maintained' ? 'Maintained' : project.status || 'Active'}
+                {project.status === 'completed' || project.status === 'published' ? 'Completed' :
+                  project.status === 'in-progress' || project.status === 'draft' ? 'In Progress' :
+                    project.status === 'maintained' ? 'Maintained' : project.status || 'Active'}
               </span>
             </div>
           </div>
@@ -277,7 +272,7 @@ const ProjectCard = ({
           <h3 className="text-xl font-bold text-white mb-3 line-clamp-2 group-hover:text-primary-300 transition-colors duration-300">
             {project.title}
           </h3>
-          
+
           {/* Short Description */}
           <p className="text-sm text-gray-400 mb-4 leading-relaxed line-clamp-2">
             {project.shortDescription || project.short_description || project.description || 'No description available'}
@@ -290,13 +285,13 @@ const ProjectCard = ({
               <div className="text-xs text-gray-500">Stars</div>
               <div className="text-white font-bold">{project.stars?.toLocaleString() || '0'}</div>
             </div>
-            
+
             <div className="flex flex-col items-center p-3 bg-gradient-to-br from-gray-800/30 to-gray-900/30 rounded-lg">
               <FiGitBranch className="text-blue-400 text-sm mb-1" />
               <div className="text-xs text-gray-500">Forks</div>
               <div className="text-white font-bold">{project.forks?.toLocaleString() || '0'}</div>
             </div>
-            
+
             <div className="flex flex-col items-center p-3 bg-gradient-to-br from-gray-800/30 to-gray-900/30 rounded-lg">
               <FiClock className="text-green-400 text-sm mb-1" />
               <div className="text-xs text-gray-500">Updated</div>
@@ -309,7 +304,7 @@ const ProjectCard = ({
             {(project.technologies || []).slice(0, 4).map((tech, idx) => {
               const TechIcon = getTechIcon(tech);
               return (
-                <span 
+                <span
                   key={idx}
                   className="px-2 py-1.5 bg-gray-800/50 text-gray-400 rounded-lg text-xs font-medium border border-gray-700/50 hover:border-primary-500/30 hover:text-primary-300 transition-all duration-300 flex items-center gap-1"
                   title={tech}
@@ -342,7 +337,7 @@ const ProjectCard = ({
                   <FiGithub className="text-lg" />
                 </a>
               )}
-              
+
               {/* Live Demo */}
               {(project.liveUrl || project.demo_url) && (
                 <a
@@ -356,7 +351,7 @@ const ProjectCard = ({
                   <FiExternalLink className="text-lg" />
                 </a>
               )}
-              
+
               {/* Share */}
               <button
                 onClick={handleShare}
@@ -366,7 +361,7 @@ const ProjectCard = ({
                 <FiShare2 className="text-lg" />
               </button>
             </div>
-            
+
             {/* View Project Button */}
             <button className="relative group/btn">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-lg blur opacity-0 group-hover/btn:opacity-30 transition-opacity duration-500" />
@@ -383,16 +378,15 @@ const ProjectCard = ({
       </div>
 
       {/* 3D Floating Effect */}
-      <div className={`absolute inset-0 bg-gradient-to-r ${getComplexityColor(project.complexity)} rounded-2xl blur-xl -z-10 transition-all duration-500 ${
-        isHovered ? 'opacity-20 translate-y-2' : 'opacity-0'
-      }`} />
+      <div className={`absolute inset-0 bg-gradient-to-r ${getComplexityColor(project.complexity)} rounded-2xl blur-xl -z-10 transition-all duration-500 ${isHovered ? 'opacity-20 translate-y-2' : 'opacity-0'
+        }`} />
     </motion.div>
   );
 };
 
 // Custom animations
 const ProjectCardStyle = () => (
-  <style jsx>{`
+  <style>{`
     @keyframes heart-beat {
       0%, 100% {
         transform: scale(1);

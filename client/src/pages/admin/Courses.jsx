@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/admin/Sidebar';
 import DataTable from '../../components/admin/DataTable';
-import { 
-  FiPlus, FiSearch, FiFilter, FiDownload, 
+import {
+  FiPlus, FiSearch, FiFilter, FiDownload,
   FiEye, FiEdit, FiTrash2, FiRefreshCw,
   FiBook, FiStar, FiMousePointer, FiTrendingUp
 } from 'react-icons/fi';
@@ -34,7 +34,7 @@ const AdminCourses = () => {
       setLoading(true);
       const filters = {};
       if (filterCategory !== 'all') filters.category = filterCategory;
-      
+
       const data = await courseService.getAll(filters);
       setCourses(data.data || []);
     } catch (error) {
@@ -73,9 +73,6 @@ const AdminCourses = () => {
     navigate(`/admin/courses/edit/${course.id}`);
   };
 
-  const handleView = (course) => {
-    navigate(`/admin/courses/view/${course.id}`);
-  };
 
   const handleToggleFeatured = async (course) => {
     try {
@@ -103,15 +100,15 @@ const AdminCourses = () => {
       key: 'cover_image',
       title: 'Cover',
       render: (item) => (
-        <img 
-          src={item.cover_image || 'https://via.placeholder.com/50'} 
+        <img
+          src={item.cover_image || 'https://via.placeholder.com/50'}
           alt={item.title}
           className="w-12 h-12 rounded-lg object-cover"
         />
       )
     },
-    { 
-      key: 'title', 
+    {
+      key: 'title',
       title: 'Title',
       render: (item) => (
         <div>
@@ -120,8 +117,8 @@ const AdminCourses = () => {
         </div>
       )
     },
-    { 
-      key: 'category', 
+    {
+      key: 'category',
       title: 'Category',
       render: (item) => (
         <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">
@@ -129,8 +126,8 @@ const AdminCourses = () => {
         </span>
       )
     },
-    { 
-      key: 'price', 
+    {
+      key: 'price',
       title: 'Price',
       render: (item) => (
         <span className="font-bold text-green-600">
@@ -138,8 +135,8 @@ const AdminCourses = () => {
         </span>
       )
     },
-    { 
-      key: 'rating', 
+    {
+      key: 'rating',
       title: 'Rating',
       render: (item) => (
         <div className="flex items-center space-x-1">
@@ -149,8 +146,8 @@ const AdminCourses = () => {
         </div>
       )
     },
-    { 
-      key: 'featured', 
+    {
+      key: 'featured',
       title: 'Featured',
       render: (item) => (
         <button
@@ -158,11 +155,10 @@ const AdminCourses = () => {
             e.stopPropagation();
             handleToggleFeatured(item);
           }}
-          className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
-            item.featured 
-              ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' 
+          className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${item.featured
+              ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-          }`}
+            }`}
         >
           {item.featured ? '⭐ Featured' : 'Not Featured'}
         </button>
@@ -181,11 +177,7 @@ const AdminCourses = () => {
   ];
 
   const tableActions = [
-    {
-      label: 'View',
-      handler: handleView,
-      color: 'bg-blue-500 text-white hover:bg-blue-600'
-    },
+
     {
       label: 'Edit',
       handler: handleEdit,
@@ -201,7 +193,7 @@ const AdminCourses = () => {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/20 to-pink-50/20">
       <Sidebar />
-      
+
       <div className="flex-1 ml-64 p-8">
         {/* Header */}
         <div className="mb-8">
@@ -351,7 +343,6 @@ const AdminCourses = () => {
           <DataTable
             columns={columns}
             data={filteredCourses}
-            onRowClick={handleView}
             actions={tableActions}
           />
         )}

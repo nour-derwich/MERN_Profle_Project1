@@ -66,7 +66,9 @@ const CoursesBooks = () => {
         originalPrice: book.original_price ? parseFloat(book.original_price) : null,
         rating: parseFloat(book.rating),
         reviews: book.reviews || book.reviews_count || 0,
-        image: book.cover_image,
+        image: book.cover_image && !book.cover_image.startsWith('blob:') 
+        ? book.cover_image 
+        : `https://placehold.co/400x600/1e293b/60a5fa?text=${encodeURIComponent(book.title || 'Book')}`,
         amazonLink: book.amazon_link,
         description: book.description,
         short_description: book.short_description,

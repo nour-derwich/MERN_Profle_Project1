@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  FiBook, 
-  FiBookOpen, 
-   
+import {
+  FiBook,
+  FiBookOpen,
+
   FiBriefcase,
   FiClock,
   FiUsers,
@@ -11,7 +11,7 @@ import {
   FiAward,
   FiCode
 } from 'react-icons/fi';
-import { FaPython,FaGraduationCap, FaUniversity } from 'react-icons/fa';
+import { FaPython, FaGraduationCap, FaUniversity } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
 const FormationsHero = ({ isVisible = true }) => {
@@ -89,37 +89,34 @@ const FormationsHero = ({ isVisible = true }) => {
 
   const ProgramCard = ({ program, index, isActive }) => {
     const Icon = program.icon;
-    
+
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.1 }}
-        className={`relative cursor-pointer transition-all duration-700 ${
-          isActive ? 'scale-110' : 'scale-90 opacity-60'
-        }`}
+        className={`relative cursor-pointer transition-all duration-700 ${isActive ? 'scale-110' : 'scale-90 opacity-60'
+          }`}
         onClick={() => setActiveProgram(index)}
         onMouseEnter={() => setIsHovered(index)}
         onMouseLeave={() => setIsHovered(null)}
       >
         {/* Card Glow */}
-        <div className={`absolute -inset-0.5 bg-gradient-to-r ${program.color} rounded-2xl blur-xl opacity-0 ${
-          isActive || isHovered === index ? 'opacity-30' : ''
-        } transition-opacity duration-500`} />
-        
+        <div className={`absolute -inset-0.5 bg-gradient-to-r ${program.color} rounded-2xl blur-xl opacity-0 ${isActive || isHovered === index ? 'opacity-30' : ''
+          } transition-opacity duration-500`} />
+
         {/* Card */}
-        <div className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${
-          isActive ? 'border-primary-500/50' : 'border-gray-700/50'
-        } rounded-xl p-6 backdrop-blur-sm hover:border-primary-500/30 transition-all duration-300`}>
-          
+        <div className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${isActive ? 'border-primary-500/50' : 'border-gray-700/50'
+          } rounded-xl p-6 backdrop-blur-sm hover:border-primary-500/30 transition-all duration-300`}>
+
           {/* Icon */}
           <div className={`relative p-3 bg-gradient-to-br ${program.color}/20 rounded-lg w-fit mb-4`}>
             <Icon className="text-2xl text-white" />
           </div>
-          
+
           {/* Content */}
           <h3 className="text-lg font-bold text-white mb-2">{program.title}</h3>
-          
+
           {/* Stats */}
           <div className="grid grid-cols-2 gap-3 mb-4">
             <div className="flex items-center gap-2">
@@ -131,16 +128,15 @@ const FormationsHero = ({ isVisible = true }) => {
               <span className="text-xs text-gray-400">{program.students}</span>
             </div>
           </div>
-          
+
           {/* Level Badge */}
           <div className={`px-3 py-1.5 bg-gradient-to-r ${program.color} text-white text-xs font-bold rounded-full w-fit`}>
             {program.level}
           </div>
-          
+
           {/* Hover Arrow */}
-          <div className={`absolute -right-3 top-1/2 -translate-y-1/2 text-primary-400 opacity-0 ${
-            isActive ? 'opacity-100' : ''
-          } transition-opacity duration-300`}>
+          <div className={`absolute -right-3 top-1/2 -translate-y-1/2 text-primary-400 opacity-0 ${isActive ? 'opacity-100' : ''
+            } transition-opacity duration-300`}>
             <FiChevronRight className="text-xl" />
           </div>
         </div>
@@ -150,16 +146,16 @@ const FormationsHero = ({ isVisible = true }) => {
 
   return (
     <section className="relative min-h-[90vh] overflow-hidden bg-gradient-to-b from-gray-900 via-black to-gray-900">
-      
+
       {/* Animated Background */}
       <div className="absolute inset-0">
         {/* Gradient Orbs */}
         <div className="absolute top-1/4 left-10 w-96 h-96 bg-gradient-to-br from-primary-600/20 to-blue-600/20 rounded-full blur-3xl animate-float-slow" />
         <div className="absolute bottom-1/4 right-10 w-80 h-80 bg-gradient-to-tl from-purple-600/20 to-pink-600/20 rounded-full blur-3xl animate-float-slow" style={{ animationDelay: '2s' }} />
-        
+
         {/* Grid Pattern */}
         <div className="absolute inset-0 opacity-10 bg-[linear-gradient(90deg,#ffffff12_1px,transparent_1px),linear-gradient(180deg,#ffffff12_1px,transparent_1px)] bg-[size:60px_60px]" />
-        
+
         {/* Floating Elements */}
         <div className="absolute top-20 right-1/4 w-40 h-40 bg-gradient-to-br from-primary-500/5 to-transparent rounded-lg blur-3xl rotate-45 animate-float-slow" />
         <div className="absolute bottom-20 left-1/4 w-32 h-32 bg-gradient-to-tl from-blue-500/5 to-transparent rounded-lg blur-3xl -rotate-12 animate-float-slow" style={{ animationDelay: '1s' }} />
@@ -167,7 +163,7 @@ const FormationsHero = ({ isVisible = true }) => {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="pt-32 pb-20">
-          
+
           {/* Programs Carousel */}
           <div className="relative mb-16">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
@@ -180,22 +176,20 @@ const FormationsHero = ({ isVisible = true }) => {
                 />
               ))}
             </div>
-            
+
             {/* Navigation Dots */}
             <div className="flex justify-center gap-2 mt-8">
               {programs.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setActiveProgram(index)}
-                  className={`relative transition-all duration-300 ${
-                    activeProgram === index ? 'scale-125' : ''
-                  }`}
+                  className={`relative transition-all duration-300 ${activeProgram === index ? 'scale-125' : ''
+                    }`}
                 >
-                  <div className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    activeProgram === index
+                  <div className={`w-2 h-2 rounded-full transition-all duration-300 ${activeProgram === index
                       ? 'bg-gradient-to-r from-primary-400 to-blue-400'
                       : 'bg-gray-700 hover:bg-gray-600'
-                  }`} />
+                    }`} />
                   {activeProgram === index && (
                     <div className="absolute -inset-2 bg-gradient-to-r from-primary-400/20 to-blue-400/20 rounded-full animate-ping" />
                   )}
@@ -205,13 +199,13 @@ const FormationsHero = ({ isVisible = true }) => {
           </div>
 
           {/* Main Content */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={isVisible ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
             className="text-center max-w-6xl mx-auto"
           >
-            
+
             {/* Badge */}
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500/20 to-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-primary-500/30 mb-8 group hover:border-primary-500/50 transition-all duration-300">
               <div className="relative">
@@ -244,8 +238,8 @@ const FormationsHero = ({ isVisible = true }) => {
 
             {/* Description */}
             <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed mb-12">
-              Transform your career with hands-on, project-based training programs designed by 
-              industry experts. From fundamentals to advanced specialization, our courses are 
+              Transform your career with hands-on, project-based training programs designed by
+              industry experts. From fundamentals to advanced specialization, our courses are
               structured to deliver real-world skills and measurable results.
             </p>
 
@@ -263,7 +257,7 @@ const FormationsHero = ({ isVisible = true }) => {
                   >
                     {/* Glow Effect */}
                     <div className={`absolute -inset-0.5 bg-gradient-to-r ${stat.color} rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
-                    
+
                     {/* Card */}
                     <div className="relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6 hover:border-primary-500/30 transition-all duration-300 group-hover:scale-105">
                       <div className="flex flex-col items-center gap-3">
@@ -300,7 +294,7 @@ const FormationsHero = ({ isVisible = true }) => {
             </div>
 
             {/* CTA */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.8 }}
@@ -313,7 +307,7 @@ const FormationsHero = ({ isVisible = true }) => {
                   <FiChevronRight className="group-hover:translate-x-2 transition-transform" />
                   <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
                 </button>
-                
+
                 <button className="group relative bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 px-8 py-4 rounded-xl font-bold hover:text-white hover:border-primary-500/30 transition-all duration-300 hover:scale-105 flex items-center gap-3">
                   <FiBook />
                   <span>View Curriculum</span>
@@ -323,7 +317,7 @@ const FormationsHero = ({ isVisible = true }) => {
             </motion.div>
 
             {/* Scroll Indicator */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.2 }}
@@ -341,7 +335,7 @@ const FormationsHero = ({ isVisible = true }) => {
       </div>
 
       {/* Custom Animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes float-slow {
           0%, 100% {
             transform: translate(0, 0) rotate(0deg);
