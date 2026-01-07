@@ -17,14 +17,14 @@ import { ToastProvider } from "./context/ToastContext";
 import Nav from "./components/common/Nav";
 import Footer from "./components/common/Footer";
 import NotFound from "./pages/public/NotFound";
-
-// import ScrollToTop from "./components/common/ScrollToTop";
+import ScrollToTop from "./components/common/ScrollToTop"; // Make sure this file exists
 
 // Public Pages
 import Home from "./pages/public/Home";
 import Skills from "./pages/public/Skills";
 import Qualification from "./pages/public/Qualification";
-import Services from "./pages/public/Services";
+// Remove or comment out Services import since it's not used
+// import Services from "./pages/public/Services"; // REMOVE OR COMMENT THIS LINE
 import Projects from "./pages/public/Projects";
 import ProjectDetail from "./pages/public/ProjectDetail";
 import Formations from "./pages/public/Formations";
@@ -73,7 +73,7 @@ function App() {
         <ToastProvider>
           <Router>
             <div className="App min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
-              {/* <ScrollToTop /> */}
+              <ScrollToTop />
 
               <Routes>
                 {/* Public routes with layout */}

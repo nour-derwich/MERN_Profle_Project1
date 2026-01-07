@@ -1,9 +1,22 @@
 {
-  "css.customData": [".vscode/tailwind.json"],
-  "files.associations": {
-    "*.css": "tailwindcss"
-  },
-   "js/ts.implicitProjectConfig.checkJs": false,
-  "typescript.validate.enable": false,
-  "javascript.validate.enable": true
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#654427",
+        "activityBar.background": "#654427",
+        "activityBar.foreground": "#e7e7e7",
+        "activityBar.inactiveForeground": "#e7e7e799",
+        "activityBarBadge.background": "#358a5d",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "commandCenter.border": "#e7e7e799",
+        "sash.hoverBorder": "#654427",
+        "statusBar.background": "#402b19",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#654427",
+        "statusBarItem.remoteBackground": "#402b19",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "titleBar.activeBackground": "#402b19",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.inactiveBackground": "#402b1999",
+        "titleBar.inactiveForeground": "#e7e7e799"
+    },
+    "peacock.color": "#402b19"
 }
