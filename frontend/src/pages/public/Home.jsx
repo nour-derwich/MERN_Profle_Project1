@@ -2,7 +2,6 @@
 import React from 'react';
 import Hero from '../../components/home/Hero';
 import About from '../../components/home/About';
-import Stats from '../../components/home/Stats';
 import LatestFormations from '../../components/home/LatestFormations';  
 import RecentProjects from '../../components/home/RecentProjects';
 import CallToAction from '../../components/home/CallToAction';

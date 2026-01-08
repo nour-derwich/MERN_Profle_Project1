@@ -1,27 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { FaDocker, FaPython, FaReact } from "react-icons/fa";
 import {
-  FiCode,
-  FiGrid,
-  FiList,
+  FiAward,
   FiChevronLeft,
   FiChevronRight,
+  FiCloud,
+  FiCode,
+  FiEye,
+  FiGrid,
+  FiList,
   FiLoader,
   FiSearch,
   FiTrendingUp,
-  FiStar,
-  FiGitBranch,
-  FiEye,
-  FiFilter,
-  FiRefreshCw,
-  FiAward,
-  FiClock,
-  FiUsers,
-  FiZap,
-  FiCloud
-} from 'react-icons/fi';
-import { FaPython, FaReact, FaDocker } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
-import ProjectCard from './ProjectCard';
+} from "react-icons/fi";
+import ProjectCard from "./ProjectCard";
 
 const ProjectsGrid = ({
   currentProjects,
@@ -33,17 +26,17 @@ const ProjectsGrid = ({
   onShare,
   bookmarks = [],
   toggleBookmark,
-  viewMode = 'grid',
+  viewMode = "grid",
   currentPage = 1,
   itemsPerPage = 9,
   onPageChange,
   onViewModeChange,
   isLoading = false,
   totalProjects = 0,
-  categoryStats = {}
+  categoryStats = {},
 }) => {
   const [isGridLoaded, setIsGridLoaded] = useState(false);
-  const [isHovered, setIsHovered] = useState(null);
+  const [, setIsHovered] = useState(null);
 
   // Calculate pagination
   const totalPages = Math.ceil(currentProjects.length / itemsPerPage);
@@ -65,9 +58,9 @@ const ProjectsGrid = ({
       opacity: 1,
       transition: {
         staggerChildren: 0.05,
-        delayChildren: 0.1
-      }
-    }
+        delayChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
@@ -75,8 +68,8 @@ const ProjectsGrid = ({
     visible: {
       y: 0,
       opacity: 1,
-      transition: { type: 'spring', stiffness: 100 }
-    }
+      transition: { type: "spring", stiffness: 100 },
+    },
   };
 
   const statsVariants = {
@@ -84,8 +77,8 @@ const ProjectsGrid = ({
     visible: {
       opacity: 1,
       scale: 1,
-      transition: { type: 'spring', stiffness: 50 }
-    }
+      transition: { type: "spring", stiffness: 50 },
+    },
   };
 
   const noResultsVariants = {
@@ -93,16 +86,18 @@ const ProjectsGrid = ({
     visible: {
       scale: 1,
       opacity: 1,
-      transition: { type: 'spring', stiffness: 50 }
-    }
+      transition: { type: "spring", stiffness: 50 },
+    },
   };
 
   // Calculate statistics
   const getStats = () => {
-    const featured = currentProjects.filter(p => p.featured).length;
-    const completed = currentProjects.filter(p => p.status === 'completed').length;
-    const popular = currentProjects.filter(p => p.stars > 100).length;
-    const withDemo = currentProjects.filter(p => p.liveUrl).length;
+    const featured = currentProjects.filter((p) => p.featured).length;
+    const completed = currentProjects.filter(
+      (p) => p.status === "completed"
+    ).length;
+    const popular = currentProjects.filter((p) => p.stars > 100).length;
+    const withDemo = currentProjects.filter((p) => p.liveUrl).length;
 
     return { featured, completed, popular, withDemo };
   };
@@ -112,8 +107,8 @@ const ProjectsGrid = ({
   // Tech distribution
   const getTechDistribution = () => {
     const techCount = {};
-    currentProjects.forEach(project => {
-      project.technologies?.forEach(tech => {
+    currentProjects.forEach((project) => {
+      project.technologies?.forEach((tech) => {
         techCount[tech] = (techCount[tech] || 0) + 1;
       });
     });
@@ -131,7 +126,10 @@ const ProjectsGrid = ({
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden opacity-10">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-br from-primary-600/10 to-transparent rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-tl from-blue-600/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div
+          className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-tl from-blue-600/10 to-transparent rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "1s" }}
+        />
 
         {/* Code Pattern */}
         <div className="absolute inset-0 opacity-5">
@@ -142,17 +140,20 @@ const ProjectsGrid = ({
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
-                transform: `rotate(${Math.random() * 360}deg)`
+                transform: `rotate(${Math.random() * 360}deg)`,
               }}
             >
-              {i % 3 === 0 ? 'function() {' : i % 3 === 1 ? 'const data = []' : 'export default'}
+              {i % 3 === 0
+                ? "function() {"
+                : i % 3 === 1
+                  ? "const data = []"
+                  : "export default"}
             </div>
           ))}
         </div>
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-
         {/* Header with Stats */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -172,7 +173,9 @@ const ProjectsGrid = ({
                       <div className="text-2xl font-bold text-white">
                         {currentProjects.length}
                       </div>
-                      <div className="text-xs text-gray-500">Projects Found</div>
+                      <div className="text-xs text-gray-500">
+                        Projects Found
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -223,27 +226,42 @@ const ProjectsGrid = ({
                 </button>
 
                 <div className="flex items-center gap-1">
-                  {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
-                    const pageNumber = i + 1;
-                    if (totalPages > 5 && currentPage > 3) {
-                      // Show dynamic page numbers for large page counts
-                      if (i === 0) return <span key="first" className="px-1 text-gray-500">...</span>;
-                      if (i === 4) return <span key="last" className="px-1 text-gray-500">...</span>;
-                    }
+                  {Array.from({ length: Math.min(5, totalPages) }).map(
+                    (_, i) => {
+                      const pageNumber = i + 1;
+                      if (totalPages > 5 && currentPage > 3) {
+                        // Show dynamic page numbers for large page counts
+                        if (i === 0)
+                          return (
+                            <span key="first" className="px-1 text-gray-500">
+                              ...
+                            </span>
+                          );
+                        if (i === 4)
+                          return (
+                            <span key="last" className="px-1 text-gray-500">
+                              ...
+                            </span>
+                          );
+                      }
 
-                    return (
-                      <button
-                        key={pageNumber}
-                        onClick={() => onPageChange && onPageChange(pageNumber)}
-                        className={`px-3 py-1 rounded-lg transition-all duration-300 ${currentPage === pageNumber
-                            ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white'
-                            : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
+                      return (
+                        <button
+                          key={pageNumber}
+                          onClick={() =>
+                            onPageChange && onPageChange(pageNumber)
+                          }
+                          className={`px-3 py-1 rounded-lg transition-all duration-300 ${
+                            currentPage === pageNumber
+                              ? "bg-gradient-to-r from-primary-500 to-blue-600 text-white"
+                              : "bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30"
                           }`}
-                      >
-                        {pageNumber}
-                      </button>
-                    );
-                  })}
+                        >
+                          {pageNumber}
+                        </button>
+                      );
+                    }
+                  )}
                 </div>
 
                 <button
@@ -260,26 +278,31 @@ const ProjectsGrid = ({
           {/* Grid/Layout Toggle */}
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-500">
-              Showing {Math.min(startIndex + 1, currentProjects.length)}-{Math.min(endIndex, currentProjects.length)} of {currentProjects.length} projects
+              Showing {Math.min(startIndex + 1, currentProjects.length)}-
+              {Math.min(endIndex, currentProjects.length)} of{" "}
+              {currentProjects.length} projects
               {totalProjects > 0 && ` (${totalProjects} total)`}
             </div>
 
             {onViewModeChange && (
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-400 hidden md:block">View:</span>
+                <span className="text-sm text-gray-400 hidden md:block">
+                  View:
+                </span>
                 <div className="flex bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-lg p-1">
                   {[
-                    { id: 'grid', icon: FiGrid, label: 'Grid' },
-                    { id: 'list', icon: FiList, label: 'List' },
-                    { id: 'compact', icon: FiCode, label: 'Compact' }
+                    { id: "grid", icon: FiGrid, label: "Grid" },
+                    { id: "list", icon: FiList, label: "List" },
+                    { id: "compact", icon: FiCode, label: "Compact" },
                   ].map((mode) => (
                     <button
                       key={mode.id}
                       onClick={() => onViewModeChange(mode.id)}
-                      className={`p-2 rounded transition-all duration-300 ${viewMode === mode.id
-                          ? 'bg-gradient-to-r from-primary-500/20 to-blue-500/20 text-primary-400'
-                          : 'text-gray-400 hover:text-white'
-                        }`}
+                      className={`p-2 rounded transition-all duration-300 ${
+                        viewMode === mode.id
+                          ? "bg-gradient-to-r from-primary-500/20 to-blue-500/20 text-primary-400"
+                          : "text-gray-400 hover:text-white"
+                      }`}
                       title={`${mode.label} View`}
                     >
                       <mode.icon className="text-lg" />
@@ -298,8 +321,12 @@ const ProjectsGrid = ({
               <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full blur-xl animate-ping opacity-20" />
               <FiLoader className="relative text-6xl text-primary-400 animate-spin" />
             </div>
-            <div className="text-lg text-gray-400 font-medium">Loading projects...</div>
-            <div className="text-sm text-gray-500 mt-2">Fetching the latest portfolio updates</div>
+            <div className="text-lg text-gray-400 font-medium">
+              Loading projects...
+            </div>
+            <div className="text-sm text-gray-500 mt-2">
+              Fetching the latest portfolio updates
+            </div>
           </div>
         )}
 
@@ -311,20 +338,22 @@ const ProjectsGrid = ({
               variants={containerVariants}
               initial="hidden"
               animate={isGridLoaded ? "visible" : "hidden"}
-              className={`grid gap-6 ${viewMode === 'grid'
-                  ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-                  : viewMode === 'list'
-                    ? 'grid-cols-1 lg:grid-cols-2'
-                    : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
-                }`}
+              className={`grid gap-6 ${
+                viewMode === "grid"
+                  ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+                  : viewMode === "list"
+                    ? "grid-cols-1 lg:grid-cols-2"
+                    : "grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
+              }`}
             >
               {paginatedProjects.map((project, index) => (
                 <motion.div
                   key={project.id}
                   variants={itemVariants}
                   layout
-                  className={`${viewMode === 'list' ? 'col-span-1 lg:col-span-2' : ''} ${viewMode === 'compact' ? 'col-span-1' : ''
-                    }`}
+                  className={`${viewMode === "list" ? "col-span-1 lg:col-span-2" : ""} ${
+                    viewMode === "compact" ? "col-span-1" : ""
+                  }`}
                   onMouseEnter={() => setIsHovered(project.id)}
                   onMouseLeave={() => setIsHovered(null)}
                 >
@@ -372,7 +401,8 @@ const ProjectsGrid = ({
                 No projects found
               </h3>
               <p className="text-lg text-gray-400 max-w-md mb-8">
-                Try adjusting your filters or search terms to discover amazing projects
+                Try adjusting your filters or search terms to discover amazing
+                projects
               </p>
 
               {/* Suggestions */}
@@ -404,7 +434,8 @@ const ProjectsGrid = ({
           >
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="text-sm text-gray-500">
-                Page {currentPage} of {totalPages} • {itemsPerPage} projects per page
+                Page {currentPage} of {totalPages} • {itemsPerPage} projects per
+                page
               </div>
 
               <div className="flex items-center gap-4">
@@ -437,10 +468,11 @@ const ProjectsGrid = ({
                       <button
                         key={pageNumber}
                         onClick={() => onPageChange && onPageChange(pageNumber)}
-                        className={`w-10 h-10 rounded-lg transition-all duration-300 ${currentPage === pageNumber
-                            ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white shadow-lg'
-                            : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
-                          }`}
+                        className={`w-10 h-10 rounded-lg transition-all duration-300 ${
+                          currentPage === pageNumber
+                            ? "bg-gradient-to-r from-primary-500 to-blue-600 text-white shadow-lg"
+                            : "bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30"
+                        }`}
                       >
                         {pageNumber}
                       </button>
@@ -483,8 +515,12 @@ const ProjectsGrid = ({
             className="mt-8 pt-6 border-t border-gray-700/30"
           >
             <div className="flex items-center justify-between mb-4">
-              <h4 className="text-lg font-semibold text-white">Top Technologies</h4>
-              <span className="text-sm text-gray-500">Most used in projects</span>
+              <h4 className="text-lg font-semibold text-white">
+                Top Technologies
+              </h4>
+              <span className="text-sm text-gray-500">
+                Most used in projects
+              </span>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -494,22 +530,45 @@ const ProjectsGrid = ({
                   className="p-3 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-xl hover:border-primary-500/30 transition-all duration-300"
                 >
                   <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${tech.tech === 'Python' ? 'bg-blue-500/20' :
-                        tech.tech === 'React' ? 'bg-cyan-500/20' :
-                          tech.tech === 'TensorFlow' ? 'bg-orange-500/20' :
-                            tech.tech === 'Docker' ? 'bg-blue-600/20' :
-                              'bg-primary-500/20'
-                      }`}>
-                      {tech.tech === 'Python' && <FaPython className="text-blue-400" />}
-                      {tech.tech === 'React' && <FaReact className="text-cyan-400" />}
-                      {tech.tech === 'TensorFlow' && <FiTrendingUp className="text-orange-400" />}
-                      {tech.tech === 'Docker' && <FaDocker className="text-blue-400" />}
-                      {tech.tech === 'PyTorch' && <FiCode className="text-red-400" />}
-                      {tech.tech === 'Node.js' && <FiCloud className="text-green-400" />}
+                    <div
+                      className={`p-2 rounded-lg ${
+                        tech.tech === "Python"
+                          ? "bg-blue-500/20"
+                          : tech.tech === "React"
+                            ? "bg-cyan-500/20"
+                            : tech.tech === "TensorFlow"
+                              ? "bg-orange-500/20"
+                              : tech.tech === "Docker"
+                                ? "bg-blue-600/20"
+                                : "bg-primary-500/20"
+                      }`}
+                    >
+                      {tech.tech === "Python" && (
+                        <FaPython className="text-blue-400" />
+                      )}
+                      {tech.tech === "React" && (
+                        <FaReact className="text-cyan-400" />
+                      )}
+                      {tech.tech === "TensorFlow" && (
+                        <FiTrendingUp className="text-orange-400" />
+                      )}
+                      {tech.tech === "Docker" && (
+                        <FaDocker className="text-blue-400" />
+                      )}
+                      {tech.tech === "PyTorch" && (
+                        <FiCode className="text-red-400" />
+                      )}
+                      {tech.tech === "Node.js" && (
+                        <FiCloud className="text-green-400" />
+                      )}
                     </div>
                     <div className="flex-1">
-                      <div className="text-sm font-medium text-white">{tech.tech}</div>
-                      <div className="text-xs text-gray-500">{tech.count} projects</div>
+                      <div className="text-sm font-medium text-white">
+                        {tech.tech}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {tech.count} projects
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -533,7 +592,9 @@ const ProjectsGrid = ({
                     <FiAward className="text-white text-2xl" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-white">Featured Projects</h4>
+                    <h4 className="text-xl font-bold text-white">
+                      Featured Projects
+                    </h4>
                     <p className="text-gray-300 mt-1">
                       Check out our most popular and well-documented projects
                     </p>
@@ -564,8 +625,19 @@ const ProjectsGrid = ({
 
 // Add missing FiCheckCircle icon component
 const FiCheckCircle = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+    ></path>
   </svg>
 );
 

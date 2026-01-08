@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from "react";
 import { motion } from 'framer-motion';
 
 // Import components
@@ -15,9 +15,6 @@ import {
   FiZap, 
   FiCloud 
 } from 'react-icons/fi';
-
-// Import your API service
-import api from '../../services/api';
 
 const Projects = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -36,115 +33,136 @@ const Projects = () => {
   const [error, setError] = useState(null);
 
   // Mock data for fallback
-  const mockProjects = [
+const mockProjects = useMemo(
+  () => [
     {
       id: 1,
-      title: 'AI-Powered Trading Algorithm',
-      shortDescription: 'Proprietary ML algorithm for automated intraday trading with real-time analytics.',
-      fullDescription: 'Developed a sophisticated machine learning algorithm for automated intraday trading that combines multiple ML models for optimal decision-making. The system processes real-time market data, identifies patterns, and executes trades with minimal latency.',
-      category: 'Machine Learning',
-      complexity: 'Expert',
-      status: 'completed',
-      technologies: ['Python', 'PyTorch', 'Pandas', 'NumPy', 'Scikit-learn', 'FastAPI', 'Docker', 'PostgreSQL', 'Redis', 'AWS'],
-      image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&q=80',
-      demoUrl: 'https://demo-trading.example.com',
-      githubUrl: 'https://github.com/username/trading-algorithm',
-      date: 'January 2024',
-      lastUpdated: '2024-01-15',
+      title: "AI-Powered Trading Algorithm",
+      shortDescription:
+        "Proprietary ML algorithm for automated intraday trading with real-time analytics.",
+      fullDescription:
+        "Developed a sophisticated machine learning algorithm for automated intraday trading that combines multiple ML models for optimal decision-making. The system processes real-time market data, identifies patterns, and executes trades with minimal latency.",
+      category: "Machine Learning",
+      complexity: "Expert",
+      status: "completed",
+      technologies: [
+        "Python",
+        "PyTorch",
+        "Pandas",
+        "NumPy",
+        "Scikit-learn",
+        "FastAPI",
+        "Docker",
+        "PostgreSQL",
+        "Redis",
+        "AWS",
+      ],
+      image:
+        "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&q=80",
+      demoUrl: "https://demo-trading.example.com",
+      githubUrl: "https://github.com/username/trading-algorithm",
+      date: "January 2024",
+      lastUpdated: "2024-01-15",
       featured: true,
       stars: 342,
       forks: 56,
-      views: '2.3K',
+      views: "2.3K",
       contributors: 1,
-      developmentTime: '6 months',
-      datasetSize: '5TB market data',
+      developmentTime: "6 months",
+      datasetSize: "5TB market data",
       features: [
-        'Real-time market data processing at 1000+ events/second',
-        'Ensemble ML models (XGBoost, LSTM, Transformer)',
-        'Advanced risk management with Monte Carlo simulations',
-        'Automated backtesting framework',
-        'Real-time performance dashboard'
+        "Real-time market data processing at 1000+ events/second",
+        "Ensemble ML models (XGBoost, LSTM, Transformer)",
+        "Advanced risk management with Monte Carlo simulations",
+        "Automated backtesting framework",
+        "Real-time performance dashboard",
       ],
       challenges: [
         {
-          description: 'Handling high-frequency data streams with sub-millisecond latency requirements',
-          solution: 'Implemented custom data pipeline using Redis Streams and optimized Python async/await patterns'
+          description:
+            "Handling high-frequency data streams with sub-millisecond latency requirements",
+          solution:
+            "Implemented custom data pipeline using Redis Streams and optimized Python async/await patterns",
         },
         {
-          description: 'Balancing model accuracy vs inference speed for real-time decisions',
-          solution: 'Used model quantization and TensorRT optimization, achieving <10ms inference time'
-        }
+          description:
+            "Balancing model accuracy vs inference speed for real-time decisions",
+          solution:
+            "Used model quantization and TensorRT optimization, achieving <10ms inference time",
+        },
       ],
       results: [
-        'Achieved 73% prediction accuracy on unseen data',
-        'Reduced decision latency to <50ms',
-        'Generated 28% annual ROI in backtesting',
-        'Successfully processed 10M+ daily market events'
+        "Achieved 73% prediction accuracy on unseen data",
+        "Reduced decision latency to <50ms",
+        "Generated 28% annual ROI in backtesting",
+        "Successfully processed 10M+ daily market events",
       ],
       metrics: {
-        'Prediction Accuracy': '73%',
-        'Latency': '50ms',
-        'Annual ROI': '28%',
-        'Events/Day': '10M+'
+        "Prediction Accuracy": "73%",
+        Latency: "50ms",
+        "Annual ROI": "28%",
+        "Events/Day": "10M+",
       },
       goals: [
-        'Create scalable trading system for multiple asset classes',
-        'Achieve sub-100ms end-to-end latency',
-        'Maintain >70% prediction accuracy',
-        'Implement robust risk management'
+        "Create scalable trading system for multiple asset classes",
+        "Achieve sub-100ms end-to-end latency",
+        "Maintain >70% prediction accuracy",
+        "Implement robust risk management",
       ],
-      architecture: 'Microservices architecture with separate data ingestion, model serving, and execution engines. Containerized with Docker and orchestrated with Kubernetes on AWS.',
-      documentationUrl: 'https://docs-trading.example.com',
-      articleUrl: 'https://blog.example.com/ai-trading-algorithm'
+      architecture:
+        "Microservices architecture with separate data ingestion, model serving, and execution engines. Containerized with Docker and orchestrated with Kubernetes on AWS.",
+      documentationUrl: "https://docs-trading.example.com",
+      articleUrl: "https://blog.example.com/ai-trading-algorithm",
     },
-    // Add more mock projects as needed
-  ];
+  ],
+  []
+); 
 
-  // Fetch projects from backend
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        // Try to fetch from API
-        // const response = await api.get('/projects');
-        // const data = response.data;
-        
-        // For now, simulate API call with setTimeout
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Simulate API response - replace this with actual API call
-        const data = mockProjects; // Replace with: const data = response.data || [];
-        
-        // Ensure data is an array
-        if (Array.isArray(data)) {
-          setProjects(data);
-        } else if (data && Array.isArray(data.projects)) {
-          // If response has nested projects array
-          setProjects(data.projects);
-        } else if (data && typeof data === 'object') {
-          // If it's a single object, wrap in array
-          setProjects([data]);
-        } else {
-          // If data is not in expected format, use mock data
-          setProjects(mockProjects);
-          setError('Received unexpected data format from API');
-        }
-        
-      } catch (err) {
-        console.error('Error fetching projects:', err);
-        setError('Failed to load projects from server. Using sample data instead.');
-        // Fallback to mock data
-        setProjects(mockProjects);
-      } finally {
-        setLoading(false);
-        setIsVisible(true);
-      }
-    };
+ useEffect(() => {
+   const fetchProjects = async () => {
+     try {
+       setLoading(true);
+       setError(null);
 
-    fetchProjects();
-  }, []);
+       // Try to fetch from API
+       // const response = await api.get('/projects');
+       // const data = response.data;
+
+       // For now, simulate API call with setTimeout
+       await new Promise((resolve) => setTimeout(resolve, 500));
+
+       // Simulate API response - replace this with actual API call
+       const data = mockProjects; // Replace with: const data = response.data || [];
+
+       // Ensure data is an array
+       if (Array.isArray(data)) {
+         setProjects(data);
+       } else if (data && Array.isArray(data.projects)) {
+         // If response has nested projects array
+         setProjects(data.projects);
+       } else if (data && typeof data === "object") {
+         // If it's a single object, wrap in array
+         setProjects([data]);
+       } else {
+         // If data is not in expected format, use mock data
+         setProjects(mockProjects);
+         setError("Received unexpected data format from API");
+       }
+     } catch (err) {
+       console.error("Error fetching projects:", err);
+       setError(
+         "Failed to load projects from server. Using sample data instead."
+       );
+       // Fallback to mock data
+       setProjects(mockProjects);
+     } finally {
+       setLoading(false);
+       setIsVisible(true);
+     }
+   };
+
+   fetchProjects();
+ }, [mockProjects]);
 
   // Calculate categories with counts - ensure projects is an array
   const categories = React.useMemo(() => {

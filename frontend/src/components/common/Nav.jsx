@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import {
   FiMenu, FiX, FiHome, FiUser, FiBookOpen, FiBriefcase,
-  FiAward, FiMail, FiCode, FiLayers, FiZap, FiTarget,
+  FiAward, FiMail, FiCode,
   FiChevronDown, FiExternalLink
 } from 'react-icons/fi';
 import { FaPython, FaReact } from 'react-icons/fa';

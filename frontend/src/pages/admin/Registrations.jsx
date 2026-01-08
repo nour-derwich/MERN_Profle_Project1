@@ -1,70 +1,78 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Sidebar from '../../components/admin/Sidebar';
-import DataTable from '../../components/admin/DataTable';
+import { useEffect, useState, useCallback } from "react";
 import {
-  FiSearch, FiFilter, FiDownload, FiRefreshCw,
-  FiUsers, FiCheckCircle, FiClock, FiXCircle,
-  FiMail, FiTrash2, FiEye, FiUserCheck, FiFileText
-} from 'react-icons/fi';
-import registrationService from '../../services/registrationService';
+  FiCheckCircle,
+  FiClock,
+  FiDownload,
+  FiFileText,
+  FiRefreshCw,
+  FiSearch,
+  FiTrash2,
+  FiUserCheck,
+  FiUsers,
+  FiXCircle,
+} from "react-icons/fi";
+import DataTable from "../../components/admin/DataTable";
+import Sidebar from "../../components/admin/Sidebar";
+import registrationService from "../../services/registrationService";
 
 const AdminRegistrations = () => {
-  const navigate = useNavigate();
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
   const [stats, setStats] = useState({
     total_registrations: 0,
     confirmed: 0,
     pending: 0,
     cancelled: 0,
     verified: 0,
-    unique_formations: 0
+    unique_formations: 0,
   });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [selectedRegistration, setSelectedRegistration] = useState(null);
-  const [newStatus, setNewStatus] = useState('');
+  const [newStatus, setNewStatus] = useState("");
 
-  useEffect(() => {
-    loadRegistrations();
-    loadStats();
-  }, [filterStatus]);
-
-  const loadRegistrations = async () => {
+  const loadRegistrations = useCallback(async () => {
     try {
       setLoading(true);
       const filters = {};
-      if (filterStatus !== 'all') filters.status = filterStatus;
+      if (filterStatus !== "all") filters.status = filterStatus;
 
       const data = await registrationService.getAll(filters);
       setRegistrations(data.data || []);
     } catch (error) {
-      console.error('Error loading registrations:', error);
+      console.error("Error loading registrations:", error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [filterStatus]); // Add filterStatus as dependency
 
-  const loadStats = async () => {
+  // Wrap loadStats in useCallback
+  const loadStats = useCallback(async () => {
     try {
       const data = await registrationService.getStats();
       // Use the summary object from the response
-      setStats(data.data?.summary || {
-        total_registrations: 0,
-        confirmed: 0,
-        pending: 0,
-        cancelled: 0,
-        verified: 0,
-        unique_formations: 0,
-        unique_participants: 0
-      });
+      setStats(
+        data.data?.summary || {
+          total_registrations: 0,
+          confirmed: 0,
+          pending: 0,
+          cancelled: 0,
+          verified: 0,
+          unique_formations: 0,
+          unique_participants: 0,
+        }
+      );
     } catch (error) {
-      console.error('Error loading stats:', error);
+      console.error("Error loading stats:", error);
     }
-  };
+  }, []); // Empty dependency array since it doesn't depend on component state
+
+  useEffect(() => {
+    loadRegistrations();
+    loadStats();
+  }, [loadRegistrations, loadStats]); // Add both functions to dependency array
 
   const handleStatusChange = async (registration) => {
     setSelectedRegistration(registration);
@@ -74,12 +82,15 @@ const AdminRegistrations = () => {
 
   const confirmStatusChange = async () => {
     try {
-      await registrationService.updateStatus(selectedRegistration.id, newStatus);
+      await registrationService.updateStatus(
+        selectedRegistration.id,
+        newStatus
+      );
       setShowStatusModal(false);
       loadRegistrations();
       loadStats();
     } catch (error) {
-      console.error('Error updating status:', error);
+      console.error("Error updating status:", error);
     }
   };
 
@@ -95,97 +106,103 @@ const AdminRegistrations = () => {
       loadRegistrations();
       loadStats();
     } catch (error) {
-      console.error('Error deleting registration:', error);
+      console.error("Error deleting registration:", error);
     }
   };
-
-
 
   const handleExport = async () => {
     try {
       const blob = await registrationService.exportToCSV();
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.download = `registrations-${new Date().toISOString().split('T')[0]}.csv`;
+      link.download = `registrations-${new Date().toISOString().split("T")[0]}.csv`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Error exporting registrations:', error);
+      console.error("Error exporting registrations:", error);
     }
   };
 
   // Format verification status
   const getVerificationStatus = (registration) => {
     if (registration.is_verified) {
-      return { text: 'Verified', color: 'bg-green-100 text-green-800' };
+      return { text: "Verified", color: "bg-green-100 text-green-800" };
     } else if (registration.verification_token) {
-      return { text: 'Pending Verification', color: 'bg-yellow-100 text-yellow-800' };
+      return {
+        text: "Pending Verification",
+        color: "bg-yellow-100 text-yellow-800",
+      };
     } else {
-      return { text: 'Not Verified', color: 'bg-gray-100 text-gray-800' };
+      return { text: "Not Verified", color: "bg-gray-100 text-gray-800" };
     }
   };
 
-  const filteredRegistrations = registrations.filter(reg => {
-    const matchesSearch = reg.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const filteredRegistrations = registrations.filter((reg) => {
+    const matchesSearch =
+      reg.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       reg.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       reg.phone?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesSearch;
   });
 
   const formatDate = (dateString) => {
-    if (!dateString) return '-';
-    return new Date(dateString).toLocaleDateString('fr-FR', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+    if (!dateString) return "-";
+    return new Date(dateString).toLocaleDateString("fr-FR", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
   const columns = [
     {
-      key: 'full_name',
-      title: 'Name',
+      key: "full_name",
+      title: "Name",
       render: (item) => (
         <div>
           <div className="font-semibold text-gray-900">{item.full_name}</div>
           <div className="text-xs text-gray-500">{item.email}</div>
         </div>
-      )
+      ),
     },
     {
-      key: 'phone',
-      title: 'Phone',
+      key: "phone",
+      title: "Phone",
       render: (item) => (
-        <span className="text-gray-700">{item.phone || '-'}</span>
-      )
+        <span className="text-gray-700">{item.phone || "-"}</span>
+      ),
     },
     {
-      key: 'formation_title',
-      title: 'Formation',
+      key: "formation_title",
+      title: "Formation",
       render: (item) => (
-        <span className="text-gray-900 font-medium">{item.formation_title || 'N/A'}</span>
-      )
+        <span className="text-gray-900 font-medium">
+          {item.formation_title || "N/A"}
+        </span>
+      ),
     },
     {
-      key: 'role',
-      title: 'Role',
+      key: "role",
+      title: "Role",
       render: (item) => (
-        <span className="text-gray-700">{item.role || '-'}</span>
-      )
+        <span className="text-gray-700">{item.role || "-"}</span>
+      ),
     },
     {
-      key: 'job_title',
-      title: 'Current Position',
+      key: "job_title",
+      title: "Current Position",
       render: (item) => (
-        <span className="text-gray-700">{item.job_title || item.current_role || '-'}</span>
-      )
+        <span className="text-gray-700">
+          {item.job_title || item.current_role || "-"}
+        </span>
+      ),
     },
     {
-      key: 'status',
-      title: 'Status',
+      key: "status",
+      title: "Status",
       render: (item) => {
         const verification = getVerificationStatus(item);
         return (
@@ -195,12 +212,13 @@ const AdminRegistrations = () => {
                 e.stopPropagation();
                 handleStatusChange(item);
               }}
-              className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${item.status === 'confirmed'
-                  ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                  : item.status === 'pending'
-                    ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
-                    : 'bg-red-100 text-red-800 hover:bg-red-200'
-                }`}
+              className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
+                item.status === "confirmed"
+                  ? "bg-green-100 text-green-800 hover:bg-green-200"
+                  : item.status === "pending"
+                    ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
+                    : "bg-red-100 text-red-800 hover:bg-red-200"
+              }`}
             >
               {item.status}
             </button>
@@ -209,31 +227,30 @@ const AdminRegistrations = () => {
             </div>
           </div>
         );
-      }
+      },
     },
     {
-      key: 'registration_date',
-      title: 'Date',
+      key: "registration_date",
+      title: "Date",
       render: (item) => (
         <span className="text-gray-600 text-sm">
           {formatDate(item.registration_date || item.created_at)}
         </span>
-      )
-    }
+      ),
+    },
   ];
 
   const tableActions = [
-
     {
-      label: 'Change Status',
+      label: "Change Status",
       handler: handleStatusChange,
-      color: 'bg-indigo-500 text-white hover:bg-indigo-600'
+      color: "bg-indigo-500 text-white hover:bg-indigo-600",
     },
     {
-      label: 'Delete',
+      label: "Delete",
       handler: handleDelete,
-      color: 'bg-red-500 text-white hover:bg-red-600'
-    }
+      color: "bg-red-500 text-white hover:bg-red-600",
+    },
   ];
 
   return (
@@ -258,7 +275,7 @@ const AdminRegistrations = () => {
                 disabled={loading}
                 className="flex items-center space-x-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 hover:shadow-md transition-all"
               >
-                <FiRefreshCw className={loading ? 'animate-spin' : ''} />
+                <FiRefreshCw className={loading ? "animate-spin" : ""} />
                 <span className="font-medium">Refresh</span>
               </button>
               <button
@@ -277,8 +294,12 @@ const AdminRegistrations = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-xs font-semibold uppercase">Total</p>
-                <h3 className="text-2xl font-bold text-gray-900 mt-1">{stats.total_registrations || 0}</h3>
+                <p className="text-gray-500 text-xs font-semibold uppercase">
+                  Total
+                </p>
+                <h3 className="text-2xl font-bold text-gray-900 mt-1">
+                  {stats.total_registrations || 0}
+                </h3>
               </div>
               <div className="p-2 bg-purple-100 rounded-lg">
                 <FiUsers className="text-lg text-purple-600" />
@@ -289,8 +310,12 @@ const AdminRegistrations = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-xs font-semibold uppercase">Confirmed</p>
-                <h3 className="text-2xl font-bold text-gray-900 mt-1">{stats.confirmed || 0}</h3>
+                <p className="text-gray-500 text-xs font-semibold uppercase">
+                  Confirmed
+                </p>
+                <h3 className="text-2xl font-bold text-gray-900 mt-1">
+                  {stats.confirmed || 0}
+                </h3>
               </div>
               <div className="p-2 bg-green-100 rounded-lg">
                 <FiCheckCircle className="text-lg text-green-600" />
@@ -301,8 +326,12 @@ const AdminRegistrations = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-xs font-semibold uppercase">Pending</p>
-                <h3 className="text-2xl font-bold text-gray-900 mt-1">{stats.pending || 0}</h3>
+                <p className="text-gray-500 text-xs font-semibold uppercase">
+                  Pending
+                </p>
+                <h3 className="text-2xl font-bold text-gray-900 mt-1">
+                  {stats.pending || 0}
+                </h3>
               </div>
               <div className="p-2 bg-yellow-100 rounded-lg">
                 <FiClock className="text-lg text-yellow-600" />
@@ -313,8 +342,12 @@ const AdminRegistrations = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-xs font-semibold uppercase">Cancelled</p>
-                <h3 className="text-2xl font-bold text-gray-900 mt-1">{stats.cancelled || 0}</h3>
+                <p className="text-gray-500 text-xs font-semibold uppercase">
+                  Cancelled
+                </p>
+                <h3 className="text-2xl font-bold text-gray-900 mt-1">
+                  {stats.cancelled || 0}
+                </h3>
               </div>
               <div className="p-2 bg-red-100 rounded-lg">
                 <FiXCircle className="text-lg text-red-600" />
@@ -325,8 +358,12 @@ const AdminRegistrations = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-xs font-semibold uppercase">Verified</p>
-                <h3 className="text-2xl font-bold text-gray-900 mt-1">{stats.verified || 0}</h3>
+                <p className="text-gray-500 text-xs font-semibold uppercase">
+                  Verified
+                </p>
+                <h3 className="text-2xl font-bold text-gray-900 mt-1">
+                  {stats.verified || 0}
+                </h3>
               </div>
               <div className="p-2 bg-blue-100 rounded-lg">
                 <FiUserCheck className="text-lg text-blue-600" />
@@ -340,8 +377,12 @@ const AdminRegistrations = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-xs font-semibold uppercase">Unique Formations</p>
-                <h3 className="text-2xl font-bold text-gray-900 mt-1">{stats.unique_formations || 0}</h3>
+                <p className="text-gray-500 text-xs font-semibold uppercase">
+                  Unique Formations
+                </p>
+                <h3 className="text-2xl font-bold text-gray-900 mt-1">
+                  {stats.unique_formations || 0}
+                </h3>
               </div>
               <div className="p-2 bg-indigo-100 rounded-lg">
                 <FiFileText className="text-lg text-indigo-600" />
@@ -352,8 +393,12 @@ const AdminRegistrations = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-xs font-semibold uppercase">Unique Participants</p>
-                <h3 className="text-2xl font-bold text-gray-900 mt-1">{stats.unique_participants || 0}</h3>
+                <p className="text-gray-500 text-xs font-semibold uppercase">
+                  Unique Participants
+                </p>
+                <h3 className="text-2xl font-bold text-gray-900 mt-1">
+                  {stats.unique_participants || 0}
+                </h3>
               </div>
               <div className="p-2 bg-pink-100 rounded-lg">
                 <FiUsers className="text-lg text-pink-600" />
@@ -403,8 +448,12 @@ const AdminRegistrations = () => {
         ) : filteredRegistrations.length === 0 ? (
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-12 text-center">
             <FiUsers className="mx-auto text-6xl text-gray-300 mb-4" />
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No registrations found</h3>
-            <p className="text-gray-600">Registrations will appear here when students enroll</p>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">
+              No registrations found
+            </h3>
+            <p className="text-gray-600">
+              Registrations will appear here when students enroll
+            </p>
           </div>
         ) : (
           <DataTable
@@ -422,7 +471,8 @@ const AdminRegistrations = () => {
                 Change Registration Status
               </h3>
               <p className="text-gray-600 mb-4">
-                Update status for <strong>{selectedRegistration?.full_name}</strong>
+                Update status for{" "}
+                <strong>{selectedRegistration?.full_name}</strong>
               </p>
               <select
                 value={newStatus}
@@ -462,7 +512,9 @@ const AdminRegistrations = () => {
                 Delete Registration
               </h3>
               <p className="text-gray-600 text-center mb-6">
-                Are you sure you want to delete the registration for "{selectedRegistration?.full_name}"? This action cannot be undone.
+                Are you sure you want to delete the registration for "
+                {selectedRegistration?.full_name}"? This action cannot be
+                undone.
               </p>
               <div className="flex space-x-3">
                 <button

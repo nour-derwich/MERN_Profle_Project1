@@ -1,13 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import Sidebar from '../../components/admin/Sidebar';
-import { 
-  FiSave, FiX, FiUpload, FiImage, 
-  FiInfo, FiDollarSign, FiStar, FiExternalLink,
-  FiBook, FiUser, FiTag, FiClock, FiTrendingUp,
-  FiCheck, FiAlertCircle, FiHash, FiBookOpen
-} from 'react-icons/fi';
-import courseService from '../../services/courseService';
+import { useEffect, useState, useCallback } from "react";
+import {
+  FiAlertCircle,
+  FiBook,
+  FiBookOpen,
+  FiCheck,
+  FiClock,
+  FiDollarSign,
+  FiExternalLink,
+  FiHash,
+  FiImage,
+  FiInfo,
+  FiSave,
+  FiStar,
+  FiTag,
+  FiTrendingUp,
+  FiUpload,
+  FiUser,
+  FiX,
+} from "react-icons/fi";
+import { useNavigate, useParams } from "react-router-dom";
+import Sidebar from "../../components/admin/Sidebar";
+import courseService from "../../services/courseService";
 
 const AdminCourseForm = () => {
   const navigate = useNavigate();
@@ -18,106 +31,129 @@ const AdminCourseForm = () => {
   const [uploading, setUploading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [tags, setTags] = useState([]);
-  const [tagInput, setTagInput] = useState('');
+  const [tagInput, setTagInput] = useState("");
   const [whyRecommend, setWhyRecommend] = useState([]);
-  const [whyRecommendInput, setWhyRecommendInput] = useState('');
-  
+  // const [whyRecommendInput, setWhyRecommendInput] = useState("");
+
   const [formData, setFormData] = useState({
-    title: '',
-    author: '',
-    description: '',
-    short_description: '',
-    category: '',
-    level: 'beginner',
-    price: '',
-    original_price: '',
-    rating: '',
-    reviews: '',
-    reviews_count: '',
-    priority: 'Recommended',
-    personal_insight: '',
-    time_to_read: '2-3 weeks',
+    title: "",
+    author: "",
+    description: "",
+    short_description: "",
+    category: "",
+    level: "beginner",
+    price: "",
+    original_price: "",
+    rating: "",
+    reviews: "",
+    reviews_count: "",
+    priority: "Recommended",
+    personal_insight: "",
+    time_to_read: "2-3 weeks",
     year: new Date().getFullYear(),
-    pages: '',
-    cover_image: '',
-    amazon_link: '',
-    publisher: '',
-    language: 'English',
+    pages: "",
+    cover_image: "",
+    amazon_link: "",
+    publisher: "",
+    language: "English",
     bestseller: false,
     featured: false,
     clicks_count: 0,
-    isbn: '',
-    publication_year: new Date().getFullYear()
+    isbn: "",
+    publication_year: new Date().getFullYear(),
   });
 
   const [errors, setErrors] = useState({});
+  console.log(setUploading);
 
   const categories = [
-    'Machine Learning', 'Deep Learning', 'Data Science', 
-    'Python Programming', 'Mathematics', 'Statistics',
-    'AI Ethics', 'Research Papers', 'Programming',
-    'Web Development', 'Mobile Development', 'Design',
-    'Business', 'Marketing', 'DevOps', 'Databases'
+    "Machine Learning",
+    "Deep Learning",
+    "Data Science",
+    "Python Programming",
+    "Mathematics",
+    "Statistics",
+    "AI Ethics",
+    "Research Papers",
+    "Programming",
+    "Web Development",
+    "Mobile Development",
+    "Design",
+    "Business",
+    "Marketing",
+    "DevOps",
+    "Databases",
   ];
 
   const levels = [
-    { value: 'beginner', label: 'Beginner' },
-    { value: 'intermediate', label: 'Intermediate' },
-    { value: 'advanced', label: 'Advanced' },
-    { value: 'expert', label: 'Expert' }
+    { value: "beginner", label: "Beginner" },
+    { value: "intermediate", label: "Intermediate" },
+    { value: "advanced", label: "Advanced" },
+    { value: "expert", label: "Expert" },
   ];
 
   const priorities = [
-    'Essential', 'Foundational', 'Advanced', 
-    'Practical', 'Theoretical', 'Recommended'
+    "Essential",
+    "Foundational",
+    "Advanced",
+    "Practical",
+    "Theoretical",
+    "Recommended",
   ];
 
   const whyRecommendOptions = [
-    'Career', 'Practical', 'Foundation', 'Reference',
-    'Research', 'Quick Start', 'Comprehensive'
+    "Career",
+    "Practical",
+    "Foundation",
+    "Reference",
+    "Research",
+    "Quick Start",
+    "Comprehensive",
   ];
+
+  const loadCourse = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await courseService.getById(id);
+      const data = response.data;
+
+      setFormData(data);
+
+      if (data.cover_image) {
+        setImagePreview(data.cover_image);
+      }
+
+      if (data.tags) {
+        setTags(Array.isArray(data.tags) ? data.tags : []);
+      }
+
+      if (data.why_recommend) {
+        setWhyRecommend(
+          Array.isArray(data.why_recommend) ? data.why_recommend : []
+        );
+      }
+    } catch (error) {
+      console.error("Error loading course:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [id]); // id is the only dependency
 
   useEffect(() => {
     if (isEditMode) {
       loadCourse();
     }
-  }, [id]);
-
-  const loadCourse = async () => {
-    try {
-      setLoading(true);
-      const response = await courseService.getById(id);
-      const data = response.data;
-      
-      setFormData(data);
-      
-      if (data.cover_image) {
-        setImagePreview(data.cover_image);
-      }
-      
-      if (data.tags) {
-        setTags(Array.isArray(data.tags) ? data.tags : []);
-      }
-      
-      if (data.why_recommend) {
-        setWhyRecommend(Array.isArray(data.why_recommend) ? data.why_recommend : []);
-      }
-    } catch (error) {
-      console.error('Error loading course:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [isEditMode, loadCourse]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
     // Clear error for this field
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
@@ -126,34 +162,40 @@ const AdminCourseForm = () => {
     if (!file) return;
 
     // Validate file type
-    if (!file.type.startsWith('image/')) {
-      setErrors(prev => ({ ...prev, cover_image: 'Please select an image file' }));
+    if (!file.type.startsWith("image/")) {
+      setErrors((prev) => ({
+        ...prev,
+        cover_image: "Please select an image file",
+      }));
       return;
     }
 
     // Validate file size (max 20MB)
     if (file.size > 20 * 1024 * 1024) {
-      setErrors(prev => ({ ...prev, cover_image: 'Image size should be less than 20MB' }));
+      setErrors((prev) => ({
+        ...prev,
+        cover_image: "Image size should be less than 20MB",
+      }));
       return;
     }
 
     // For now, just create a preview URL
     const previewUrl = URL.createObjectURL(file);
     setImagePreview(previewUrl);
-    setFormData(prev => ({ ...prev, cover_image: previewUrl }));
-    setErrors(prev => ({ ...prev, cover_image: '' }));
+    setFormData((prev) => ({ ...prev, cover_image: previewUrl }));
+    setErrors((prev) => ({ ...prev, cover_image: "" }));
   };
 
   const handleTagAdd = () => {
     const trimmedTag = tagInput.trim();
     if (trimmedTag && !tags.includes(trimmedTag)) {
       setTags([...tags, trimmedTag]);
-      setTagInput('');
+      setTagInput("");
     }
   };
 
   const handleTagRemove = (tagToRemove) => {
-    setTags(tags.filter(tag => tag !== tagToRemove));
+    setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
   const handleWhyRecommendAdd = (reason) => {
@@ -163,49 +205,52 @@ const AdminCourseForm = () => {
   };
 
   const handleWhyRecommendRemove = (reasonToRemove) => {
-    setWhyRecommend(whyRecommend.filter(reason => reason !== reasonToRemove));
+    setWhyRecommend(whyRecommend.filter((reason) => reason !== reasonToRemove));
   };
 
   const validateForm = () => {
     const newErrors = {};
 
     if (!formData.title.trim()) {
-      newErrors.title = 'Title is required';
+      newErrors.title = "Title is required";
     }
     if (!formData.author.trim()) {
-      newErrors.author = 'Author is required';
+      newErrors.author = "Author is required";
     }
     if (!formData.description.trim()) {
-      newErrors.description = 'Description is required';
+      newErrors.description = "Description is required";
     }
     if (!formData.short_description.trim()) {
-      newErrors.short_description = 'Short description is required';
+      newErrors.short_description = "Short description is required";
     }
     if (!formData.category) {
-      newErrors.category = 'Category is required';
+      newErrors.category = "Category is required";
     }
     if (!formData.level) {
-      newErrors.level = 'Level is required';
+      newErrors.level = "Level is required";
     }
     if (!formData.price || formData.price < 0) {
-      newErrors.price = 'Valid price is required';
+      newErrors.price = "Valid price is required";
     }
     if (formData.rating && (formData.rating < 0 || formData.rating > 5)) {
-      newErrors.rating = 'Rating must be between 0 and 5';
+      newErrors.rating = "Rating must be between 0 and 5";
     }
     if (formData.reviews && formData.reviews < 0) {
-      newErrors.reviews = 'Reviews count cannot be negative';
+      newErrors.reviews = "Reviews count cannot be negative";
     }
-    if (formData.year && (formData.year < 1900 || formData.year > new Date().getFullYear())) {
-      newErrors.year = 'Please enter a valid year';
+    if (
+      formData.year &&
+      (formData.year < 1900 || formData.year > new Date().getFullYear())
+    ) {
+      newErrors.year = "Please enter a valid year";
     }
     if (formData.pages && formData.pages < 0) {
-      newErrors.pages = 'Page count cannot be negative';
+      newErrors.pages = "Page count cannot be negative";
     }
     if (!formData.amazon_link.trim()) {
-      newErrors.amazon_link = 'Amazon link is required';
-    } else if (!formData.amazon_link.startsWith('http')) {
-      newErrors.amazon_link = 'Please enter a valid URL';
+      newErrors.amazon_link = "Amazon link is required";
+    } else if (!formData.amazon_link.startsWith("http")) {
+      newErrors.amazon_link = "Please enter a valid URL";
     }
 
     setErrors(newErrors);
@@ -214,7 +259,7 @@ const AdminCourseForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -228,7 +273,7 @@ const AdminCourseForm = () => {
         tags,
         why_recommend: whyRecommend,
         publication_year: formData.year || formData.publication_year,
-        reviews_count: formData.reviews || formData.reviews_count || 0
+        reviews_count: formData.reviews || formData.reviews_count || 0,
       };
 
       if (isEditMode) {
@@ -237,12 +282,14 @@ const AdminCourseForm = () => {
         await courseService.create(submissionData);
       }
 
-      navigate('/admin/courses');
+      navigate("/admin/courses");
     } catch (error) {
-      console.error('Error saving course:', error);
-      setErrors(prev => ({ 
-        ...prev, 
-        submit: error.response?.data?.message || 'Failed to save course. Please try again.' 
+      console.error("Error saving course:", error);
+      setErrors((prev) => ({
+        ...prev,
+        submit:
+          error.response?.data?.message ||
+          "Failed to save course. Please try again.",
       }));
     } finally {
       setLoading(false);
@@ -252,21 +299,23 @@ const AdminCourseForm = () => {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/20 to-pink-50/20">
       <Sidebar />
-      
+
       <div className="flex-1 ml-64 p-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                {isEditMode ? 'Edit Course' : 'Add New Course/Book'}
+                {isEditMode ? "Edit Course" : "Add New Course/Book"}
               </h1>
               <p className="text-gray-600">
-                {isEditMode ? 'Update book details' : 'Add a new book recommendation for AI/ML learning'}
+                {isEditMode
+                  ? "Update book details"
+                  : "Add a new book recommendation for AI/ML learning"}
               </p>
             </div>
             <button
-              onClick={() => navigate('/admin/courses')}
+              onClick={() => navigate("/admin/courses")}
               className="flex items-center space-x-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 hover:shadow-md transition-all"
             >
               <FiX />
@@ -285,7 +334,9 @@ const AdminCourseForm = () => {
                   <div className="p-2 bg-blue-100 rounded-lg">
                     <FiInfo className="text-blue-600" size={20} />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900">Book Information</h2>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    Book Information
+                  </h2>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -299,11 +350,13 @@ const AdminCourseForm = () => {
                       name="title"
                       value={formData.title}
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 border ${errors.title ? 'border-red-500' : 'border-gray-300'} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                      className={`w-full px-4 py-3 border ${errors.title ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                       placeholder="e.g., Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow"
                     />
                     {errors.title && (
-                      <p className="mt-1 text-sm text-red-600">{errors.title}</p>
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.title}
+                      </p>
                     )}
                   </div>
 
@@ -319,12 +372,14 @@ const AdminCourseForm = () => {
                         name="author"
                         value={formData.author}
                         onChange={handleChange}
-                        className={`w-full pl-12 pr-4 py-3 border ${errors.author ? 'border-red-500' : 'border-gray-300'} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                        className={`w-full pl-12 pr-4 py-3 border ${errors.author ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                         placeholder="e.g., Aurélien Géron"
                       />
                     </div>
                     {errors.author && (
-                      <p className="mt-1 text-sm text-red-600">{errors.author}</p>
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.author}
+                      </p>
                     )}
                   </div>
 
@@ -355,7 +410,7 @@ const AdminCourseForm = () => {
                       onChange={handleChange}
                       min="1900"
                       max={new Date().getFullYear()}
-                      className={`w-full px-4 py-3 border ${errors.year ? 'border-red-500' : 'border-gray-300'} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                      className={`w-full px-4 py-3 border ${errors.year ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                     />
                     {errors.year && (
                       <p className="mt-1 text-sm text-red-600">{errors.year}</p>
@@ -373,10 +428,12 @@ const AdminCourseForm = () => {
                       value={formData.pages}
                       onChange={handleChange}
                       min="0"
-                      className={`w-full px-4 py-3 border ${errors.pages ? 'border-red-500' : 'border-gray-300'} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                      className={`w-full px-4 py-3 border ${errors.pages ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                     />
                     {errors.pages && (
-                      <p className="mt-1 text-sm text-red-600">{errors.pages}</p>
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.pages}
+                      </p>
                     )}
                   </div>
 
@@ -404,15 +461,19 @@ const AdminCourseForm = () => {
                       name="category"
                       value={formData.category}
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 border ${errors.category ? 'border-red-500' : 'border-gray-300'} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                      className={`w-full px-4 py-3 border ${errors.category ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                     >
                       <option value="">Select Category</option>
-                      {categories.map(cat => (
-                        <option key={cat} value={cat}>{cat}</option>
+                      {categories.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
                       ))}
                     </select>
                     {errors.category && (
-                      <p className="mt-1 text-sm text-red-600">{errors.category}</p>
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.category}
+                      </p>
                     )}
                   </div>
 
@@ -425,15 +486,19 @@ const AdminCourseForm = () => {
                       name="level"
                       value={formData.level}
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 border ${errors.level ? 'border-red-500' : 'border-gray-300'} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                      className={`w-full px-4 py-3 border ${errors.level ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                     >
                       <option value="">Select Level</option>
-                      {levels.map(lvl => (
-                        <option key={lvl.value} value={lvl.value}>{lvl.label}</option>
+                      {levels.map((lvl) => (
+                        <option key={lvl.value} value={lvl.value}>
+                          {lvl.label}
+                        </option>
                       ))}
                     </select>
                     {errors.level && (
-                      <p className="mt-1 text-sm text-red-600">{errors.level}</p>
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.level}
+                      </p>
                     )}
                   </div>
 
@@ -448,8 +513,10 @@ const AdminCourseForm = () => {
                       onChange={handleChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
-                      {priorities.map(priority => (
-                        <option key={priority} value={priority}>{priority}</option>
+                      {priorities.map((priority) => (
+                        <option key={priority} value={priority}>
+                          {priority}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -481,7 +548,9 @@ const AdminCourseForm = () => {
                   <div className="p-2 bg-purple-100 rounded-lg">
                     <FiBookOpen className="text-purple-600" size={20} />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900">Descriptions</h2>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    Descriptions
+                  </h2>
                 </div>
 
                 <div className="space-y-4">
@@ -495,7 +564,7 @@ const AdminCourseForm = () => {
                       value={formData.short_description}
                       onChange={handleChange}
                       rows={2}
-                      className={`w-full px-4 py-3 border ${errors.short_description ? 'border-red-500' : 'border-gray-300'} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                      className={`w-full px-4 py-3 border ${errors.short_description ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                       placeholder="Brief summary of the book (max 500 characters)"
                       maxLength={500}
                     />
@@ -504,7 +573,9 @@ const AdminCourseForm = () => {
                         {formData.short_description?.length || 0}/500 characters
                       </p>
                       {errors.short_description && (
-                        <p className="text-sm text-red-600">{errors.short_description}</p>
+                        <p className="text-sm text-red-600">
+                          {errors.short_description}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -519,11 +590,13 @@ const AdminCourseForm = () => {
                       value={formData.description}
                       onChange={handleChange}
                       rows={6}
-                      className={`w-full px-4 py-3 border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                      className={`w-full px-4 py-3 border ${errors.description ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                       placeholder="Detailed description of what makes this book valuable..."
                     />
                     {errors.description && (
-                      <p className="mt-1 text-sm text-red-600">{errors.description}</p>
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.description}
+                      </p>
                     )}
                   </div>
 
@@ -553,7 +626,9 @@ const AdminCourseForm = () => {
                   <div className="p-2 bg-green-100 rounded-lg">
                     <FiDollarSign className="text-green-600" size={20} />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900">Pricing & Metrics</h2>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    Pricing & Metrics
+                  </h2>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -571,12 +646,14 @@ const AdminCourseForm = () => {
                         onChange={handleChange}
                         step="0.01"
                         min="0"
-                        className={`w-full pl-12 pr-4 py-3 border ${errors.price ? 'border-red-500' : 'border-gray-300'} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                        className={`w-full pl-12 pr-4 py-3 border ${errors.price ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                         placeholder="59.99"
                       />
                     </div>
                     {errors.price && (
-                      <p className="mt-1 text-sm text-red-600">{errors.price}</p>
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.price}
+                      </p>
                     )}
                   </div>
 
@@ -615,12 +692,14 @@ const AdminCourseForm = () => {
                         step="0.1"
                         min="0"
                         max="5"
-                        className={`w-full pl-12 pr-4 py-3 border ${errors.rating ? 'border-red-500' : 'border-gray-300'} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                        className={`w-full pl-12 pr-4 py-3 border ${errors.rating ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                         placeholder="4.7"
                       />
                     </div>
                     {errors.rating && (
-                      <p className="mt-1 text-sm text-red-600">{errors.rating}</p>
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.rating}
+                      </p>
                     )}
                   </div>
 
@@ -635,11 +714,13 @@ const AdminCourseForm = () => {
                       value={formData.reviews}
                       onChange={handleChange}
                       min="0"
-                      className={`w-full px-4 py-3 border ${errors.reviews ? 'border-red-500' : 'border-gray-300'} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                      className={`w-full px-4 py-3 border ${errors.reviews ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                       placeholder="2834"
                     />
                     {errors.reviews && (
-                      <p className="mt-1 text-sm text-red-600">{errors.reviews}</p>
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.reviews}
+                      </p>
                     )}
                   </div>
 
@@ -669,7 +750,9 @@ const AdminCourseForm = () => {
                   <div className="p-2 bg-orange-100 rounded-lg">
                     <FiHash className="text-orange-600" size={20} />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900">Tags & Links</h2>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    Tags & Links
+                  </h2>
                 </div>
 
                 <div className="space-y-6">
@@ -683,7 +766,10 @@ const AdminCourseForm = () => {
                         type="text"
                         value={tagInput}
                         onChange={(e) => setTagInput(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleTagAdd())}
+                        onKeyPress={(e) =>
+                          e.key === "Enter" &&
+                          (e.preventDefault(), handleTagAdd())
+                        }
                         className="flex-1 px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="Add tags (Python, ML, etc.)"
                       />
@@ -713,7 +799,9 @@ const AdminCourseForm = () => {
                         </span>
                       ))}
                       {tags.length === 0 && (
-                        <p className="text-sm text-gray-500 italic">No tags added yet</p>
+                        <p className="text-sm text-gray-500 italic">
+                          No tags added yet
+                        </p>
                       )}
                     </div>
                   </div>
@@ -725,16 +813,20 @@ const AdminCourseForm = () => {
                     </label>
                     <div className="mb-3">
                       <div className="flex flex-wrap gap-2">
-                        {whyRecommendOptions.map(reason => (
+                        {whyRecommendOptions.map((reason) => (
                           <button
                             key={reason}
                             type="button"
                             onClick={() => handleWhyRecommendAdd(reason)}
-                            className={`px-3 py-1.5 rounded-lg text-sm transition-all ${whyRecommend.includes(reason) 
-                              ? 'bg-green-100 text-green-800 border border-green-300' 
-                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                            className={`px-3 py-1.5 rounded-lg text-sm transition-all ${
+                              whyRecommend.includes(reason)
+                                ? "bg-green-100 text-green-800 border border-green-300"
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                            }`}
                           >
-                            {whyRecommend.includes(reason) && <FiCheck className="inline mr-1" />}
+                            {whyRecommend.includes(reason) && (
+                              <FiCheck className="inline mr-1" />
+                            )}
                             {reason}
                           </button>
                         ))}
@@ -758,7 +850,9 @@ const AdminCourseForm = () => {
                         </span>
                       ))}
                       {whyRecommend.length === 0 && (
-                        <p className="text-sm text-gray-500 italic">Select reasons above</p>
+                        <p className="text-sm text-gray-500 italic">
+                          Select reasons above
+                        </p>
                       )}
                     </div>
                   </div>
@@ -775,12 +869,14 @@ const AdminCourseForm = () => {
                         name="amazon_link"
                         value={formData.amazon_link}
                         onChange={handleChange}
-                        className={`w-full pl-12 pr-4 py-3 border ${errors.amazon_link ? 'border-red-500' : 'border-gray-300'} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                        className={`w-full pl-12 pr-4 py-3 border ${errors.amazon_link ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                         placeholder="https://www.amazon.com/..."
                       />
                     </div>
                     {errors.amazon_link && (
-                      <p className="mt-1 text-sm text-red-600">{errors.amazon_link}</p>
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.amazon_link}
+                      </p>
                     )}
                     <p className="mt-1 text-xs text-gray-500">
                       Use Amazon affiliate link if available to earn commissions
@@ -798,7 +894,9 @@ const AdminCourseForm = () => {
                   <div className="p-2 bg-pink-100 rounded-lg">
                     <FiImage className="text-pink-600" size={20} />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900">Book Cover</h2>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    Book Cover
+                  </h2>
                 </div>
 
                 <div className="space-y-4">
@@ -813,7 +911,7 @@ const AdminCourseForm = () => {
                         type="button"
                         onClick={() => {
                           setImagePreview(null);
-                          setFormData(prev => ({ ...prev, cover_image: '' }));
+                          setFormData((prev) => ({ ...prev, cover_image: "" }));
                         }}
                         className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all shadow-lg"
                       >
@@ -840,10 +938,14 @@ const AdminCourseForm = () => {
                     </label>
                   )}
                   {uploading && (
-                    <p className="text-sm text-blue-600 text-center">Uploading...</p>
+                    <p className="text-sm text-blue-600 text-center">
+                      Uploading...
+                    </p>
                   )}
                   {errors.cover_image && (
-                    <p className="text-sm text-red-600 text-center">{errors.cover_image}</p>
+                    <p className="text-sm text-red-600 text-center">
+                      {errors.cover_image}
+                    </p>
                   )}
                   <p className="text-xs text-gray-500 text-center">
                     Use high-quality book cover image (800×1200 recommended)
@@ -853,8 +955,10 @@ const AdminCourseForm = () => {
 
               {/* Status Settings */}
               <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">Status Settings</h2>
-                
+                <h2 className="text-xl font-bold text-gray-900 mb-6">
+                  Status Settings
+                </h2>
+
                 <div className="space-y-4">
                   {/* Featured */}
                   <div className="flex items-start space-x-3">
@@ -867,7 +971,10 @@ const AdminCourseForm = () => {
                       className="w-5 h-5 mt-0.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                     />
                     <div>
-                      <label htmlFor="featured" className="text-sm font-medium text-gray-700 cursor-pointer">
+                      <label
+                        htmlFor="featured"
+                        className="text-sm font-medium text-gray-700 cursor-pointer"
+                      >
                         Mark as Featured
                       </label>
                       <p className="text-xs text-gray-500 mt-1">
@@ -887,7 +994,10 @@ const AdminCourseForm = () => {
                       className="w-5 h-5 mt-0.5 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
                     />
                     <div>
-                      <label htmlFor="bestseller" className="text-sm font-medium text-gray-700 cursor-pointer">
+                      <label
+                        htmlFor="bestseller"
+                        className="text-sm font-medium text-gray-700 cursor-pointer"
+                      >
                         Mark as Bestseller
                       </label>
                       <p className="text-xs text-gray-500 mt-1">
@@ -916,12 +1026,18 @@ const AdminCourseForm = () => {
                     className="w-full flex items-center justify-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <FiSave />
-                    <span>{loading ? 'Saving...' : isEditMode ? 'Update Book' : 'Add Book'}</span>
+                    <span>
+                      {loading
+                        ? "Saving..."
+                        : isEditMode
+                          ? "Update Book"
+                          : "Add Book"}
+                    </span>
                   </button>
 
                   <button
                     type="button"
-                    onClick={() => navigate('/admin/courses')}
+                    onClick={() => navigate("/admin/courses")}
                     className="w-full px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all font-medium"
                   >
                     Cancel
@@ -932,9 +1048,14 @@ const AdminCourseForm = () => {
               {/* Info Box */}
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6">
                 <div className="flex items-start space-x-3">
-                  <FiBook className="text-blue-600 mt-1 flex-shrink-0" size={20} />
+                  <FiBook
+                    className="text-blue-600 mt-1 flex-shrink-0"
+                    size={20}
+                  />
                   <div>
-                    <h3 className="font-bold text-blue-900 mb-2">Tips for Success</h3>
+                    <h3 className="font-bold text-blue-900 mb-2">
+                      Tips for Success
+                    </h3>
                     <ul className="text-sm text-blue-700 space-y-1">
                       <li className="flex items-start gap-1">
                         <FiCheck className="text-green-500 mt-0.5 flex-shrink-0" />

@@ -1,111 +1,112 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { 
-  FiSave, 
-  FiArrowLeft, 
-  FiUpload, 
-  FiX,
-  FiPlus,
-  FiTrash2,
-  FiEye,
-  FiCode,
-  FiLink,
-  FiTag,
+import { useEffect, useState, useCallback } from "react";
+import {
   FiAlertCircle,
-  FiTrendingUp,
-  FiClock,
-  FiUsers,
+  FiArrowLeft,
   FiBarChart2,
   FiCheckCircle,
-  FiDatabase,
-  FiLayers,
   FiChevronDown,
-  FiChevronUp
-} from 'react-icons/fi';
-import { projectService } from '../../services/projectService';
+  FiChevronUp,
+  FiCode,
+  FiDatabase,
+  FiEye,
+  FiLayers,
+  FiLink,
+  FiPlus,
+  FiSave,
+  FiTag,
+  FiTrash2,
+  FiTrendingUp,
+  FiUpload,
+  FiX,
+} from "react-icons/fi";
+import { useNavigate, useParams } from "react-router-dom";
+import { projectService } from "../../services/projectService";
 
 const ProjectForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEdit = Boolean(id);
-  
+
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [backendStatus, setBackendStatus] = useState('checking');
-  
+  const [backendStatus, setBackendStatus] = useState("checking");
+
   // Expanded form state to match new model
   const [formData, setFormData] = useState({
     // Basic Information
-    title: '',
-    short_description: '',
-    description: '',
-    full_description: '',
-    
+    title: "",
+    short_description: "",
+    description: "",
+    full_description: "",
+
     // URLs & Media
-    cover_image: '',
-    demo_url: '',
-    github_url: '',
-    documentation_url: '',
-    article_url: '',
-    video: '',
-    
+    cover_image: "",
+    demo_url: "",
+    github_url: "",
+    documentation_url: "",
+    article_url: "",
+    video: "",
+
     // Categorization
-    category: '',
+    category: "",
     technologies: [],
-    complexity: 'Intermediate',
-    
+    complexity: "Intermediate",
+
     // Status & Display
-    status: 'draft',
+    status: "draft",
     featured: false,
     display_order: 0,
-    
+
     // Statistics
     views_count: 0,
     stars: 0,
     forks: 0,
     contributors: 1,
-    
+
     // Project Details
-    environment: '',
-    development_time: '',
-    dataset_size: '',
-    team_size: '',
-    duration: '',
-    
+    environment: "",
+    development_time: "",
+    dataset_size: "",
+    team_size: "",
+    duration: "",
+
     // Project Content (Arrays)
     goals: [],
     features: [],
     challenges: [],
     results: [],
     metrics: {},
-    
+
     // Architecture & Technical
-    architecture: '',
-    
+    architecture: "",
+
     // Metadata
     tags: [],
-    meta_description: '',
-    meta_keywords: '',
-    
+    meta_description: "",
+    meta_keywords: "",
+
     // Availability Flags
     live_demo_available: false,
     source_code_available: false,
     documentation_available: false,
     api_available: false,
-    open_source: false
+    open_source: false,
   });
 
-  const [imagePreview, setImagePreview] = useState('');
-  const [techInput, setTechInput] = useState('');
-  const [goalInput, setGoalInput] = useState('');
-  const [featureInput, setFeatureInput] = useState('');
-  const [resultInput, setResultInput] = useState('');
-  const [tagInput, setTagInput] = useState('');
-  const [metricInput, setMetricInput] = useState({ key: '', value: '' });
-  const [challengeInput, setChallengeInput] = useState({ description: '', solution: '' });
-  
+  const [imagePreview, setImagePreview] = useState("");
+  const [techInput, setTechInput] = useState("");
+  const [goalInput, setGoalInput] = useState("");
+  const [featureInput, setFeatureInput] = useState("");
+  const [resultInput, setResultInput] = useState("");
+  const [tagInput, setTagInput] = useState("");
+  const [metricInput, setMetricInput] = useState({ key: "", value: "" });
+  const [challengeInput, setChallengeInput] = useState({
+    description: "",
+    solution: "",
+  });
+
   // Expandable sections state
   const [expandedSections, setExpandedSections] = useState({
     basic: true,
@@ -113,38 +114,50 @@ const ProjectForm = () => {
     tech: true,
     links: false,
     stats: false,
-    advanced: false
+    advanced: false,
   });
 
   const categories = [
-    'AI Finance',
-    'Deep Learning', 
-    'Computer Vision',
-    'NLP',
-    'Web Apps',
-    'APIs',
-    'Automation',
-    'Dashboards',
-    'Data Science',
-    'AI Security',
-    'Machine Learning',
-    'Cloud Infrastructure',
-    'Mobile Development',
-    'Blockchain',
-    'IoT'
+    "AI Finance",
+    "Deep Learning",
+    "Computer Vision",
+    "NLP",
+    "Web Apps",
+    "APIs",
+    "Automation",
+    "Dashboards",
+    "Data Science",
+    "AI Security",
+    "Machine Learning",
+    "Cloud Infrastructure",
+    "Mobile Development",
+    "Blockchain",
+    "IoT",
   ];
 
   const complexityOptions = [
-    { value: 'Beginner', label: 'Beginner', color: 'from-green-500 to-emerald-600' },
-    { value: 'Intermediate', label: 'Intermediate', color: 'from-blue-500 to-cyan-600' },
-    { value: 'Advanced', label: 'Advanced', color: 'from-purple-500 to-pink-600' },
-    { value: 'Expert', label: 'Expert', color: 'from-red-500 to-orange-600' }
+    {
+      value: "Beginner",
+      label: "Beginner",
+      color: "from-green-500 to-emerald-600",
+    },
+    {
+      value: "Intermediate",
+      label: "Intermediate",
+      color: "from-blue-500 to-cyan-600",
+    },
+    {
+      value: "Advanced",
+      label: "Advanced",
+      color: "from-purple-500 to-pink-600",
+    },
+    { value: "Expert", label: "Expert", color: "from-red-500 to-orange-600" },
   ];
 
   const statusOptions = [
-    { value: 'draft', label: 'Draft', color: 'gray' },
-    { value: 'published', label: 'Published', color: 'green' },
-    { value: 'archived', label: 'Archived', color: 'red' }
+    { value: "draft", label: "Draft", color: "gray" },
+    { value: "published", label: "Published", color: "green" },
+    { value: "archived", label: "Archived", color: "red" },
   ];
 
   // Check backend connection on mount
@@ -152,353 +165,382 @@ const ProjectForm = () => {
     checkBackendConnection();
   }, []);
 
-  useEffect(() => {
-    if (isEdit) {
-      loadProject();
-    }
-  }, [id]);
-
   const checkBackendConnection = async () => {
     try {
-      console.log('🔍 Checking backend connection...');
-     
-      const response = await fetch('/projects/health', {
-        method: 'GET',
+      console.log("🔍 Checking backend connection...");
+
+      const response = await fetch("/projects/health", {
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
-      
+
       if (response.ok) {
-        console.log('✅ Backend is connected!');
-        setBackendStatus('connected');
+        console.log("✅ Backend is connected!");
+        setBackendStatus("connected");
       } else {
-        console.log('⚠️ Backend responded but with error');
-        setBackendStatus('error');
+        console.log("⚠️ Backend responded but with error");
+        setBackendStatus("error");
       }
     } catch (error) {
-      console.error('❌ Backend connection failed:', error);
-      setBackendStatus('disconnected');
-      setError('Cannot connect to backend server. Please ensure the server is running on http://localhost:5000');
+      console.error("❌ Backend connection failed:", error);
+      setBackendStatus("disconnected");
+      setError(
+        "Cannot connect to backend server. Please ensure the server is running on http://localhost:5000"
+      );
     }
   };
 
-  const loadProject = async () => {
+  const loadProject = useCallback(async () => {
     try {
       setLoading(true);
       const response = await projectService.getById(id);
       const project = response.data;
-      
+
       // Map backend data to form state
       setFormData({
         // Basic Information
-        title: project.title || '',
-        short_description: project.short_description || '',
-        description: project.description || '',
-        full_description: project.full_description || '',
-        
+        title: project.title || "",
+        short_description: project.short_description || "",
+        description: project.description || "",
+        full_description: project.full_description || "",
+
         // URLs & Media
-        cover_image: project.cover_image || '',
-        demo_url: project.demo_url || '',
-        github_url: project.github_url || '',
-        documentation_url: project.documentation_url || '',
-        article_url: project.article_url || '',
-        video: project.video || '',
-        
+        cover_image: project.cover_image || "",
+        demo_url: project.demo_url || "",
+        github_url: project.github_url || "",
+        documentation_url: project.documentation_url || "",
+        article_url: project.article_url || "",
+        video: project.video || "",
+
         // Categorization
-        category: project.category || '',
+        category: project.category || "",
         technologies: project.technologies || [],
-        complexity: project.complexity || 'Intermediate',
-        
+        complexity: project.complexity || "Intermediate",
+
         // Status & Display
-        status: project.status || 'draft',
+        status: project.status || "draft",
         featured: project.featured || false,
         display_order: project.display_order || 0,
-        
+
         // Statistics
         views_count: project.views_count || 0,
         stars: project.stars || 0,
         forks: project.forks || 0,
         contributors: project.contributors || 1,
-        
+
         // Project Details
-        environment: project.environment || '',
-        development_time: project.development_time || '',
-        dataset_size: project.dataset_size || '',
-        team_size: project.team_size || '',
-        duration: project.duration || '',
-        
+        environment: project.environment || "",
+        development_time: project.development_time || "",
+        dataset_size: project.dataset_size || "",
+        team_size: project.team_size || "",
+        duration: project.duration || "",
+
         // Project Content (Arrays)
         goals: project.goals || [],
         features: project.features || [],
         challenges: project.challenges || [],
         results: project.results || [],
         metrics: project.metrics || {},
-        
+
         // Architecture & Technical
-        architecture: project.architecture || '',
-        
+        architecture: project.architecture || "",
+
         // Metadata
         tags: project.tags || [],
-        meta_description: project.meta_description || '',
-        meta_keywords: project.meta_keywords || '',
-        
+        meta_description: project.meta_description || "",
+        meta_keywords: project.meta_keywords || "",
+
         // Availability Flags
         live_demo_available: project.live_demo_available || false,
         source_code_available: project.source_code_available || false,
         documentation_available: project.documentation_available || false,
         api_available: project.api_available || false,
-        open_source: project.open_source || false
+        open_source: project.open_source || false,
       });
 
       // Set image preview
       if (project.cover_image) {
         setImagePreview(project.cover_image);
       }
-
     } catch (error) {
-      console.error('Error loading project:', error);
-      setError('Failed to load project: ' + (error.response?.data?.message || error.message));
+      console.error("Error loading project:", error);
+      setError(
+        "Failed to load project: " +
+          (error.response?.data?.message || error.message)
+      );
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]); // Add id as dependency since it's used in the API call
+
+  useEffect(() => {
+    if (isEdit) {
+      loadProject();
+    }
+  }, [isEdit, loadProject]); 
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
-  const handleTextAreaChange = (name, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+  // const handleTextAreaChange = (name, value) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
 
   // Array input handlers
   const handleAddToArray = (field, value, setValueFunc) => {
     if (value.trim()) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [field]: [...prev[field], value.trim()]
+        [field]: [...prev[field], value.trim()],
       }));
-      setValueFunc('');
+      setValueFunc("");
     }
   };
 
   const handleRemoveFromArray = (field, index) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: prev[field].filter((_, i) => i !== index)
+      [field]: prev[field].filter((_, i) => i !== index),
     }));
   };
 
   // Technologies
-  const handleAddTechnology = () => handleAddToArray('technologies', techInput, setTechInput);
-  const handleRemoveTechnology = (index) => handleRemoveFromArray('technologies', index);
+  const handleAddTechnology = () =>
+    handleAddToArray("technologies", techInput, setTechInput);
+  const handleRemoveTechnology = (index) =>
+    handleRemoveFromArray("technologies", index);
 
   // Goals
-  const handleAddGoal = () => handleAddToArray('goals', goalInput, setGoalInput);
-  const handleRemoveGoal = (index) => handleRemoveFromArray('goals', index);
+  const handleAddGoal = () =>
+    handleAddToArray("goals", goalInput, setGoalInput);
+  const handleRemoveGoal = (index) => handleRemoveFromArray("goals", index);
 
   // Features
-  const handleAddFeature = () => handleAddToArray('features', featureInput, setFeatureInput);
-  const handleRemoveFeature = (index) => handleRemoveFromArray('features', index);
+  const handleAddFeature = () =>
+    handleAddToArray("features", featureInput, setFeatureInput);
+  const handleRemoveFeature = (index) =>
+    handleRemoveFromArray("features", index);
 
   // Results
-  const handleAddResult = () => handleAddToArray('results', resultInput, setResultInput);
-  const handleRemoveResult = (index) => handleRemoveFromArray('results', index);
+  const handleAddResult = () =>
+    handleAddToArray("results", resultInput, setResultInput);
+  const handleRemoveResult = (index) => handleRemoveFromArray("results", index);
 
   // Tags
-  const handleAddTag = () => handleAddToArray('tags', tagInput, setTagInput);
-  const handleRemoveTag = (index) => handleRemoveFromArray('tags', index);
+  const handleAddTag = () => handleAddToArray("tags", tagInput, setTagInput);
+  const handleRemoveTag = (index) => handleRemoveFromArray("tags", index);
 
   // Metrics
   const handleAddMetric = () => {
     if (metricInput.key.trim() && metricInput.value.trim()) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         metrics: {
           ...prev.metrics,
-          [metricInput.key]: metricInput.value
-        }
+          [metricInput.key]: metricInput.value,
+        },
       }));
-      setMetricInput({ key: '', value: '' });
+      setMetricInput({ key: "", value: "" });
     }
   };
 
   const handleRemoveMetric = (key) => {
     const newMetrics = { ...formData.metrics };
     delete newMetrics[key];
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      metrics: newMetrics
+      metrics: newMetrics,
     }));
   };
 
   // Challenges
   const handleAddChallenge = () => {
     if (challengeInput.description.trim() && challengeInput.solution.trim()) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        challenges: [...prev.challenges, { ...challengeInput }]
+        challenges: [...prev.challenges, { ...challengeInput }],
       }));
-      setChallengeInput({ description: '', solution: '' });
+      setChallengeInput({ description: "", solution: "" });
     }
   };
 
   const handleRemoveChallenge = (index) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      challenges: prev.challenges.filter((_, i) => i !== index)
+      challenges: prev.challenges.filter((_, i) => i !== index),
     }));
   };
 
   const handleImageUpload = async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+    const file = e.target.files[0];
+    if (!file) return;
 
-  // Check backend connection first
-  if (backendStatus !== 'connected') {
-    alert('Backend server is not running. Please start the server and try again.');
-    await checkBackendConnection();
-    return;
-  }
+    // Check backend connection first
+    if (backendStatus !== "connected") {
+      alert(
+        "Backend server is not running. Please start the server and try again."
+      );
+      await checkBackendConnection();
+      return;
+    }
 
-  // Check authentication
-  const token = localStorage.getItem("token");
-  if (!token) {
-    alert('Please log in first');
-    navigate('/admin/login');
-    return;
-  }
+    // Check authentication
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please log in first");
+      navigate("/admin/login");
+      return;
+    }
 
-  // Validate file type and size
-  const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-  const maxSize = 20 * 1024 * 1024; // 20MB
+    // Validate file type and size
+    const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+    const maxSize = 20 * 1024 * 1024; // 20MB
 
-  if (!validTypes.includes(file.type)) {
-    alert('Please select a valid image file (JPEG, PNG, or WebP)');
-    return;
-  }
+    if (!validTypes.includes(file.type)) {
+      alert("Please select a valid image file (JPEG, PNG, or WebP)");
+      return;
+    }
 
-  if (file.size > maxSize) {
-    alert('Image size should be less than 20MB');
-    return;
-  }
+    if (file.size > maxSize) {
+      alert("Image size should be less than 20MB");
+      return;
+    }
 
-  // Preview image immediately
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    setImagePreview(e.target.result);
+    // Preview image immediately
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setImagePreview(e.target.result);
+    };
+    reader.readAsDataURL(file);
+
+    // Upload to server using the projectService
+    try {
+      setLoading(true);
+      setUploadProgress(0);
+      setError(null);
+
+      // Simulate progress for better UX
+      const progressInterval = setInterval(() => {
+        setUploadProgress((prev) => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return prev;
+          }
+          return prev + 10;
+        });
+      }, 200);
+
+      // Use the projectService.uploadImage method
+      const result = await projectService.uploadImage(file);
+
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+
+      // Update form data with the uploaded image URL
+      setFormData((prev) => ({
+        ...prev,
+        cover_image: result.url || result.data?.url || result.imageUrl,
+      }));
+
+      // Check if we got a valid URL back
+      const imageUrl = result.url || result.data?.url || result.imageUrl;
+      if (imageUrl) {
+        console.log("✅ Image uploaded successfully. URL:", imageUrl);
+        alert("Image uploaded successfully!");
+      } else {
+        console.warn("⚠️ Upload successful but no URL returned:", result);
+        alert("Image uploaded but no URL returned. Please check the response.");
+      }
+    } catch (error) {
+      console.error("❌ Error uploading image:", error);
+
+      // Clear preview if upload fails
+      setImagePreview("");
+
+      // Handle specific error types
+      if (
+        error.message.includes("Cannot connect to server") ||
+        error.message.includes("NetworkError") ||
+        error.message.includes("ERR_NETWORK")
+      ) {
+        setError(
+          "Cannot connect to server. Please ensure:\n1. Backend server is running on http://localhost:5000\n2. No firewall is blocking the connection"
+        );
+        setBackendStatus("disconnected");
+      } else if (
+        error.message.includes("401") ||
+        error.message.includes("unauthorized")
+      ) {
+        setError("Session expired. Please log in again.");
+        navigate("/admin/login");
+      } else if (
+        error.message.includes("too large") ||
+        error.message.includes("413")
+      ) {
+        setError("File is too large. Maximum size is 20MB.");
+      } else if (
+        error.message.includes("Unsupported file type") ||
+        error.message.includes("415")
+      ) {
+        setError("Unsupported file type. Please use JPEG, PNG, or WebP.");
+      } else {
+        setError(error.message || "Failed to upload image. Please try again.");
+      }
+
+      // Also show alert for immediate feedback
+      alert(`Upload failed: ${error.message || "Unknown error"}`);
+    } finally {
+      setLoading(false);
+      setUploadProgress(0);
+    }
   };
-  reader.readAsDataURL(file);
-
-  // Upload to server using the projectService
-  try {
-    setLoading(true);
-    setUploadProgress(0);
-    setError(null);
-    
-    // Simulate progress for better UX
-    const progressInterval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev >= 90) {
-          clearInterval(progressInterval);
-          return prev;
-        }
-        return prev + 10;
-      });
-    }, 200);
-
-    // Use the projectService.uploadImage method
-    const result = await projectService.uploadImage(file);
-    
-    clearInterval(progressInterval);
-    setUploadProgress(100);
-    
-    // Update form data with the uploaded image URL
-    setFormData(prev => ({
-      ...prev,
-      cover_image: result.url || result.data?.url || result.imageUrl
-    }));
-
-    // Check if we got a valid URL back
-    const imageUrl = result.url || result.data?.url || result.imageUrl;
-    if (imageUrl) {
-      console.log('✅ Image uploaded successfully. URL:', imageUrl);
-      alert('Image uploaded successfully!');
-    } else {
-      console.warn('⚠️ Upload successful but no URL returned:', result);
-      alert('Image uploaded but no URL returned. Please check the response.');
-    }
-    
-  } catch (error) {
-    console.error('❌ Error uploading image:', error);
-    
-    // Clear preview if upload fails
-    setImagePreview('');
-    
-    // Handle specific error types
-    if (error.message.includes('Cannot connect to server') || 
-        error.message.includes('NetworkError') ||
-        error.message.includes('ERR_NETWORK')) {
-      setError('Cannot connect to server. Please ensure:\n1. Backend server is running on http://localhost:5000\n2. No firewall is blocking the connection');
-      setBackendStatus('disconnected');
-    } else if (error.message.includes('401') || error.message.includes('unauthorized')) {
-      setError('Session expired. Please log in again.');
-      navigate('/admin/login');
-    } else if (error.message.includes('too large') || error.message.includes('413')) {
-      setError('File is too large. Maximum size is 20MB.');
-    } else if (error.message.includes('Unsupported file type') || error.message.includes('415')) {
-      setError('Unsupported file type. Please use JPEG, PNG, or WebP.');
-    } else {
-      setError(error.message || 'Failed to upload image. Please try again.');
-    }
-    
-    // Also show alert for immediate feedback
-    alert(`Upload failed: ${error.message || 'Unknown error'}`);
-  } finally {
-    setLoading(false);
-    setUploadProgress(0);
-  }
-};
 
   const toggleSection = (section) => {
-    setExpandedSections(prev => ({
+    setExpandedSections((prev) => ({
       ...prev,
-      [section]: !prev[section]
+      [section]: !prev[section],
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Basic validation
     if (!formData.title || !formData.description || !formData.category) {
-      alert('Please fill in all required fields (Title, Description, Category)');
+      alert(
+        "Please fill in all required fields (Title, Description, Category)"
+      );
       return;
     }
 
     try {
       setSaving(true);
       setError(null);
-      
+
       if (isEdit) {
         await projectService.update(id, formData);
       } else {
         await projectService.create(formData);
       }
-      
-      navigate('/admin/projects');
+
+      navigate("/admin/projects");
     } catch (error) {
-      console.error('Error saving project:', error);
-      setError('Failed to save project: ' + (error.response?.data?.message || error.message));
-      alert('Failed to save project. Please try again.');
+      console.error("Error saving project:", error);
+      setError(
+        "Failed to save project: " +
+          (error.response?.data?.message || error.message)
+      );
+      alert("Failed to save project. Please try again.");
     } finally {
       setSaving(false);
     }
@@ -518,8 +560,10 @@ const ProjectForm = () => {
         </div>
         {expandedSections[sectionKey] ? <FiChevronUp /> : <FiChevronDown />}
       </button>
-      
-      <div className={`px-6 pb-6 ${expandedSections[sectionKey] ? 'block' : 'hidden'}`}>
+
+      <div
+        className={`px-6 pb-6 ${expandedSections[sectionKey] ? "block" : "hidden"}`}
+      >
         {children}
       </div>
     </div>
@@ -542,34 +586,43 @@ const ProjectForm = () => {
         <div className="flex items-center justify-between">
           <div>
             <button
-              onClick={() => navigate('/admin/projects')}
+              onClick={() => navigate("/admin/projects")}
               className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
             >
               <FiArrowLeft />
               <span>Back to Projects</span>
             </button>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-500/50 to-blue-600/50 bg-clip-text text-transparent mb-2">
-              {isEdit ? 'Edit Project' : 'Create New Project'}
+              {isEdit ? "Edit Project" : "Create New Project"}
             </h1>
             <p className="text-gray-600">
-              {isEdit ? 'Update your project details' : 'Add a new project to your portfolio'}
+              {isEdit
+                ? "Update your project details"
+                : "Add a new project to your portfolio"}
             </p>
           </div>
         </div>
       </div>
 
       {/* Backend Status Alert */}
-      {backendStatus === 'disconnected' && (
+      {backendStatus === "disconnected" && (
         <div className="bg-red-50 border border-red-200 rounded-2xl p-6 mb-8">
           <div className="flex items-start space-x-3">
             <FiAlertCircle className="text-red-600 mt-1" size={24} />
             <div className="flex-1">
-              <h3 className="text-red-800 font-semibold mb-2">Backend Server Not Connected</h3>
+              <h3 className="text-red-800 font-semibold mb-2">
+                Backend Server Not Connected
+              </h3>
               <p className="text-red-700 text-sm mb-3">
                 Cannot connect to the backend server. Please ensure:
               </p>
               <ul className="text-red-700 text-sm space-y-1 list-disc list-inside mb-3">
-                <li>Backend server is running on <code className="bg-red-100 px-1 rounded">http://localhost:5000</code></li>
+                <li>
+                  Backend server is running on{" "}
+                  <code className="bg-red-100 px-1 rounded">
+                    http://localhost:5000
+                  </code>
+                </li>
                 <li>No firewall is blocking the connection</li>
               </ul>
               <button
@@ -584,7 +637,7 @@ const ProjectForm = () => {
       )}
 
       {/* Error Alert */}
-      {error && backendStatus !== 'disconnected' && (
+      {error && backendStatus !== "disconnected" && (
         <div className="bg-red-50 border border-red-200 rounded-2xl p-6 mb-8">
           <div className="flex items-center space-x-3">
             <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
@@ -598,8 +651,8 @@ const ProjectForm = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Information Section */}
         {renderSection(
-          'Basic Information',
-          'basic',
+          "Basic Information",
+          "basic",
           <FiEye className="text-blue-600" />,
           <div className="space-y-6">
             <div>
@@ -649,7 +702,7 @@ const ProjectForm = () => {
                   required
                 >
                   <option value="">Select a category</option>
-                  {categories.map(category => (
+                  {categories.map((category) => (
                     <option key={category} value={category}>
                       {category}
                     </option>
@@ -691,8 +744,8 @@ const ProjectForm = () => {
 
         {/* Content Section - Goals, Features, Results */}
         {renderSection(
-          'Project Content',
-          'content',
+          "Project Content",
+          "content",
           <FiLayers className="text-green-600" />,
           <div className="space-y-8">
             {/* Goals */}
@@ -705,7 +758,9 @@ const ProjectForm = () => {
                   type="text"
                   value={goalInput}
                   onChange={(e) => setGoalInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddGoal())}
+                  onKeyPress={(e) =>
+                    e.key === "Enter" && (e.preventDefault(), handleAddGoal())
+                  }
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   placeholder="Add a project goal"
                 />
@@ -719,7 +774,10 @@ const ProjectForm = () => {
               </div>
               <div className="space-y-2">
                 {formData.goals.map((goal, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-3 bg-green-50 rounded-lg"
+                  >
                     <div className="flex items-center space-x-2">
                       <FiCheckCircle className="text-green-500" />
                       <span>{goal}</span>
@@ -746,7 +804,10 @@ const ProjectForm = () => {
                   type="text"
                   value={featureInput}
                   onChange={(e) => setFeatureInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddFeature())}
+                  onKeyPress={(e) =>
+                    e.key === "Enter" &&
+                    (e.preventDefault(), handleAddFeature())
+                  }
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Add a key feature"
                 />
@@ -760,7 +821,10 @@ const ProjectForm = () => {
               </div>
               <div className="space-y-2">
                 {formData.features.map((feature, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-3 bg-blue-50 rounded-lg"
+                  >
                     <div className="flex items-center space-x-2">
                       <FiCheckCircle className="text-blue-500" />
                       <span>{feature}</span>
@@ -787,7 +851,9 @@ const ProjectForm = () => {
                   type="text"
                   value={resultInput}
                   onChange={(e) => setResultInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddResult())}
+                  onKeyPress={(e) =>
+                    e.key === "Enter" && (e.preventDefault(), handleAddResult())
+                  }
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   placeholder="Add a project result"
                 />
@@ -801,7 +867,10 @@ const ProjectForm = () => {
               </div>
               <div className="space-y-2">
                 {formData.results.map((result, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-3 bg-purple-50 rounded-lg"
+                  >
                     <div className="flex items-center space-x-2">
                       <FiTrendingUp className="text-purple-500" />
                       <span>{result}</span>
@@ -827,13 +896,23 @@ const ProjectForm = () => {
                 <input
                   type="text"
                   value={challengeInput.description}
-                  onChange={(e) => setChallengeInput({...challengeInput, description: e.target.value})}
+                  onChange={(e) =>
+                    setChallengeInput({
+                      ...challengeInput,
+                      description: e.target.value,
+                    })
+                  }
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   placeholder="Challenge description"
                 />
                 <textarea
                   value={challengeInput.solution}
-                  onChange={(e) => setChallengeInput({...challengeInput, solution: e.target.value})}
+                  onChange={(e) =>
+                    setChallengeInput({
+                      ...challengeInput,
+                      solution: e.target.value,
+                    })
+                  }
                   rows={3}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   placeholder="Solution"
@@ -848,11 +927,16 @@ const ProjectForm = () => {
               </div>
               <div className="space-y-3">
                 {formData.challenges.map((challenge, index) => (
-                  <div key={index} className="p-4 bg-orange-50 rounded-lg border border-orange-100">
+                  <div
+                    key={index}
+                    className="p-4 bg-orange-50 rounded-lg border border-orange-100"
+                  >
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex items-center space-x-2">
                         <FiAlertCircle className="text-orange-500" />
-                        <span className="font-semibold">Challenge {index + 1}</span>
+                        <span className="font-semibold">
+                          Challenge {index + 1}
+                        </span>
                       </div>
                       <button
                         type="button"
@@ -863,8 +947,12 @@ const ProjectForm = () => {
                       </button>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-sm"><strong>Problem:</strong> {challenge.description}</p>
-                      <p className="text-sm"><strong>Solution:</strong> {challenge.solution}</p>
+                      <p className="text-sm">
+                        <strong>Problem:</strong> {challenge.description}
+                      </p>
+                      <p className="text-sm">
+                        <strong>Solution:</strong> {challenge.solution}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -880,14 +968,18 @@ const ProjectForm = () => {
                 <input
                   type="text"
                   value={metricInput.key}
-                  onChange={(e) => setMetricInput({...metricInput, key: e.target.value})}
+                  onChange={(e) =>
+                    setMetricInput({ ...metricInput, key: e.target.value })
+                  }
                   className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   placeholder="Metric name (e.g., ROI)"
                 />
                 <input
                   type="text"
                   value={metricInput.value}
-                  onChange={(e) => setMetricInput({...metricInput, value: e.target.value})}
+                  onChange={(e) =>
+                    setMetricInput({ ...metricInput, value: e.target.value })
+                  }
                   className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   placeholder="Value (e.g., 28.5%)"
                 />
@@ -904,8 +996,12 @@ const ProjectForm = () => {
                   <div key={index} className="p-3 bg-indigo-50 rounded-lg">
                     <div className="flex justify-between items-start">
                       <div>
-                        <div className="text-sm text-indigo-600 font-medium">{key}</div>
-                        <div className="text-lg font-bold text-indigo-800">{value}</div>
+                        <div className="text-sm text-indigo-600 font-medium">
+                          {key}
+                        </div>
+                        <div className="text-lg font-bold text-indigo-800">
+                          {value}
+                        </div>
                       </div>
                       <button
                         type="button"
@@ -924,8 +1020,8 @@ const ProjectForm = () => {
 
         {/* Technologies Section */}
         {renderSection(
-          'Technologies & Tools',
-          'tech',
+          "Technologies & Tools",
+          "tech",
           <FiCode className="text-indigo-600" />,
           <div className="space-y-6">
             <div>
@@ -933,15 +1029,20 @@ const ProjectForm = () => {
                 Complexity Level
               </label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {complexityOptions.map(option => (
+                {complexityOptions.map((option) => (
                   <button
                     key={option.value}
                     type="button"
-                    onClick={() => setFormData(prev => ({ ...prev, complexity: option.value }))}
+                    onClick={() =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        complexity: option.value,
+                      }))
+                    }
                     className={`px-4 py-3 rounded-xl transition-all ${
                       formData.complexity === option.value
                         ? `bg-gradient-to-r ${option.color} text-white shadow-lg scale-105`
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                   >
                     {option.label}
@@ -959,7 +1060,10 @@ const ProjectForm = () => {
                   type="text"
                   value={techInput}
                   onChange={(e) => setTechInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTechnology())}
+                  onKeyPress={(e) =>
+                    e.key === "Enter" &&
+                    (e.preventDefault(), handleAddTechnology())
+                  }
                   className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   placeholder="Add technology (e.g., React, Node.js)"
                   required
@@ -1002,7 +1106,9 @@ const ProjectForm = () => {
                   type="text"
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
+                  onKeyPress={(e) =>
+                    e.key === "Enter" && (e.preventDefault(), handleAddTag())
+                  }
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   placeholder="Add tag (e.g., ai, web, ml)"
                 />
@@ -1037,8 +1143,8 @@ const ProjectForm = () => {
 
         {/* Links & Media Section */}
         {renderSection(
-          'Links & Media',
-          'links',
+          "Links & Media",
+          "links",
           <FiLink className="text-blue-600" />,
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Image Upload */}
@@ -1056,8 +1162,8 @@ const ProjectForm = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      setImagePreview('');
-                      setFormData(prev => ({ ...prev, cover_image: '' }));
+                      setImagePreview("");
+                      setFormData((prev) => ({ ...prev, cover_image: "" }));
                     }}
                     className="absolute top-2 right-2 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
                   >
@@ -1068,15 +1174,19 @@ const ProjectForm = () => {
                 <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-400 transition-colors">
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
                     <FiUpload className="w-8 h-8 text-gray-400 mb-3" />
-                    <p className="text-sm text-gray-500">Click to upload image</p>
-                    <p className="text-xs text-gray-400 mt-1">Max 20MB • JPEG, PNG, WebP</p>
+                    <p className="text-sm text-gray-500">
+                      Click to upload image
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      Max 20MB • JPEG, PNG, WebP
+                    </p>
                   </div>
                   <input
                     type="file"
                     className="hidden"
                     accept="image/*"
                     onChange={handleImageUpload}
-                    disabled={backendStatus !== 'connected'}
+                    disabled={backendStatus !== "connected"}
                   />
                 </label>
               )}
@@ -1157,8 +1267,8 @@ const ProjectForm = () => {
 
         {/* Stats & Details Section */}
         {renderSection(
-          'Project Details & Stats',
-          'stats',
+          "Project Details & Stats",
+          "stats",
           <FiBarChart2 className="text-green-600" />,
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -1280,8 +1390,8 @@ const ProjectForm = () => {
 
         {/* Advanced Settings Section */}
         {renderSection(
-          'Advanced Settings',
-          'advanced',
+          "Advanced Settings",
+          "advanced",
           <FiDatabase className="text-purple-600" />,
           <div className="space-y-6">
             {/* Architecture */}
@@ -1311,7 +1421,7 @@ const ProjectForm = () => {
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  {statusOptions.map(option => (
+                  {statusOptions.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
                     </option>
@@ -1452,12 +1562,18 @@ const ProjectForm = () => {
               className="flex-1 flex items-center justify-center space-x-2 px-6 py-4 bg-gradient-to-r from-blue-500/50 to-blue-600/50 text-white rounded-xl hover:shadow-lg transition-all disabled:opacity-50 text-lg font-semibold"
             >
               <FiSave />
-              <span>{saving ? 'Saving...' : (isEdit ? 'Update Project' : 'Create Project')}</span>
+              <span>
+                {saving
+                  ? "Saving..."
+                  : isEdit
+                    ? "Update Project"
+                    : "Create Project"}
+              </span>
             </button>
-            
+
             <button
               type="button"
-              onClick={() => navigate('/admin/projects')}
+              onClick={() => navigate("/admin/projects")}
               className="flex-1 px-6 py-4 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors text-lg font-semibold"
             >
               Cancel

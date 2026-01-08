@@ -1,180 +1,186 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from "react";
+import { FaDatabase, FaPython, FaRobot } from "react-icons/fa";
 import {
-  FiAward, FiCheckCircle, FiBookOpen, FiCalendar,
-  FiClock, FiStar, FiExternalLink, FiFilter,
-  FiChevronRight, FiShield, FiZap, FiTrendingUp
-} from 'react-icons/fi';
-import { FaPython, FaRobot, FaDatabase } from 'react-icons/fa';
-import { SiIbm, SiTensorflow, SiMicrosoftazure } from 'react-icons/si';
-import { useNavigate } from 'react-router-dom';
-
+  FiAward,
+  FiBookOpen,
+  FiCalendar,
+  FiCheckCircle,
+  FiChevronRight,
+  FiClock,
+  FiExternalLink,
+  FiShield,
+  FiStar,
+  FiTrendingUp,
+  FiZap,
+} from "react-icons/fi";
+import { SiMicrosoftazure, SiTensorflow } from "react-icons/si";
+import { useNavigate } from "react-router-dom";
 
 const Certifications = () => {
-  const [activeFilter, setActiveFilter] = useState('all');
+  const [activeFilter, setActiveFilter] = useState("all");
   const [hoveredCert, setHoveredCert] = useState(null);
   const [showDetails, setShowDetails] = useState(null);
   const navigate = useNavigate();
 
-
   const certifications = [
     {
       id: 1,
-      name: 'Deep Learning Specialization',
-      issuer: 'IBM Developer Skills Network',
-      date: 'March 2024',
+      name: "Deep Learning Specialization",
+      issuer: "IBM Developer Skills Network",
+      date: "March 2024",
       icon: FaRobot,
-      color: 'from-purple-600 to-pink-600',
-      category: 'ai-ml',
-      duration: '6 weeks',
-      level: 'Advanced',
-      skills: ['Neural Networks', 'CNNs', 'RNNs', 'TensorFlow'],
+      color: "from-purple-600 to-pink-600",
+      category: "ai-ml",
+      duration: "6 weeks",
+      level: "Advanced",
+      skills: ["Neural Networks", "CNNs", "RNNs", "TensorFlow"],
       verified: true,
-      badge: 'Top Rated',
-      link: '#'
+      badge: "Top Rated",
+      link: "#",
     },
     {
       id: 2,
-      name: 'Machine Learning with Python',
-      issuer: 'IBM Developer Skills Network',
-      date: 'February 2024',
+      name: "Machine Learning with Python",
+      issuer: "IBM Developer Skills Network",
+      date: "February 2024",
       icon: FaPython,
-      color: 'from-blue-600 to-cyan-600',
-      category: 'ai-ml',
-      duration: '8 weeks',
-      level: 'Intermediate',
-      skills: ['Scikit-learn', 'Pandas', 'Model Evaluation'],
+      color: "from-blue-600 to-cyan-600",
+      category: "ai-ml",
+      duration: "8 weeks",
+      level: "Intermediate",
+      skills: ["Scikit-learn", "Pandas", "Model Evaluation"],
       verified: true,
-      badge: 'Verified',
-      link: '#'
+      badge: "Verified",
+      link: "#",
     },
     {
       id: 3,
-      name: 'Data Science Professional',
-      issuer: 'IBM Developer Skills Network',
-      date: 'December 2023',
+      name: "Data Science Professional",
+      issuer: "IBM Developer Skills Network",
+      date: "December 2023",
       icon: FaDatabase,
-      color: 'from-green-600 to-emerald-600',
-      category: 'data-science',
-      duration: '10 weeks',
-      level: 'Advanced',
-      skills: ['Data Analysis', 'Visualization', 'Statistics'],
+      color: "from-green-600 to-emerald-600",
+      category: "data-science",
+      duration: "10 weeks",
+      level: "Advanced",
+      skills: ["Data Analysis", "Visualization", "Statistics"],
       verified: true,
-      badge: 'Professional',
-      link: '#'
+      badge: "Professional",
+      link: "#",
     },
     {
       id: 4,
-      name: 'AI Engineering Certification',
-      issuer: 'IBM Developer Skills Network',
-      date: 'October 2023',
+      name: "AI Engineering Certification",
+      issuer: "IBM Developer Skills Network",
+      date: "October 2023",
       icon: FiZap,
-      color: 'from-orange-600 to-red-600',
-      category: 'ai-ml',
-      duration: '12 weeks',
-      level: 'Expert',
-      skills: ['MLOps', 'Deployment', 'Model Serving'],
+      color: "from-orange-600 to-red-600",
+      category: "ai-ml",
+      duration: "12 weeks",
+      level: "Expert",
+      skills: ["MLOps", "Deployment", "Model Serving"],
       verified: true,
-      badge: 'Expert Level',
-      link: '#'
+      badge: "Expert Level",
+      link: "#",
     },
     {
       id: 5,
-      name: 'TensorFlow Developer',
-      issuer: 'TensorFlow / Google',
-      date: 'August 2023',
+      name: "TensorFlow Developer",
+      issuer: "TensorFlow / Google",
+      date: "August 2023",
       icon: SiTensorflow,
-      color: 'from-yellow-600 to-orange-600',
-      category: 'ai-ml',
-      duration: 'Certification',
-      level: 'Advanced',
-      skills: ['TensorFlow', 'Keras', 'Production'],
+      color: "from-yellow-600 to-orange-600",
+      category: "ai-ml",
+      duration: "Certification",
+      level: "Advanced",
+      skills: ["TensorFlow", "Keras", "Production"],
       verified: true,
-      badge: 'Google Certified',
-      link: '#'
+      badge: "Google Certified",
+      link: "#",
     },
     {
       id: 6,
-      name: 'Azure AI Engineer',
-      issuer: 'Microsoft',
-      date: 'June 2023',
+      name: "Azure AI Engineer",
+      issuer: "Microsoft",
+      date: "June 2023",
       icon: SiMicrosoftazure,
-      color: 'from-blue-700 to-cyan-700',
-      category: 'cloud-ai',
-      duration: 'Professional',
-      level: 'Expert',
-      skills: ['Azure ML', 'Cognitive Services', 'AI Solutions'],
+      color: "from-blue-700 to-cyan-700",
+      category: "cloud-ai",
+      duration: "Professional",
+      level: "Expert",
+      skills: ["Azure ML", "Cognitive Services", "AI Solutions"],
       verified: true,
-      badge: 'Microsoft',
-      link: '#'
+      badge: "Microsoft",
+      link: "#",
     },
     {
       id: 7,
-      name: 'Data Analysis with Python',
-      issuer: 'IBM Developer Skills Network',
-      date: 'May 2023',
+      name: "Data Analysis with Python",
+      issuer: "IBM Developer Skills Network",
+      date: "May 2023",
       icon: FiTrendingUp,
-      color: 'from-indigo-600 to-purple-600',
-      category: 'data-science',
-      duration: '6 weeks',
-      level: 'Intermediate',
-      skills: ['NumPy', 'Pandas', 'Matplotlib'],
+      color: "from-indigo-600 to-purple-600",
+      category: "data-science",
+      duration: "6 weeks",
+      level: "Intermediate",
+      skills: ["NumPy", "Pandas", "Matplotlib"],
       verified: true,
-      badge: 'Completed',
-      link: '#'
+      badge: "Completed",
+      link: "#",
     },
     {
       id: 8,
-      name: 'Python 101 for Data Science',
-      issuer: 'IBM Developer Skills Network',
-      date: 'April 2023',
+      name: "Python 101 for Data Science",
+      issuer: "IBM Developer Skills Network",
+      date: "April 2023",
       icon: FaPython,
-      color: 'from-teal-600 to-green-600',
-      category: 'data-science',
-      duration: '4 weeks',
-      level: 'Beginner',
-      skills: ['Python Basics', 'Data Types', 'Functions'],
+      color: "from-teal-600 to-green-600",
+      category: "data-science",
+      duration: "4 weeks",
+      level: "Beginner",
+      skills: ["Python Basics", "Data Types", "Functions"],
       verified: true,
-      badge: 'Fundamentals',
-      link: '#'
+      badge: "Fundamentals",
+      link: "#",
     },
     {
       id: 9,
-      name: 'AI & ML Professional',
-      issuer: 'GOMYCODE',
-      date: 'February 2023',
+      name: "AI & ML Professional",
+      issuer: "GOMYCODE",
+      date: "February 2023",
       icon: FiShield,
-      color: 'from-red-600 to-pink-600',
-      category: 'ai-ml',
-      duration: '5 months',
-      level: 'Professional',
-      skills: ['Full Stack ML', 'Projects', 'Portfolio'],
+      color: "from-red-600 to-pink-600",
+      category: "ai-ml",
+      duration: "5 months",
+      level: "Professional",
+      skills: ["Full Stack ML", "Projects", "Portfolio"],
       verified: true,
-      badge: 'Intensive',
-      link: '#'
-    }
+      badge: "Intensive",
+      link: "#",
+    },
   ];
 
   const filters = [
-    { id: 'all', label: 'All Certifications', count: 9, icon: FiAward },
-    { id: 'ai-ml', label: 'AI & Machine Learning', count: 5, icon: FaRobot },
-    { id: 'data-science', label: 'Data Science', count: 3, icon: FaDatabase },
-    { id: 'cloud-ai', label: 'Cloud AI', count: 1, icon: SiMicrosoftazure }
+    { id: "all", label: "All Certifications", count: 9, icon: FiAward },
+    { id: "ai-ml", label: "AI & Machine Learning", count: 5, icon: FaRobot },
+    { id: "data-science", label: "Data Science", count: 3, icon: FaDatabase },
+    { id: "cloud-ai", label: "Cloud AI", count: 1, icon: SiMicrosoftazure },
   ];
 
-  const filteredCerts = activeFilter === 'all'
-    ? certifications
-    : certifications.filter(cert => cert.category === activeFilter);
+  const filteredCerts =
+    activeFilter === "all"
+      ? certifications
+      : certifications.filter((cert) => cert.category === activeFilter);
 
   const issuerStats = {
-    'IBM Developer Skills Network': 6,
-    'TensorFlow / Google': 1,
-    'Microsoft': 1,
-    'GOMYCODE': 1
+    "IBM Developer Skills Network": 6,
+    "TensorFlow / Google": 1,
+    Microsoft: 1,
+    GOMYCODE: 1,
   };
 
   return (
     <section className="relative py-24 bg-gradient-to-b from-gray-900 to-black overflow-hidden">
-
       {/* Background Elements */}
       <div className="absolute inset-0">
         {/* Diploma Pattern */}
@@ -182,7 +188,10 @@ const Certifications = () => {
 
         {/* Floating Awards */}
         <div className="absolute top-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-600/10 to-transparent rounded-full blur-3xl animate-pulse-slow" />
-        <div className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-tl from-blue-600/10 to-transparent rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }} />
+        <div
+          className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-tl from-blue-600/10 to-transparent rounded-full blur-3xl animate-pulse-slow"
+          style={{ animationDelay: "2s" }}
+        />
       </div>
 
       {/* Animated Badges */}
@@ -195,7 +204,7 @@ const Certifications = () => {
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
               animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${8 + Math.random() * 8}s`
+              animationDuration: `${8 + Math.random() * 8}s`,
             }}
           >
             <FiAward className="text-primary-400/20 text-3xl" />
@@ -204,12 +213,13 @@ const Certifications = () => {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500/20 to-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-primary-500/30 mb-6">
             <FiAward className="text-primary-300 animate-pulse" />
-            <span className="text-primary-200 font-medium tracking-wider">PROFESSIONAL CREDENTIALS</span>
+            <span className="text-primary-200 font-medium tracking-wider">
+              PROFESSIONAL CREDENTIALS
+            </span>
           </div>
 
           <h2 className="text-5xl md:text-6xl font-bold mb-6">
@@ -221,8 +231,9 @@ const Certifications = () => {
           </h2>
 
           <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Validated expertise through industry-recognized certifications in artificial intelligence,
-            machine learning, and data science from leading technology organizations.
+            Validated expertise through industry-recognized certifications in
+            artificial intelligence, machine learning, and data science from
+            leading technology organizations.
           </p>
         </div>
 
@@ -262,19 +273,34 @@ const Certifications = () => {
               <button
                 key={filter.id}
                 onClick={() => setActiveFilter(filter.id)}
-                className={`group relative px-5 py-3 rounded-xl backdrop-blur-sm transition-all duration-300 flex items-center gap-2 ${activeFilter === filter.id
-                  ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white'
-                  : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
-                  }`}
+                className={`group relative px-5 py-3 rounded-xl backdrop-blur-sm transition-all duration-300 flex items-center gap-2 ${
+                  activeFilter === filter.id
+                    ? "bg-gradient-to-r from-primary-500 to-blue-600 text-white"
+                    : "bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30"
+                }`}
               >
-                <Icon className={activeFilter === filter.id ? 'text-white' : 'text-gray-500'} />
+                <Icon
+                  className={
+                    activeFilter === filter.id ? "text-white" : "text-gray-500"
+                  }
+                />
                 <span className="font-semibold">{filter.label}</span>
-                <span className={`ml-1 text-sm ${activeFilter === filter.id ? 'text-white/80' : 'text-gray-500'
-                  }`}>
+                <span
+                  className={`ml-1 text-sm ${
+                    activeFilter === filter.id
+                      ? "text-white/80"
+                      : "text-gray-500"
+                  }`}
+                >
                   ({filter.count})
                 </span>
-                <div className={`absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 ${activeFilter === filter.id ? 'opacity-20' : 'group-hover:opacity-10'
-                  } transition-opacity duration-500`} />
+                <div
+                  className={`absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 ${
+                    activeFilter === filter.id
+                      ? "opacity-20"
+                      : "group-hover:opacity-10"
+                  } transition-opacity duration-500`}
+                />
               </button>
             );
           })}
@@ -299,33 +325,48 @@ const Certifications = () => {
                 onClick={() => setShowDetails(showDetail ? null : cert.id)}
               >
                 {/* Card Glow */}
-                <div className={`absolute -inset-0.5 bg-gradient-to-r ${cert.color} rounded-3xl blur opacity-0 ${isHovered ? 'opacity-30' : 'group-hover:opacity-20'
-                  } transition-opacity duration-500`} />
+                <div
+                  className={`absolute -inset-0.5 bg-gradient-to-r ${cert.color} rounded-3xl blur opacity-0 ${
+                    isHovered ? "opacity-30" : "group-hover:opacity-20"
+                  } transition-opacity duration-500`}
+                />
 
                 {/* Main Card */}
-                <div className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${isHovered ? 'border-primary-500/50' : 'border-gray-700/50'
-                  } rounded-3xl overflow-hidden backdrop-blur-sm transition-all duration-300 cursor-pointer ${showDetail ? 'h-auto' : 'h-full'
-                  }`}>
-
+                <div
+                  className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${
+                    isHovered ? "border-primary-500/50" : "border-gray-700/50"
+                  } rounded-3xl overflow-hidden backdrop-blur-sm transition-all duration-300 cursor-pointer ${
+                    showDetail ? "h-auto" : "h-full"
+                  }`}
+                >
                   {/* Header */}
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-4">
-                      <div className={`p-3 bg-gradient-to-br ${cert.color} rounded-xl transform ${isHovered ? 'scale-110 rotate-12' : 'group-hover:scale-110'
-                        } transition-all duration-300`}>
+                      <div
+                        className={`p-3 bg-gradient-to-br ${cert.color} rounded-xl transform ${
+                          isHovered
+                            ? "scale-110 rotate-12"
+                            : "group-hover:scale-110"
+                        } transition-all duration-300`}
+                      >
                         <Icon className="text-2xl text-white" />
                       </div>
 
                       <div className="text-right">
                         <div className="inline-flex items-center gap-1 px-2 py-1 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-full">
                           <FiStar className="text-yellow-400 text-xs" />
-                          <span className="text-xs text-gray-300 font-medium">{cert.level}</span>
+                          <span className="text-xs text-gray-300 font-medium">
+                            {cert.level}
+                          </span>
                         </div>
                       </div>
                     </div>
 
                     {/* Badge */}
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-full mb-4">
-                      <span className={`text-xs font-bold bg-gradient-to-r ${cert.color} bg-clip-text text-transparent`}>
+                      <span
+                        className={`text-xs font-bold bg-gradient-to-r ${cert.color} bg-clip-text text-transparent`}
+                      >
                         {cert.badge}
                       </span>
                       {cert.verified && (
@@ -361,7 +402,9 @@ const Certifications = () => {
                   {/* Details Section */}
                   {showDetail && (
                     <div className="border-t border-gray-700/50 px-6 py-4 animate-slide-down">
-                      <h4 className="text-sm font-semibold text-gray-400 mb-3">Skills Gained</h4>
+                      <h4 className="text-sm font-semibold text-gray-400 mb-3">
+                        Skills Gained
+                      </h4>
                       <div className="flex flex-wrap gap-2 mb-4">
                         {cert.skills.map((skill, index) => (
                           <span
@@ -388,16 +431,22 @@ const Certifications = () => {
                         <span>Verified Credential</span>
                       </div>
                       <button className="text-primary-400 hover:text-primary-300 transition-colors">
-                        <FiChevronRight className={`transform transition-transform duration-300 ${showDetail ? 'rotate-90' : ''
-                          }`} />
+                        <FiChevronRight
+                          className={`transform transition-transform duration-300 ${
+                            showDetail ? "rotate-90" : ""
+                          }`}
+                        />
                       </button>
                     </div>
                   </div>
                 </div>
 
                 {/* Hover Effect */}
-                <div className={`absolute -bottom-2 left-4 right-4 h-1 bg-gradient-to-r ${cert.color} rounded-full transform ${isHovered ? 'scale-x-100' : 'scale-x-0'
-                  } transition-transform duration-300`} />
+                <div
+                  className={`absolute -bottom-2 left-4 right-4 h-1 bg-gradient-to-r ${cert.color} rounded-full transform ${
+                    isHovered ? "scale-x-100" : "scale-x-0"
+                  } transition-transform duration-300`}
+                />
               </div>
             );
           })}
@@ -405,7 +454,9 @@ const Certifications = () => {
 
         {/* Issuer Stats */}
         <div className="mt-12 bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6">
-          <h4 className="text-lg font-bold text-white mb-4 text-center">Certification Partners</h4>
+          <h4 className="text-lg font-bold text-white mb-4 text-center">
+            Certification Partners
+          </h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {Object.entries(issuerStats).map(([issuer, count], index) => (
               <div key={index} className="text-center p-4">
@@ -413,7 +464,9 @@ const Certifications = () => {
                   {count}
                 </div>
                 <div className="text-sm text-gray-400">{issuer}</div>
-                <div className="text-xs text-gray-500">certification{count > 1 ? 's' : ''}</div>
+                <div className="text-xs text-gray-500">
+                  certification{count > 1 ? "s" : ""}
+                </div>
               </div>
             ))}
           </div>
@@ -426,10 +479,14 @@ const Certifications = () => {
               Continuously Learning & Evolving
             </h4>
             <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-              Staying at the forefront of AI and machine learning through ongoing education
-              and professional development in emerging technologies.
+              Staying at the forefront of AI and machine learning through
+              ongoing education and professional development in emerging
+              technologies.
             </p>
-            <button onClick={() => navigate('/contact')} className="group relative bg-gradient-to-r from-primary-500 to-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 mx-auto">
+            <button
+              onClick={() => navigate("/contact")}
+              className="group relative bg-gradient-to-r from-primary-500 to-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 mx-auto"
+            >
               <FiBookOpen />
               <span>View Learning Path</span>
               <FiChevronRight className="group-hover:translate-x-2 transition-transform" />

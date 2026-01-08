@@ -1,130 +1,132 @@
-import React, { useState, useEffect } from 'react';
-import { FiCode, FiCpu, FiDatabase, FiLayers, FiZap } from 'react-icons/fi';
-import { FaPython, FaJava, FaJs, FaReact } from 'react-icons/fa';
-import { SiCplusplus, SiTypescript, SiGo, SiRust } from 'react-icons/si';
+import { useState } from "react";
+import { FaJava, FaJs, FaPython, FaReact } from "react-icons/fa";
+import { FiCode, FiLayers, FiZap } from "react-icons/fi";
+import { SiCplusplus, SiGo, SiRust, SiTypescript } from "react-icons/si";
 
 const ProgrammingSkills = ({ isVisible }) => {
   const [hoveredSkill, setHoveredSkill] = useState(null);
-  const [activeLevel, setActiveLevel] = useState('all');
+  const [activeLevel, setActiveLevel] = useState("all");
 
   const programmingSkills = [
     {
       id: 1,
-      name: 'Python',
+      name: "Python",
       level: 95,
-      subtitle: 'Expert',
+      subtitle: "Expert",
       icon: FaPython,
-      color: 'from-blue-500 to-cyan-500',
-      description: 'Data Science & ML',
+      color: "from-blue-500 to-cyan-500",
+      description: "Data Science & ML",
       projects: 25,
-      experience: '4+ years',
-      tags: ['ML', 'AI', 'Automation']
+      experience: "4+ years",
+      tags: ["ML", "AI", "Automation"],
     },
     {
       id: 2,
-      name: 'C++',
+      name: "C++",
       level: 90,
-      subtitle: 'Advanced',
+      subtitle: "Advanced",
       icon: SiCplusplus,
-      color: 'from-purple-500 to-pink-500',
-      description: 'Systems Programming',
+      color: "from-purple-500 to-pink-500",
+      description: "Systems Programming",
       projects: 18,
-      experience: '3+ years',
-      tags: ['Performance', 'Embedded', 'Games']
+      experience: "3+ years",
+      tags: ["Performance", "Embedded", "Games"],
     },
     {
       id: 3,
-      name: 'JavaScript',
+      name: "JavaScript",
       level: 88,
-      subtitle: 'Advanced',
+      subtitle: "Advanced",
       icon: FaJs,
-      color: 'from-yellow-500 to-orange-500',
-      description: 'Full Stack Development',
+      color: "from-yellow-500 to-orange-500",
+      description: "Full Stack Development",
       projects: 32,
-      experience: '4+ years',
-      tags: ['Web', 'Node.js', 'React']
+      experience: "4+ years",
+      tags: ["Web", "Node.js", "React"],
     },
     {
       id: 4,
-      name: 'TypeScript',
+      name: "TypeScript",
       level: 85,
-      subtitle: 'Advanced',
+      subtitle: "Advanced",
       icon: SiTypescript,
-      color: 'from-blue-600 to-blue-800',
-      description: 'Enterprise Applications',
+      color: "from-blue-600 to-blue-800",
+      description: "Enterprise Applications",
       projects: 15,
-      experience: '2+ years',
-      tags: ['Scalable', 'Type-Safe', 'Modern']
+      experience: "2+ years",
+      tags: ["Scalable", "Type-Safe", "Modern"],
     },
     {
       id: 5,
-      name: 'React',
+      name: "React",
       level: 87,
-      subtitle: 'Expert',
+      subtitle: "Expert",
       icon: FaReact,
-      color: 'from-cyan-500 to-blue-500',
-      description: 'Frontend Development',
+      color: "from-cyan-500 to-blue-500",
+      description: "Frontend Development",
       projects: 22,
-      experience: '3+ years',
-      tags: ['UI/UX', 'SPA', 'Components']
+      experience: "3+ years",
+      tags: ["UI/UX", "SPA", "Components"],
     },
     {
       id: 6,
-      name: 'Java',
+      name: "Java",
       level: 82,
-      subtitle: 'Intermediate',
+      subtitle: "Intermediate",
       icon: FaJava,
-      color: 'from-red-500 to-orange-500',
-      description: 'Enterprise Systems',
+      color: "from-red-500 to-orange-500",
+      description: "Enterprise Systems",
       projects: 12,
-      experience: '2+ years',
-      tags: ['Spring', 'Android', 'Backend']
+      experience: "2+ years",
+      tags: ["Spring", "Android", "Backend"],
     },
     {
       id: 7,
-      name: 'Go',
+      name: "Go",
       level: 78,
-      subtitle: 'Intermediate',
+      subtitle: "Intermediate",
       icon: SiGo,
-      color: 'from-cyan-600 to-blue-600',
-      description: 'Concurrent Systems',
+      color: "from-cyan-600 to-blue-600",
+      description: "Concurrent Systems",
       projects: 8,
-      experience: '1+ years',
-      tags: ['Microservices', 'Cloud', 'Fast']
+      experience: "1+ years",
+      tags: ["Microservices", "Cloud", "Fast"],
     },
     {
       id: 8,
-      name: 'Rust',
+      name: "Rust",
       level: 75,
-      subtitle: 'Intermediate',
+      subtitle: "Intermediate",
       icon: SiRust,
-      color: 'from-orange-600 to-red-600',
-      description: 'Safe Systems Programming',
+      color: "from-orange-600 to-red-600",
+      description: "Safe Systems Programming",
       projects: 6,
-      experience: '1+ years',
-      tags: ['Memory Safe', 'Performance', 'Systems']
-    }
+      experience: "1+ years",
+      tags: ["Memory Safe", "Performance", "Systems"],
+    },
   ];
 
   const levels = [
-    { id: 'all', label: 'All Languages', count: 8 },
-    { id: 'expert', label: 'Expert (85%+)', count: 3 },
-    { id: 'advanced', label: 'Advanced (75-84%)', count: 3 },
-    { id: 'intermediate', label: 'Intermediate (65-74%)', count: 2 }
+    { id: "all", label: "All Languages", count: 8 },
+    { id: "expert", label: "Expert (85%+)", count: 3 },
+    { id: "advanced", label: "Advanced (75-84%)", count: 3 },
+    { id: "intermediate", label: "Intermediate (65-74%)", count: 2 },
   ];
 
-  const filteredSkills = activeLevel === 'all'
-    ? programmingSkills
-    : programmingSkills.filter(skill => {
-      if (activeLevel === 'expert') return skill.level >= 85;
-      if (activeLevel === 'advanced') return skill.level >= 75 && skill.level < 85;
-      if (activeLevel === 'intermediate') return skill.level >= 65 && skill.level < 75;
-      return true;
-    });
+  const filteredSkills =
+    activeLevel === "all"
+      ? programmingSkills
+      : programmingSkills.filter((skill) => {
+          if (activeLevel === "expert") return skill.level >= 85;
+          if (activeLevel === "advanced")
+            return skill.level >= 75 && skill.level < 85;
+          if (activeLevel === "intermediate")
+            return skill.level >= 65 && skill.level < 75;
+          return true;
+        });
 
   return (
     <section className="relative py-24 bg-gradient-to-b from-gray-900 to-black overflow-hidden">
-
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-gradient-to-bl from-primary-900/20 to-transparent rounded-full blur-3xl" />
@@ -144,21 +146,26 @@ const ProgrammingSkills = ({ isVisible }) => {
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
               animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${8 + Math.random() * 8}s`
+              animationDuration: `${8 + Math.random() * 8}s`,
             }}
           >
-            {i % 3 === 0 ? 'function optimize() {' : i % 3 === 1 ? 'class NeuralNetwork {' : 'async def train():'}
+            {i % 3 === 0
+              ? "function optimize() {"
+              : i % 3 === 1
+                ? "class NeuralNetwork {"
+                : "async def train():"}
           </div>
         ))}
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500/20 to-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-primary-500/30 mb-6">
             <FiCode className="text-primary-300" />
-            <span className="text-primary-200 font-medium tracking-wider">PROGRAMMING MASTERY</span>
+            <span className="text-primary-200 font-medium tracking-wider">
+              PROGRAMMING MASTERY
+            </span>
           </div>
 
           <h2 className="text-5xl md:text-6xl font-bold mb-6">
@@ -170,8 +177,9 @@ const ProgrammingSkills = ({ isVisible }) => {
           </h2>
 
           <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Mastery across multiple programming paradigms and languages, enabling the
-            creation of efficient, scalable, and innovative solutions for diverse challenges.
+            Mastery across multiple programming paradigms and languages,
+            enabling the creation of efficient, scalable, and innovative
+            solutions for diverse challenges.
           </p>
         </div>
 
@@ -181,18 +189,27 @@ const ProgrammingSkills = ({ isVisible }) => {
             <button
               key={level.id}
               onClick={() => setActiveLevel(level.id)}
-              className={`group relative px-5 py-3 rounded-xl backdrop-blur-sm transition-all duration-300 ${activeLevel === level.id
-                  ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white'
-                  : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
-                }`}
+              className={`group relative px-5 py-3 rounded-xl backdrop-blur-sm transition-all duration-300 ${
+                activeLevel === level.id
+                  ? "bg-gradient-to-r from-primary-500 to-blue-600 text-white"
+                  : "bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30"
+              }`}
             >
               <span className="font-semibold">{level.label}</span>
-              <span className={`ml-2 text-sm ${activeLevel === level.id ? 'text-white/80' : 'text-gray-500'
-                }`}>
+              <span
+                className={`ml-2 text-sm ${
+                  activeLevel === level.id ? "text-white/80" : "text-gray-500"
+                }`}
+              >
                 ({level.count})
               </span>
-              <div className={`absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 ${activeLevel === level.id ? 'opacity-20' : 'group-hover:opacity-10'
-                } transition-opacity duration-500`} />
+              <div
+                className={`absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 ${
+                  activeLevel === level.id
+                    ? "opacity-20"
+                    : "group-hover:opacity-10"
+                } transition-opacity duration-500`}
+              />
             </button>
           ))}
         </div>
@@ -211,18 +228,28 @@ const ProgrammingSkills = ({ isVisible }) => {
                 onMouseLeave={() => setHoveredSkill(null)}
               >
                 {/* Card Glow Effect */}
-                <div className={`absolute -inset-0.5 bg-gradient-to-r ${skill.color} rounded-3xl blur opacity-0 ${isHovered ? 'opacity-30' : 'group-hover:opacity-20'
-                  } transition-opacity duration-500`} />
+                <div
+                  className={`absolute -inset-0.5 bg-gradient-to-r ${skill.color} rounded-3xl blur opacity-0 ${
+                    isHovered ? "opacity-30" : "group-hover:opacity-20"
+                  } transition-opacity duration-500`}
+                />
 
                 {/* Main Card */}
-                <div className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${isHovered ? 'border-primary-500/50' : 'border-gray-700/50'
-                  } rounded-3xl p-6 backdrop-blur-sm transition-all duration-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-                  } ${isHovered ? 'scale-105' : 'group-hover:scale-102'}`}
-                  style={{ transitionDelay: `${index * 100}ms` }}>
-
+                <div
+                  className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${
+                    isHovered ? "border-primary-500/50" : "border-gray-700/50"
+                  } rounded-3xl p-6 backdrop-blur-sm transition-all duration-300 ${
+                    isVisible
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-10"
+                  } ${isHovered ? "scale-105" : "group-hover:scale-102"}`}
+                  style={{ transitionDelay: `${index * 100}ms` }}
+                >
                   {/* Header */}
                   <div className="flex items-start justify-between mb-6">
-                    <div className={`p-3 bg-gradient-to-br ${skill.color}/20 rounded-xl group-hover:scale-110 transition-transform duration-300`}>
+                    <div
+                      className={`p-3 bg-gradient-to-br ${skill.color}/20 rounded-xl group-hover:scale-110 transition-transform duration-300`}
+                    >
                       <Icon className="text-3xl text-white" />
                     </div>
 
@@ -230,7 +257,9 @@ const ProgrammingSkills = ({ isVisible }) => {
                       <div className="text-2xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
                         {skill.level}%
                       </div>
-                      <div className="text-xs text-gray-500 font-medium">{skill.subtitle}</div>
+                      <div className="text-xs text-gray-500 font-medium">
+                        {skill.subtitle}
+                      </div>
                     </div>
                   </div>
 
@@ -252,8 +281,8 @@ const ProgrammingSkills = ({ isVisible }) => {
                       <div
                         className={`h-full bg-gradient-to-r ${skill.color} rounded-full transition-all duration-1000 ease-out`}
                         style={{
-                          width: isVisible ? `${skill.level}%` : '0%',
-                          transitionDelay: `${300 + index * 100}ms`
+                          width: isVisible ? `${skill.level}%` : "0%",
+                          transitionDelay: `${300 + index * 100}ms`,
                         }}
                       />
                     </div>
@@ -284,13 +313,19 @@ const ProgrammingSkills = ({ isVisible }) => {
                   </div>
 
                   {/* Hover Overlay */}
-                  <div className={`absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/50 rounded-3xl opacity-0 ${isHovered ? 'opacity-100' : 'group-hover:opacity-50'
-                    } transition-opacity duration-300 pointer-events-none`} />
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/50 rounded-3xl opacity-0 ${
+                      isHovered ? "opacity-100" : "group-hover:opacity-50"
+                    } transition-opacity duration-300 pointer-events-none`}
+                  />
                 </div>
 
                 {/* Floating Badge */}
-                <div className={`absolute -top-3 -right-3 px-3 py-1 bg-gradient-to-r ${skill.color} text-white text-xs font-bold rounded-full transform ${isHovered ? 'scale-100 rotate-0' : 'scale-0 rotate-45'
-                  } transition-all duration-300`}>
+                <div
+                  className={`absolute -top-3 -right-3 px-3 py-1 bg-gradient-to-r ${skill.color} text-white text-xs font-bold rounded-full transform ${
+                    isHovered ? "scale-100 rotate-0" : "scale-0 rotate-45"
+                  } transition-all duration-300`}
+                >
                   {skill.level}%
                 </div>
               </div>

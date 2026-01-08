@@ -1,23 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import {
+  FiAward,
   FiBook,
-  FiGrid,
-  FiList,
+  FiCalendar,
   FiChevronLeft,
   FiChevronRight,
+  FiClock,
+  FiGrid,
+  FiList,
   FiLoader,
   FiSearch,
-  FiUsers,
+  FiStar,
   FiTrendingUp,
-  FiCalendar,
-  FiFilter,
-  FiRefreshCw,
-  FiAward,
-  FiClock,
-  FiStar
-} from 'react-icons/fi';
-import { motion, AnimatePresence } from 'framer-motion';
-import FormationCard from './FormationCard';
+  FiUsers,
+} from "react-icons/fi";
+import FormationCard from "./FormationCard";
 
 const FormationsGrid = ({
   filteredFormations,
@@ -26,16 +24,16 @@ const FormationsGrid = ({
   favorites = [],
   toggleFavorite,
   onQuickView,
-  viewMode = 'grid',
+  viewMode = "grid",
   currentPage = 1,
   itemsPerPage = 9,
   onPageChange,
   onViewModeChange,
   isLoading = false,
-  totalFormations = 0
+  totalFormations = 0,
 }) => {
   const [isGridLoaded, setIsGridLoaded] = useState(false);
-  const [isHovered, setIsHovered] = useState(null);
+  const [, setIsHovered] = useState(null);
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredFormations.length / itemsPerPage);
@@ -57,9 +55,9 @@ const FormationsGrid = ({
       opacity: 1,
       transition: {
         staggerChildren: 0.05,
-        delayChildren: 0.1
-      }
-    }
+        delayChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
@@ -67,8 +65,8 @@ const FormationsGrid = ({
     visible: {
       y: 0,
       opacity: 1,
-      transition: { type: 'spring', stiffness: 100 }
-    }
+      transition: { type: "spring", stiffness: 100 },
+    },
   };
 
   const statsVariants = {
@@ -76,8 +74,8 @@ const FormationsGrid = ({
     visible: {
       opacity: 1,
       scale: 1,
-      transition: { type: 'spring', stiffness: 50 }
-    }
+      transition: { type: "spring", stiffness: 50 },
+    },
   };
 
   const noResultsVariants = {
@@ -85,16 +83,20 @@ const FormationsGrid = ({
     visible: {
       scale: 1,
       opacity: 1,
-      transition: { type: 'spring', stiffness: 50 }
-    }
+      transition: { type: "spring", stiffness: 50 },
+    },
   };
 
   // Calculate statistics
   const getStats = () => {
-    const upcoming = filteredFormations.filter(f => f.status === 'upcoming').length;
-    const enrolling = filteredFormations.filter(f => f.status === 'enrolling').length;
-    const featured = filteredFormations.filter(f => f.featured).length;
-    const free = filteredFormations.filter(f => f.price === 0).length;
+    const upcoming = filteredFormations.filter(
+      (f) => f.status === "upcoming"
+    ).length;
+    const enrolling = filteredFormations.filter(
+      (f) => f.status === "enrolling"
+    ).length;
+    const featured = filteredFormations.filter((f) => f.featured).length;
+    const free = filteredFormations.filter((f) => f.price === 0).length;
 
     return { upcoming, enrolling, featured, free };
   };
@@ -106,11 +108,13 @@ const FormationsGrid = ({
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden opacity-10">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-br from-primary-600/10 to-transparent rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-tl from-blue-600/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div
+          className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-tl from-blue-600/10 to-transparent rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "1s" }}
+        />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-
         {/* Header with Stats */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -130,7 +134,9 @@ const FormationsGrid = ({
                       <div className="text-2xl font-bold text-white">
                         {filteredFormations.length}
                       </div>
-                      <div className="text-xs text-gray-500">Formations Found</div>
+                      <div className="text-xs text-gray-500">
+                        Formations Found
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -181,27 +187,42 @@ const FormationsGrid = ({
                 </button>
 
                 <div className="flex items-center gap-1">
-                  {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
-                    const pageNumber = i + 1;
-                    if (totalPages > 5 && currentPage > 3) {
-                      // Show dynamic page numbers for large page counts
-                      if (i === 0) return <span key="first" className="px-1 text-gray-500">...</span>;
-                      if (i === 4) return <span key="last" className="px-1 text-gray-500">...</span>;
-                    }
+                  {Array.from({ length: Math.min(5, totalPages) }).map(
+                    (_, i) => {
+                      const pageNumber = i + 1;
+                      if (totalPages > 5 && currentPage > 3) {
+                        // Show dynamic page numbers for large page counts
+                        if (i === 0)
+                          return (
+                            <span key="first" className="px-1 text-gray-500">
+                              ...
+                            </span>
+                          );
+                        if (i === 4)
+                          return (
+                            <span key="last" className="px-1 text-gray-500">
+                              ...
+                            </span>
+                          );
+                      }
 
-                    return (
-                      <button
-                        key={pageNumber}
-                        onClick={() => onPageChange && onPageChange(pageNumber)}
-                        className={`px-3 py-1 rounded-lg transition-all duration-300 ${currentPage === pageNumber
-                            ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white'
-                            : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
+                      return (
+                        <button
+                          key={pageNumber}
+                          onClick={() =>
+                            onPageChange && onPageChange(pageNumber)
+                          }
+                          className={`px-3 py-1 rounded-lg transition-all duration-300 ${
+                            currentPage === pageNumber
+                              ? "bg-gradient-to-r from-primary-500 to-blue-600 text-white"
+                              : "bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30"
                           }`}
-                      >
-                        {pageNumber}
-                      </button>
-                    );
-                  })}
+                        >
+                          {pageNumber}
+                        </button>
+                      );
+                    }
+                  )}
                 </div>
 
                 <button
@@ -218,25 +239,30 @@ const FormationsGrid = ({
           {/* Grid/Layout Toggle */}
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-500">
-              Showing {Math.min(startIndex + 1, filteredFormations.length)}-{Math.min(endIndex, filteredFormations.length)} of {filteredFormations.length} formations
+              Showing {Math.min(startIndex + 1, filteredFormations.length)}-
+              {Math.min(endIndex, filteredFormations.length)} of{" "}
+              {filteredFormations.length} formations
               {totalFormations > 0 && ` (${totalFormations} total)`}
             </div>
 
             {onViewModeChange && (
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-400 hidden md:block">View:</span>
+                <span className="text-sm text-gray-400 hidden md:block">
+                  View:
+                </span>
                 <div className="flex bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-lg p-1">
                   {[
-                    { id: 'grid', icon: FiGrid, label: 'Grid' },
-                    { id: 'list', icon: FiList, label: 'List' }
+                    { id: "grid", icon: FiGrid, label: "Grid" },
+                    { id: "list", icon: FiList, label: "List" },
                   ].map((mode) => (
                     <button
                       key={mode.id}
                       onClick={() => onViewModeChange(mode.id)}
-                      className={`p-2 rounded transition-all duration-300 ${viewMode === mode.id
-                          ? 'bg-gradient-to-r from-primary-500/20 to-blue-500/20 text-primary-400'
-                          : 'text-gray-400 hover:text-white'
-                        }`}
+                      className={`p-2 rounded transition-all duration-300 ${
+                        viewMode === mode.id
+                          ? "bg-gradient-to-r from-primary-500/20 to-blue-500/20 text-primary-400"
+                          : "text-gray-400 hover:text-white"
+                      }`}
                       title={`${mode.label} View`}
                     >
                       <mode.icon className="text-lg" />
@@ -255,8 +281,12 @@ const FormationsGrid = ({
               <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full blur-xl animate-ping opacity-20" />
               <FiLoader className="relative text-6xl text-primary-400 animate-spin" />
             </div>
-            <div className="text-lg text-gray-400 font-medium">Loading formations...</div>
-            <div className="text-sm text-gray-500 mt-2">Curating the best training programs for you</div>
+            <div className="text-lg text-gray-400 font-medium">
+              Loading formations...
+            </div>
+            <div className="text-sm text-gray-500 mt-2">
+              Curating the best training programs for you
+            </div>
           </div>
         )}
 
@@ -268,17 +298,18 @@ const FormationsGrid = ({
               variants={containerVariants}
               initial="hidden"
               animate={isGridLoaded ? "visible" : "hidden"}
-              className={`grid gap-6 ${viewMode === 'grid'
-                  ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-                  : 'grid-cols-1 lg:grid-cols-2'
-                }`}
+              className={`grid gap-6 ${
+                viewMode === "grid"
+                  ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+                  : "grid-cols-1 lg:grid-cols-2"
+              }`}
             >
               {currentFormations.map((formation, index) => (
                 <motion.div
                   key={formation.id}
                   variants={itemVariants}
                   layout
-                  className={`${viewMode === 'list' ? 'col-span-1 lg:col-span-2' : ''}`}
+                  className={`${viewMode === "list" ? "col-span-1 lg:col-span-2" : ""}`}
                   onMouseEnter={() => setIsHovered(formation.id)}
                   onMouseLeave={() => setIsHovered(null)}
                 >
@@ -323,7 +354,8 @@ const FormationsGrid = ({
                 No formations match your criteria
               </h3>
               <p className="text-lg text-gray-400 max-w-md mb-8">
-                Try adjusting your filters or search terms to discover amazing training programs
+                Try adjusting your filters or search terms to discover amazing
+                training programs
               </p>
 
               {/* Suggestions */}
@@ -355,7 +387,8 @@ const FormationsGrid = ({
           >
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="text-sm text-gray-500">
-                Page {currentPage} of {totalPages} • {itemsPerPage} formations per page
+                Page {currentPage} of {totalPages} • {itemsPerPage} formations
+                per page
               </div>
 
               <div className="flex items-center gap-4">
@@ -388,10 +421,11 @@ const FormationsGrid = ({
                       <button
                         key={pageNumber}
                         onClick={() => onPageChange && onPageChange(pageNumber)}
-                        className={`w-10 h-10 rounded-lg transition-all duration-300 ${currentPage === pageNumber
-                            ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white shadow-lg'
-                            : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
-                          }`}
+                        className={`w-10 h-10 rounded-lg transition-all duration-300 ${
+                          currentPage === pageNumber
+                            ? "bg-gradient-to-r from-primary-500 to-blue-600 text-white shadow-lg"
+                            : "bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30"
+                        }`}
                       >
                         {pageNumber}
                       </button>

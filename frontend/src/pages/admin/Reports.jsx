@@ -1,118 +1,163 @@
-import React, { useState, useEffect } from 'react';
-import Sidebar from '../../components/admin/Sidebar';
+import { useEffect, useState, useCallback } from "react";
 import {
-  FiTrendingUp, FiUsers, FiMail, FiBook,
-  FiEye, FiDollarSign, FiBarChart2, FiCalendar,
-  FiDownload, FiRefreshCw
-} from 'react-icons/fi';
-import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+  FiBarChart2,
+  FiBook,
+  FiDollarSign,
+  FiDownload,
+  FiEye,
+  FiMail,
+  FiRefreshCw,
+  FiTrendingUp,
+  FiUsers,
+} from "react-icons/fi";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import Sidebar from "../../components/admin/Sidebar";
 
 // Import the analytics service (make sure this is in a separate file)
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
 
 const AdminReports = () => {
   const [loading, setLoading] = useState(true);
-  const [period, setPeriod] = useState('30');
+  const [period, setPeriod] = useState("30");
   const [overview, setOverview] = useState({
     total_views: 0,
     total_registrations: 0,
     total_messages: 0,
-    total_formations: 0
+    total_formations: 0,
   });
   const [formationAnalytics, setFormationAnalytics] = useState([]);
   const [trafficData, setTrafficData] = useState({
     daily_views: [],
     top_pages: [],
-    top_referrers: []
+    top_referrers: [],
   });
   const [conversionData, setConversionData] = useState({
     formation_conversions: [],
-    top_course_clicks: []
+    top_course_clicks: [],
   });
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    loadAllAnalytics();
-  }, [period]);
-
-  const loadAllAnalytics = async () => {
+  const loadAllAnalytics = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
 
-      const [overviewRes, formationsRes, trafficRes, conversionsRes] = await Promise.all([
-        fetch(`${API_URL}/analytics/overview`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }),
-        fetch(`${API_URL}/analytics/formations`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }),
-        fetch(`${API_URL}/analytics/traffic?period=${period}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }),
-        fetch(`${API_URL}/analytics/conversions`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        })
-      ]);
+      const [overviewRes, formationsRes, trafficRes, conversionsRes] =
+        await Promise.all([
+          fetch(`${API_URL}/analytics/overview`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }),
+          fetch(`${API_URL}/analytics/formations`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }),
+          fetch(`${API_URL}/analytics/traffic?period=${period}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }),
+          fetch(`${API_URL}/analytics/conversions`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }),
+        ]);
 
       // Check if all responses are OK
-      if (!overviewRes.ok || !formationsRes.ok || !trafficRes.ok || !conversionsRes.ok) {
-        throw new Error('Failed to fetch analytics data');
+      if (
+        !overviewRes.ok ||
+        !formationsRes.ok ||
+        !trafficRes.ok ||
+        !conversionsRes.ok
+      ) {
+        throw new Error("Failed to fetch analytics data");
       }
 
-      const [overviewData, formationsData, trafficDataRes, conversionsData] = await Promise.all([
-        overviewRes.json(),
-        formationsRes.json(),
-        trafficRes.json(),
-        conversionsRes.json()
-      ]);
+      const [overviewData, formationsData, trafficDataRes, conversionsData] =
+        await Promise.all([
+          overviewRes.json(),
+          formationsRes.json(),
+          trafficRes.json(),
+          conversionsRes.json(),
+        ]);
 
       // Set data from API responses
       setOverview(overviewData.data || {});
       setFormationAnalytics(formationsData.data || []);
-      setTrafficData(trafficDataRes.data || { daily_views: [], top_pages: [], top_referrers: [] });
-      setConversionData(conversionsData.data || { formation_conversions: [], top_course_clicks: [] });
+      setTrafficData(
+        trafficDataRes.data || {
+          daily_views: [],
+          top_pages: [],
+          top_referrers: [],
+        }
+      );
+      setConversionData(
+        conversionsData.data || {
+          formation_conversions: [],
+          top_course_clicks: [],
+        }
+      );
     } catch (error) {
-      console.error('Error loading analytics:', error);
-      setError('Failed to load analytics data. Please try again.');
+      console.error("Error loading analytics:", error);
+      setError("Failed to load analytics data. Please try again.");
 
       // Set default empty data to prevent crashes
       setOverview({
         total_views: 0,
         total_registrations: 0,
         total_messages: 0,
-        total_formations: 0
+        total_formations: 0,
       });
       setFormationAnalytics([]);
       setTrafficData({
         daily_views: [],
         top_pages: [],
-        top_referrers: []
+        top_referrers: [],
       });
       setConversionData({
         formation_conversions: [],
-        top_course_clicks: []
+        top_course_clicks: [],
       });
     } finally {
       setLoading(false);
     }
-  };
+  }, [period]); // Add period as dependency since it's used in the URL
 
-  const COLORS = ['#8b5cf6', '#ec4899', '#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
+  useEffect(() => {
+    loadAllAnalytics();
+  }, [loadAllAnalytics]);
+
+  const COLORS = [
+    "#8b5cf6",
+    "#ec4899",
+    "#3b82f6",
+    "#10b981",
+    "#f59e0b",
+    "#ef4444",
+  ];
 
   const exportReport = () => {
     const reportData = {
@@ -121,15 +166,15 @@ const AdminReports = () => {
       trafficData,
       conversionData,
       generatedAt: new Date().toISOString(),
-      period: `${period} days`
+      period: `${period} days`,
     };
 
     const dataStr = JSON.stringify(reportData, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const dataBlob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.download = `analytics-report-${new Date().toISOString().split('T')[0]}.json`;
+    link.download = `analytics-report-${new Date().toISOString().split("T")[0]}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -139,10 +184,17 @@ const AdminReports = () => {
   // Format data for charts
   const formatDailyViews = (data) => {
     if (!data || !Array.isArray(data)) return [];
-    return data.map(item => ({
-      date: item.date ? new Date(item.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }) : '',
-      views: parseInt(item.views) || 0
-    })).reverse(); // Reverse to show chronological order
+    return data
+      .map((item) => ({
+        date: item.date
+          ? new Date(item.date).toLocaleDateString("fr-FR", {
+              day: "2-digit",
+              month: "2-digit",
+            })
+          : "",
+        views: parseInt(item.views) || 0,
+      }))
+      .reverse(); // Reverse to show chronological order
   };
 
   if (loading) {
@@ -190,7 +242,7 @@ const AdminReports = () => {
                 disabled={loading}
                 className="flex items-center space-x-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <FiRefreshCw className={loading ? 'animate-spin' : ''} />
+                <FiRefreshCw className={loading ? "animate-spin" : ""} />
                 <span className="font-medium">Refresh</span>
               </button>
               <button
@@ -220,9 +272,15 @@ const AdminReports = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-sm font-semibold uppercase mb-1">Total Views</p>
-                <h3 className="text-3xl font-bold text-gray-900 mt-2">{overview.total_views?.toLocaleString() || 0}</h3>
-                <p className="text-sm text-gray-600 mt-2 font-medium">All time page views</p>
+                <p className="text-gray-500 text-sm font-semibold uppercase mb-1">
+                  Total Views
+                </p>
+                <h3 className="text-3xl font-bold text-gray-900 mt-2">
+                  {overview.total_views?.toLocaleString() || 0}
+                </h3>
+                <p className="text-sm text-gray-600 mt-2 font-medium">
+                  All time page views
+                </p>
               </div>
               <div className="p-3 bg-purple-100 rounded-xl">
                 <FiEye className="text-2xl text-purple-600" />
@@ -233,9 +291,15 @@ const AdminReports = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-sm font-semibold uppercase mb-1">Registrations</p>
-                <h3 className="text-3xl font-bold text-gray-900 mt-2">{overview.total_registrations?.toLocaleString() || 0}</h3>
-                <p className="text-sm text-gray-600 mt-2 font-medium">Total course registrations</p>
+                <p className="text-gray-500 text-sm font-semibold uppercase mb-1">
+                  Registrations
+                </p>
+                <h3 className="text-3xl font-bold text-gray-900 mt-2">
+                  {overview.total_registrations?.toLocaleString() || 0}
+                </h3>
+                <p className="text-sm text-gray-600 mt-2 font-medium">
+                  Total course registrations
+                </p>
               </div>
               <div className="p-3 bg-blue-100 rounded-xl">
                 <FiUsers className="text-2xl text-blue-600" />
@@ -246,9 +310,15 @@ const AdminReports = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-sm font-semibold uppercase mb-1">Messages</p>
-                <h3 className="text-3xl font-bold text-gray-900 mt-2">{overview.total_messages?.toLocaleString() || 0}</h3>
-                <p className="text-sm text-gray-600 mt-2 font-medium">Contact form messages</p>
+                <p className="text-gray-500 text-sm font-semibold uppercase mb-1">
+                  Messages
+                </p>
+                <h3 className="text-3xl font-bold text-gray-900 mt-2">
+                  {overview.total_messages?.toLocaleString() || 0}
+                </h3>
+                <p className="text-sm text-gray-600 mt-2 font-medium">
+                  Contact form messages
+                </p>
               </div>
               <div className="p-3 bg-pink-100 rounded-xl">
                 <FiMail className="text-2xl text-pink-600" />
@@ -259,9 +329,15 @@ const AdminReports = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-sm font-semibold uppercase mb-1">Formations</p>
-                <h3 className="text-3xl font-bold text-gray-900 mt-2">{overview.total_formations?.toLocaleString() || 0}</h3>
-                <p className="text-sm text-gray-600 mt-2 font-medium">Published courses</p>
+                <p className="text-gray-500 text-sm font-semibold uppercase mb-1">
+                  Formations
+                </p>
+                <h3 className="text-3xl font-bold text-gray-900 mt-2">
+                  {overview.total_formations?.toLocaleString() || 0}
+                </h3>
+                <p className="text-sm text-gray-600 mt-2 font-medium">
+                  Published courses
+                </p>
               </div>
               <div className="p-3 bg-green-100 rounded-xl">
                 <FiBook className="text-2xl text-green-600" />
@@ -274,8 +350,12 @@ const AdminReports = () => {
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Daily Traffic</h2>
-              <p className="text-gray-600 text-sm mt-1">Page views over the last {period} days</p>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Daily Traffic
+              </h2>
+              <p className="text-gray-600 text-sm mt-1">
+                Page views over the last {period} days
+              </p>
             </div>
             <FiTrendingUp className="text-3xl text-purple-600" />
           </div>
@@ -283,20 +363,16 @@ const AdminReports = () => {
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={formatDailyViews(trafficData.daily_views)}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis
-                  dataKey="date"
-                  stroke="#666"
-                  tick={{ fontSize: 12 }}
-                />
+                <XAxis dataKey="date" stroke="#666" tick={{ fontSize: 12 }} />
                 <YAxis stroke="#666" />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#fff',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    backgroundColor: "#fff",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: "8px",
+                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                   }}
-                  formatter={(value) => [`${value} views`, 'Views']}
+                  formatter={(value) => [`${value} views`, "Views"]}
                   labelFormatter={(label) => `Date: ${label}`}
                 />
                 <Legend />
@@ -306,7 +382,7 @@ const AdminReports = () => {
                   name="Page Views"
                   stroke="#8b5cf6"
                   strokeWidth={3}
-                  dot={{ fill: '#8b5cf6', r: 4 }}
+                  dot={{ fill: "#8b5cf6", r: 4 }}
                   activeDot={{ r: 6 }}
                 />
               </LineChart>
@@ -323,8 +399,12 @@ const AdminReports = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Formation Performance</h2>
-                <p className="text-gray-600 text-sm mt-1">Registrations by formation</p>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Formation Performance
+                </h2>
+                <p className="text-gray-600 text-sm mt-1">
+                  Registrations by formation
+                </p>
               </div>
               <FiBarChart2 className="text-3xl text-blue-600" />
             </div>
@@ -344,12 +424,12 @@ const AdminReports = () => {
                   <YAxis stroke="#666" />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#fff',
-                      border: '1px solid #e5e7eb',
-                      borderRadius: '8px',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                      backgroundColor: "#fff",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "8px",
+                      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                     }}
-                    formatter={(value) => [`${value}`, 'Registrations']}
+                    formatter={(value) => [`${value}`, "Registrations"]}
                     labelFormatter={(label) => `Formation: ${label}`}
                   />
                   <Bar
@@ -370,8 +450,12 @@ const AdminReports = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Formation Revenue</h2>
-                <p className="text-gray-600 text-sm mt-1">Potential revenue by formation</p>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Formation Revenue
+                </h2>
+                <p className="text-gray-600 text-sm mt-1">
+                  Potential revenue by formation
+                </p>
               </div>
               <FiDollarSign className="text-3xl text-green-600" />
             </div>
@@ -379,22 +463,35 @@ const AdminReports = () => {
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
-                    data={formationAnalytics.slice(0, 5).filter(f => f.total_revenue > 0)}
+                    data={formationAnalytics
+                      .slice(0, 5)
+                      .filter((f) => f.total_revenue > 0)}
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ title, total_revenue }) => `${title}: ${parseFloat(total_revenue).toLocaleString('fr-FR', { style: 'currency', currency: 'TND' })}`}
+                    label={({ title, total_revenue }) =>
+                      `${title}: ${parseFloat(total_revenue).toLocaleString("fr-FR", { style: "currency", currency: "TND" })}`
+                    }
                     outerRadius={100}
                     fill="#8884d8"
                     dataKey="total_revenue"
                     nameKey="title"
                   >
-                    {formationAnalytics.slice(0, 5).filter(f => f.total_revenue > 0).map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
+                    {formationAnalytics
+                      .slice(0, 5)
+                      .filter((f) => f.total_revenue > 0)
+                      .map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
                   </Pie>
                   <Tooltip
-                    formatter={(value) => [`${parseFloat(value).toLocaleString('fr-FR', { style: 'currency', currency: 'TND' })}`, 'Revenue']}
+                    formatter={(value) => [
+                      `${parseFloat(value).toLocaleString("fr-FR", { style: "currency", currency: "TND" })}`,
+                      "Revenue",
+                    ]}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -413,39 +510,64 @@ const AdminReports = () => {
             <div className="space-y-3">
               {trafficData.top_pages && trafficData.top_pages.length > 0 ? (
                 trafficData.top_pages.slice(0, 5).map((page, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all"
+                  >
                     <div className="flex items-center space-x-3 flex-1">
                       <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                        <span className="text-purple-600 font-bold">{index + 1}</span>
+                        <span className="text-purple-600 font-bold">
+                          {index + 1}
+                        </span>
                       </div>
-                      <span className="text-gray-900 font-medium truncate">{page.page_url || 'Unknown page'}</span>
+                      <span className="text-gray-900 font-medium truncate">
+                        {page.page_url || "Unknown page"}
+                      </span>
                     </div>
-                    <span className="text-gray-600 font-semibold ml-4">{page.views || 0} views</span>
+                    <span className="text-gray-600 font-semibold ml-4">
+                      {page.views || 0} views
+                    </span>
                   </div>
                 ))
               ) : (
-                <p className="text-gray-500 text-center py-4">No page view data available</p>
+                <p className="text-gray-500 text-center py-4">
+                  No page view data available
+                </p>
               )}
             </div>
           </div>
 
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Top Referrers</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Top Referrers
+            </h2>
             <div className="space-y-3">
-              {trafficData.top_referrers && trafficData.top_referrers.length > 0 ? (
+              {trafficData.top_referrers &&
+              trafficData.top_referrers.length > 0 ? (
                 trafficData.top_referrers.slice(0, 5).map((referrer, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all"
+                  >
                     <div className="flex items-center space-x-3 flex-1">
                       <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <span className="text-blue-600 font-bold">{index + 1}</span>
+                        <span className="text-blue-600 font-bold">
+                          {index + 1}
+                        </span>
                       </div>
-                      <span className="text-gray-900 font-medium truncate">{referrer.referrer || 'Direct'}</span>
+                      <span className="text-gray-900 font-medium truncate">
+                        {referrer.referrer || "Direct"}
+                      </span>
                     </div>
-                    <span className="text-gray-600 font-semibold ml-4">{referrer.count || 0} visits</span>
+                    <span className="text-gray-600 font-semibold ml-4">
+                      {referrer.count || 0} visits
+                    </span>
                   </div>
                 ))
               ) : (
-                <p className="text-gray-500 text-center py-4">No referrer data available</p>
+                <p className="text-gray-500 text-center py-4">
+                  No referrer data available
+                </p>
               )}
             </div>
           </div>
@@ -455,43 +577,75 @@ const AdminReports = () => {
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Conversion Rates</h2>
-              <p className="text-gray-600 text-sm mt-1">Formation view to registration conversion</p>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Conversion Rates
+              </h2>
+              <p className="text-gray-600 text-sm mt-1">
+                Formation view to registration conversion
+              </p>
             </div>
           </div>
           <div className="overflow-x-auto">
-            {conversionData.formation_conversions && conversionData.formation_conversions.length > 0 ? (
+            {conversionData.formation_conversions &&
+            conversionData.formation_conversions.length > 0 ? (
               <table className="w-full min-w-full">
                 <thead>
                   <tr className="border-b border-gray-200">
-                    <th className="text-left py-3 px-4 text-gray-700 font-semibold">Formation</th>
-                    <th className="text-center py-3 px-4 text-gray-700 font-semibold">Views</th>
-                    <th className="text-center py-3 px-4 text-gray-700 font-semibold">Registrations</th>
-                    <th className="text-center py-3 px-4 text-gray-700 font-semibold">Conversion Rate</th>
+                    <th className="text-left py-3 px-4 text-gray-700 font-semibold">
+                      Formation
+                    </th>
+                    <th className="text-center py-3 px-4 text-gray-700 font-semibold">
+                      Views
+                    </th>
+                    <th className="text-center py-3 px-4 text-gray-700 font-semibold">
+                      Registrations
+                    </th>
+                    <th className="text-center py-3 px-4 text-gray-700 font-semibold">
+                      Conversion Rate
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {conversionData.formation_conversions.slice(0, 8).map((formation, index) => (
-                    <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
-                      <td className="py-3 px-4 text-gray-900 font-medium truncate max-w-xs">{formation.title}</td>
-                      <td className="py-3 px-4 text-center text-gray-600">{formation.views_count || 0}</td>
-                      <td className="py-3 px-4 text-center text-gray-600">{formation.registrations || 0}</td>
-                      <td className="py-3 px-4 text-center">
-                        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${parseFloat(formation.conversion_rate || 0) > 10
-                            ? 'bg-green-100 text-green-800'
-                            : parseFloat(formation.conversion_rate || 0) > 5
-                              ? 'bg-yellow-100 text-yellow-800'
-                              : 'bg-red-100 text-red-800'
-                          }`}>
-                          {parseFloat(formation.conversion_rate || 0).toFixed(2)}%
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
+                  {conversionData.formation_conversions
+                    .slice(0, 8)
+                    .map((formation, index) => (
+                      <tr
+                        key={index}
+                        className="border-b border-gray-100 hover:bg-gray-50"
+                      >
+                        <td className="py-3 px-4 text-gray-900 font-medium truncate max-w-xs">
+                          {formation.title}
+                        </td>
+                        <td className="py-3 px-4 text-center text-gray-600">
+                          {formation.views_count || 0}
+                        </td>
+                        <td className="py-3 px-4 text-center text-gray-600">
+                          {formation.registrations || 0}
+                        </td>
+                        <td className="py-3 px-4 text-center">
+                          <span
+                            className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                              parseFloat(formation.conversion_rate || 0) > 10
+                                ? "bg-green-100 text-green-800"
+                                : parseFloat(formation.conversion_rate || 0) > 5
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : "bg-red-100 text-red-800"
+                            }`}
+                          >
+                            {parseFloat(formation.conversion_rate || 0).toFixed(
+                              2
+                            )}
+                            %
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             ) : (
-              <p className="text-gray-500 text-center py-4">No conversion data available</p>
+              <p className="text-gray-500 text-center py-4">
+                No conversion data available
+              </p>
             )}
           </div>
         </div>
@@ -501,24 +655,46 @@ const AdminReports = () => {
           <h2 className="text-3xl font-bold mb-6">Summary Report</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <p className="text-blue-100 text-sm font-semibold uppercase mb-2">Average Conversion</p>
+              <p className="text-blue-100 text-sm font-semibold uppercase mb-2">
+                Average Conversion
+              </p>
               <p className="text-4xl font-bold">
                 {conversionData.formation_conversions?.length > 0
-                  ? (conversionData.formation_conversions.reduce((acc, f) => acc + parseFloat(f.conversion_rate || 0), 0) / conversionData.formation_conversions.length).toFixed(2)
-                  : 0}%
+                  ? (
+                      conversionData.formation_conversions.reduce(
+                        (acc, f) => acc + parseFloat(f.conversion_rate || 0),
+                        0
+                      ) / conversionData.formation_conversions.length
+                    ).toFixed(2)
+                  : 0}
+                %
               </p>
             </div>
             <div>
-              <p className="text-blue-100 text-sm font-semibold uppercase mb-2">Total Potential Revenue</p>
+              <p className="text-blue-100 text-sm font-semibold uppercase mb-2">
+                Total Potential Revenue
+              </p>
               <p className="text-4xl font-bold">
-                {formationAnalytics.reduce((acc, f) => acc + parseFloat(f.total_revenue || 0), 0).toLocaleString('fr-FR', { style: 'currency', currency: 'TND' })}
+                {formationAnalytics
+                  .reduce((acc, f) => acc + parseFloat(f.total_revenue || 0), 0)
+                  .toLocaleString("fr-FR", {
+                    style: "currency",
+                    currency: "TND",
+                  })}
               </p>
             </div>
             <div>
-              <p className="text-blue-100 text-sm font-semibold uppercase mb-2">Avg. Daily Views</p>
+              <p className="text-blue-100 text-sm font-semibold uppercase mb-2">
+                Avg. Daily Views
+              </p>
               <p className="text-4xl font-bold">
                 {trafficData.daily_views?.length > 0
-                  ? Math.round(trafficData.daily_views.reduce((acc, d) => acc + parseInt(d.views || 0), 0) / trafficData.daily_views.length)
+                  ? Math.round(
+                      trafficData.daily_views.reduce(
+                        (acc, d) => acc + parseInt(d.views || 0),
+                        0
+                      ) / trafficData.daily_views.length
+                    )
                   : 0}
               </p>
             </div>

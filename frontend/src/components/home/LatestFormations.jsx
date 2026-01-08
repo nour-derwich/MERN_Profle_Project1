@@ -1,23 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
+import { FaBrain, FaChartLine, FaPython, FaReact } from "react-icons/fa";
 import {
-  FiLayers, FiArrowRight, FiClock, FiCalendar,
-  FiUsers, FiTrendingUp, FiZap, FiStar,
-  FiChevronLeft, FiChevronRight, FiBook, FiCode
-} from 'react-icons/fi';
-import { FaPython, FaBrain, FaChartLine, FaReact } from 'react-icons/fa';
-import { SiPytorch, SiTensorflow, SiJupyter, SiJavascript } from 'react-icons/si';
-import formationService from '../../services/formationService';
-import { useNavigate } from 'react-router-dom';
-
+  FiArrowRight,
+  FiBook,
+  FiCalendar,
+  FiChevronLeft,
+  FiChevronRight,
+  FiClock,
+  FiCode,
+  FiLayers,
+  FiStar,
+  FiUsers,
+} from "react-icons/fi";
+import {
+  SiJavascript,
+  SiJupyter,
+  SiPytorch,
+  SiTensorflow,
+} from "react-icons/si";
+import { useNavigate } from "react-router-dom";
+import formationService from "../../services/formationService";
 
 const LatestFormations = () => {
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeCategory, setActiveCategory] = useState("all");
   const [currentSlide, setCurrentSlide] = useState(0);
   const [formations, setFormations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
 
   // Fetch formations from backend
   useEffect(() => {
@@ -25,22 +35,22 @@ const LatestFormations = () => {
       try {
         setLoading(true);
         const response = await formationService.getAll({
-          status: 'published',
+          status: "published",
           limit: 12,
-          sortBy: 'featured'
+          sortBy: "featured",
         });
 
-        console.log('📚 Formations response:', response);
+        console.log("📚 Formations response:", response);
 
         if (response.success && response.data) {
           setFormations(response.data);
         } else {
-          setError(response.message || 'Failed to load formations');
+          setError(response.message || "Failed to load formations");
           setFormations([]);
         }
       } catch (error) {
-        console.error('Error fetching formations:', error);
-        setError('Unable to load formations. Please try again later.');
+        console.error("Error fetching formations:", error);
+        setError("Unable to load formations. Please try again later.");
         setFormations([]);
       } finally {
         setLoading(false);
@@ -53,12 +63,18 @@ const LatestFormations = () => {
   // Helper function to get default image based on category
   const getDefaultImage = (category) => {
     const imageMap = {
-      'Machine Learning': 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&q=80',
-      'Deep Learning': 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80',
-      'Data Science': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
-      'AI Engineering': 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80',
-      'Web Development': 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
-      'default': 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800&q=80'
+      "Machine Learning":
+        "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&q=80",
+      "Deep Learning":
+        "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80",
+      "Data Science":
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+      "AI Engineering":
+        "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80",
+      "Web Development":
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
+      default:
+        "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800&q=80",
     };
     return imageMap[category] || imageMap.default;
   };
@@ -70,13 +86,13 @@ const LatestFormations = () => {
     // Get tech icons based on category
     const getTechIcons = (category) => {
       const techMap = {
-        'Machine Learning': [FaPython, SiPytorch, SiTensorflow],
-        'Deep Learning': [SiPytorch, FaBrain, SiJupyter],
-        'Data Science': [FaPython, FaChartLine, SiJupyter],
-        'AI Engineering': [FaPython, SiTensorflow, SiJupyter],
-        'Web Development': [SiJavascript, FaReact, FaPython],
-        'Mobile Development': [SiJavascript, FaReact, FaPython],
-        'default': [FaPython, FiCode, FiBook]
+        "Machine Learning": [FaPython, SiPytorch, SiTensorflow],
+        "Deep Learning": [SiPytorch, FaBrain, SiJupyter],
+        "Data Science": [FaPython, FaChartLine, SiJupyter],
+        "AI Engineering": [FaPython, SiTensorflow, SiJupyter],
+        "Web Development": [SiJavascript, FaReact, FaPython],
+        "Mobile Development": [SiJavascript, FaReact, FaPython],
+        default: [FaPython, FiCode, FiBook],
       };
 
       return techMap[category] || techMap.default;
@@ -85,26 +101,28 @@ const LatestFormations = () => {
     // Get badge info based on formation status
     const getBadgeInfo = (formation) => {
       if (formation.featured) {
-        return { badge: 'Featured', badgeColor: 'from-purple-500 to-pink-500' };
+        return { badge: "Featured", badgeColor: "from-purple-500 to-pink-500" };
       }
-      const spotsLeft = formation.spots_left || (formation.max_participants - formation.current_participants);
+      const spotsLeft =
+        formation.spots_left ||
+        formation.max_participants - formation.current_participants;
       if (spotsLeft <= 5 && spotsLeft > 0) {
-        return { badge: 'Limited', badgeColor: 'from-red-500 to-orange-500' };
+        return { badge: "Limited", badgeColor: "from-red-500 to-orange-500" };
       }
-      if (formation.status === 'upcoming') {
-        return { badge: 'Upcoming', badgeColor: 'from-blue-500 to-cyan-500' };
+      if (formation.status === "upcoming") {
+        return { badge: "Upcoming", badgeColor: "from-blue-500 to-cyan-500" };
       }
-      return { badge: 'Popular', badgeColor: 'from-green-500 to-emerald-500' };
+      return { badge: "Popular", badgeColor: "from-green-500 to-emerald-500" };
     };
 
     // Get level display
     const getLevelDisplay = (level) => {
-      if (!level) return 'All Levels';
+      if (!level) return "All Levels";
       const levelMap = {
-        'beginner': 'Beginner',
-        'intermediate': 'Intermediate',
-        'advanced': 'Advanced',
-        'expert': 'Expert'
+        beginner: "Beginner",
+        intermediate: "Intermediate",
+        advanced: "Advanced",
+        expert: "Expert",
       };
       return levelMap[level.toLowerCase()] || level;
     };
@@ -117,75 +135,93 @@ const LatestFormations = () => {
       if (formation.duration_hours) {
         return `${formation.duration_hours} hours`;
       }
-      return 'Flexible';
+      return "Flexible";
     };
 
     // Format start date
     const formatStartDate = (dateString) => {
-      if (!dateString) return 'Coming Soon';
+      if (!dateString) return "Coming Soon";
       try {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        return date.toLocaleDateString("en-US", {
+          month: "long",
+          year: "numeric",
+        });
       } catch (e) {
-        return 'Coming Soon';
+        return "Coming Soon";
       }
     };
 
     const badgeInfo = getBadgeInfo(formation);
     const techIcons = getTechIcons(formation.category);
-    const spotsLeft = formation.spots_left || (formation.max_participants - formation.current_participants) || 0;
+    const spotsLeft =
+      formation.spots_left ||
+      formation.max_participants - formation.current_participants ||
+      0;
 
     return {
       id: formation.id,
-      title: formation.title || 'Untitled Course',
-      category: formation.category || 'General',
-      categorySlug: (formation.category || 'general').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      title: formation.title || "Untitled Course",
+      category: formation.category || "General",
+      categorySlug: (formation.category || "general")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-"),
       level: getLevelDisplay(formation.level),
       duration: formatDuration(formation),
       startDate: formatStartDate(formation.start_date),
-      price: `${formation.currency || '$'}${formation.price || 0}`,
+      price: `${formation.currency || "$"}${formation.price || 0}`,
       spots: spotsLeft,
       enrolled: formation.current_participants || 0,
       rating: parseFloat(formation.rating) || 4.5,
-      instructor: formation.instructor_name || 'Naceur Keraani',
+      instructor: formation.instructor_name || "Naceur Keraani",
       image: formation.cover_image || getDefaultImage(formation.category),
       badge: badgeInfo.badge,
       badgeColor: badgeInfo.badgeColor,
       tech: techIcons,
-      description: formation.short_description || formation.description || 'Comprehensive training program designed for skill development.'
+      description:
+        formation.short_description ||
+        formation.description ||
+        "Comprehensive training program designed for skill development.",
     };
   };
 
   // Map backend formations to display format
   const displayFormations = formations
     .map(mapFormationData)
-    .filter(f => f !== null);
+    .filter((f) => f !== null);
 
   // Extract unique categories from formations
   const categories = [
-    { id: 'all', label: 'All Courses', count: displayFormations.length },
-    ...Array.from(new Set(formations.map(f => f.category)))
-      .filter(category => category)
-      .map(category => ({
-        id: category.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    { id: "all", label: "All Courses", count: displayFormations.length },
+    ...Array.from(new Set(formations.map((f) => f.category)))
+      .filter((category) => category)
+      .map((category) => ({
+        id: category.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
         label: category,
-        count: formations.filter(f => f.category === category).length
-      }))
+        count: formations.filter((f) => f.category === category).length,
+      })),
   ];
 
-  const filteredFormations = activeCategory === 'all'
-    ? displayFormations
-    : displayFormations.filter(f => f.categorySlug === activeCategory);
+  const filteredFormations =
+    activeCategory === "all"
+      ? displayFormations
+      : displayFormations.filter((f) => f.categorySlug === activeCategory);
 
   const nextSlide = () => {
     if (filteredFormations.length > 3) {
-      setCurrentSlide((prev) => (prev + 1) % Math.ceil(filteredFormations.length / 3));
+      setCurrentSlide(
+        (prev) => (prev + 1) % Math.ceil(filteredFormations.length / 3)
+      );
     }
   };
 
   const prevSlide = () => {
     if (filteredFormations.length > 3) {
-      setCurrentSlide((prev) => (prev - 1 + Math.ceil(filteredFormations.length / 3)) % Math.ceil(filteredFormations.length / 3));
+      setCurrentSlide(
+        (prev) =>
+          (prev - 1 + Math.ceil(filteredFormations.length / 3)) %
+          Math.ceil(filteredFormations.length / 3)
+      );
     }
   };
 
@@ -200,7 +236,9 @@ const LatestFormations = () => {
           <div className="text-center">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500/20 to-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-primary-500/30 mb-6">
               <FiLayers className="text-primary-300" />
-              <span className="text-primary-200 font-medium tracking-wider">EXPERT LED TRAINING</span>
+              <span className="text-primary-200 font-medium tracking-wider">
+                EXPERT LED TRAINING
+              </span>
             </div>
 
             <h2 className="text-5xl md:text-6xl font-bold mb-6">
@@ -227,7 +265,9 @@ const LatestFormations = () => {
           <div className="text-center">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500/20 to-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-primary-500/30 mb-6">
               <FiLayers className="text-primary-300" />
-              <span className="text-primary-200 font-medium tracking-wider">EXPERT LED TRAINING</span>
+              <span className="text-primary-200 font-medium tracking-wider">
+                EXPERT LED TRAINING
+              </span>
             </div>
 
             <h2 className="text-5xl md:text-6xl font-bold mb-6">
@@ -255,7 +295,6 @@ const LatestFormations = () => {
 
   return (
     <section className="relative py-24 bg-gradient-to-b from-gray-900 to-black overflow-hidden">
-
       {/* Animated Background */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-0 w-1/3 h-1/3 bg-gradient-to-br from-primary-900/20 to-transparent rounded-full blur-3xl" />
@@ -267,15 +306,19 @@ const LatestFormations = () => {
 
       {/* Floating Elements */}
       <div className="absolute top-1/4 left-10 w-72 h-72 bg-gradient-to-br from-primary-500/5 to-transparent rounded-full blur-2xl animate-float-slow" />
-      <div className="absolute bottom-1/4 right-10 w-96 h-96 bg-gradient-to-tl from-blue-500/5 to-transparent rounded-full blur-2xl animate-float-slow" style={{ animationDelay: '2s' }} />
+      <div
+        className="absolute bottom-1/4 right-10 w-96 h-96 bg-gradient-to-tl from-blue-500/5 to-transparent rounded-full blur-2xl animate-float-slow"
+        style={{ animationDelay: "2s" }}
+      />
 
       <div className="container mx-auto px-4 relative z-10">
-
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500/20 to-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-primary-500/30 mb-6">
             <FiLayers className="text-primary-300" />
-            <span className="text-primary-200 font-medium tracking-wider">EXPERT LED TRAINING</span>
+            <span className="text-primary-200 font-medium tracking-wider">
+              EXPERT LED TRAINING
+            </span>
           </div>
 
           <h2 className="text-5xl md:text-6xl font-bold mb-6">
@@ -287,8 +330,9 @@ const LatestFormations = () => {
           </h2>
 
           <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Transform your career with comprehensive training programs designed and taught by
-            industry expert Naceur Keraani. Learn cutting-edge AI technologies through practical projects.
+            Transform your career with comprehensive training programs designed
+            and taught by industry expert Naceur Keraani. Learn cutting-edge AI
+            technologies through practical projects.
           </p>
         </div>
 
@@ -302,18 +346,29 @@ const LatestFormations = () => {
                   setActiveCategory(category.id);
                   setCurrentSlide(0);
                 }}
-                className={`group relative px-6 py-3 rounded-xl backdrop-blur-sm transition-all duration-300 ${activeCategory === category.id
-                    ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white'
-                    : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
-                  }`}
+                className={`group relative px-6 py-3 rounded-xl backdrop-blur-sm transition-all duration-300 ${
+                  activeCategory === category.id
+                    ? "bg-gradient-to-r from-primary-500 to-blue-600 text-white"
+                    : "bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30"
+                }`}
               >
                 <span className="font-semibold">{category.label}</span>
-                <span className={`ml-2 text-sm ${activeCategory === category.id ? 'text-white/80' : 'text-gray-500'
-                  }`}>
+                <span
+                  className={`ml-2 text-sm ${
+                    activeCategory === category.id
+                      ? "text-white/80"
+                      : "text-gray-500"
+                  }`}
+                >
                   ({category.count})
                 </span>
-                <div className={`absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 ${activeCategory === category.id ? 'opacity-20' : 'group-hover:opacity-10'
-                  } transition-opacity duration-500`} />
+                <div
+                  className={`absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 ${
+                    activeCategory === category.id
+                      ? "opacity-20"
+                      : "group-hover:opacity-10"
+                  } transition-opacity duration-500`}
+                />
               </button>
             ))}
           </div>
@@ -322,7 +377,10 @@ const LatestFormations = () => {
         {/* Navigation Controls */}
         <div className="flex items-center justify-between mb-8">
           <h3 className="text-2xl font-bold text-white">
-            Featured Programs <span className="text-primary-400">({filteredFormations.length})</span>
+            Featured Programs{" "}
+            <span className="text-primary-400">
+              ({filteredFormations.length})
+            </span>
           </h3>
 
           {filteredFormations.length > 3 && (
@@ -348,8 +406,12 @@ const LatestFormations = () => {
           <div className="text-center py-12">
             <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-2xl p-12 inline-block">
               <FiBook className="text-5xl text-gray-400 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-white mb-2">No Formations Available</h3>
-              <p className="text-gray-400">Check back soon for new training programs!</p>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                No Formations Available
+              </h3>
+              <p className="text-gray-400">
+                Check back soon for new training programs!
+              </p>
             </div>
           </div>
         ) : (
@@ -360,14 +422,16 @@ const LatestFormations = () => {
                 style={{ transform: `translateX(-${currentSlide * 100}%)` }}
               >
                 {filteredFormations.map((formation) => (
-                  <div key={formation.id} className="w-full md:w-1/2 lg:w-1/3 px-4 flex-shrink-0">
+                  <div
+                    key={formation.id}
+                    className="w-full md:w-1/2 lg:w-1/3 px-4 flex-shrink-0"
+                  >
                     <div className="group relative h-full">
                       {/* Card Glow Effect */}
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-3xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-500" />
 
                       {/* Main Card */}
                       <div className="relative h-full bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-3xl overflow-hidden backdrop-blur-sm hover:border-primary-500/30 transition-all duration-500 group-hover:scale-105">
-
                         {/* Image Section */}
                         <div className="relative h-56 overflow-hidden">
                           <img
@@ -376,7 +440,9 @@ const LatestFormations = () => {
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                             onError={(e) => {
                               e.target.onerror = null;
-                              e.target.src = getDefaultImage(formation.category);
+                              e.target.src = getDefaultImage(
+                                formation.category
+                              );
                             }}
                           />
 
@@ -384,7 +450,9 @@ const LatestFormations = () => {
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
                           {/* Badge */}
-                          <div className={`absolute top-4 right-4 bg-gradient-to-r ${formation.badgeColor} text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg`}>
+                          <div
+                            className={`absolute top-4 right-4 bg-gradient-to-r ${formation.badgeColor} text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg`}
+                          >
                             {formation.badge}
                           </div>
 
@@ -437,7 +505,9 @@ const LatestFormations = () => {
                             </div>
                             <div className="flex items-center gap-1 text-yellow-400">
                               <FiStar className="fill-current" />
-                              <span className="font-semibold">{formation.rating.toFixed(1)}</span>
+                              <span className="font-semibold">
+                                {formation.rating.toFixed(1)}
+                              </span>
                             </div>
                           </div>
 
@@ -449,7 +519,9 @@ const LatestFormations = () => {
                             </div>
                             <div className="flex items-center gap-1 text-gray-400 flex-shrink-0 ml-2">
                               <FiCalendar className="text-primary-400" />
-                              <span className="whitespace-nowrap">{formation.startDate}</span>
+                              <span className="whitespace-nowrap">
+                                {formation.startDate}
+                              </span>
                             </div>
                           </div>
 
@@ -463,20 +535,27 @@ const LatestFormations = () => {
                                 {formation.price}
                               </div>
                               <div className="text-xs text-gray-500">
-                                {formation.spots > 0 ? `${formation.spots} spots left` : 'Sold out'}
+                                {formation.spots > 0
+                                  ? `${formation.spots} spots left`
+                                  : "Sold out"}
                               </div>
                             </div>
 
                             <button
                               onClick={() => handleEnrollClick(formation.id)}
                               disabled={formation.spots === 0}
-                              className={`group relative px-5 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 overflow-hidden ${formation.spots === 0
-                                  ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
-                                  : 'bg-gradient-to-r from-primary-500 to-blue-600 text-white hover:shadow-2xl'
-                                }`}
+                              className={`group relative px-5 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 overflow-hidden ${
+                                formation.spots === 0
+                                  ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                                  : "bg-gradient-to-r from-primary-500 to-blue-600 text-white hover:shadow-2xl"
+                              }`}
                             >
-                              <span>{formation.spots === 0 ? 'Full' : 'Enroll'}</span>
-                              {formation.spots > 0 && <FiArrowRight className="group-hover:translate-x-1 transition-transform" />}
+                              <span>
+                                {formation.spots === 0 ? "Full" : "Enroll"}
+                              </span>
+                              {formation.spots > 0 && (
+                                <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+                              )}
                               {formation.spots > 0 && (
                                 <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                               )}
@@ -496,14 +575,17 @@ const LatestFormations = () => {
             {/* Course Indicators */}
             {filteredFormations.length > 3 && (
               <div className="flex justify-center items-center gap-2 mt-8">
-                {Array.from({ length: Math.ceil(filteredFormations.length / 3) }).map((_, index) => (
+                {Array.from({
+                  length: Math.ceil(filteredFormations.length / 3),
+                }).map((_, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentSlide(index)}
-                    className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentSlide
-                        ? 'w-8 bg-gradient-to-r from-primary-500 to-blue-500'
-                        : 'bg-gray-700 hover:bg-gray-600'
-                      }`}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      index === currentSlide
+                        ? "w-8 bg-gradient-to-r from-primary-500 to-blue-500"
+                        : "bg-gray-700 hover:bg-gray-600"
+                    }`}
                   />
                 ))}
               </div>
@@ -518,9 +600,13 @@ const LatestFormations = () => {
               Need Custom Training for Your Team?
             </h3>
             <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-              Contact us for customized corporate training programs tailored to your organization's needs.
+              Contact us for customized corporate training programs tailored to
+              your organization's needs.
             </p>
-            <button onClick={() => navigate('/contact')} className="group relative bg-gradient-to-r from-primary-500 to-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 mx-auto">
+            <button
+              onClick={() => navigate("/contact")}
+              className="group relative bg-gradient-to-r from-primary-500 to-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 mx-auto"
+            >
               <span>Request Custom Training</span>
               <FiArrowRight className="group-hover:translate-x-2 transition-transform" />
             </button>
@@ -529,7 +615,7 @@ const LatestFormations = () => {
       </div>
 
       {/* Custom Animations */}
-      <style >{`
+      <style>{`
         @keyframes float-slow {
           0%, 100% {
             transform: translate(0, 0) scale(1);

@@ -1,39 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  FiX, 
-  FiUser, 
-  FiMail, 
-  FiPhone, 
-  FiMessageSquare,
-  FiCheckCircle,
-  FiCalendar,
-  FiClock,
-  FiUsers,
-  FiShield,
-  FiChevronRight,
-  FiLoader,
-  FiStar,
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { FaCheck, FaGithub, FaGoogle, FaLinkedin } from "react-icons/fa";
+import {
   FiAward,
-  FiTrendingUp,
-  FiLock,
   FiBookOpen,
-  FiGlobe,
+  FiCalendar,
+  FiCheckCircle,
+  FiChevronRight,
+  FiClock,
+  FiDownload,
+  FiLoader,
+  FiLock,
+  FiMail,
+  FiMessageSquare,
+  FiPhone,
+  FiShield,
+  FiStar,
+  FiTrendingUp,
+  FiUser,
+  FiUsers,
   FiVideo,
-  FiDownload
-} from 'react-icons/fi';
-import { FaGoogle, FaLinkedin, FaGithub, FaCheck } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
+  FiX,
+} from "react-icons/fi";
 
-const RegistrationModal = ({ 
-  showRegistrationModal, 
-  setShowRegistrationModal, 
-  selectedFormation, 
+const RegistrationModal = ({
+  showRegistrationModal,
+  setShowRegistrationModal,
+  selectedFormation,
   formData = {},
-  handleInputChange, 
+  handleInputChange,
   handleRegistrationSubmit,
   isLoading = false,
   registrationSuccess = false,
-  onSuccessClose
+  onSuccessClose,
 }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -41,15 +40,25 @@ const RegistrationModal = ({
   const [activeSocial, setActiveSocial] = useState(null);
 
   const steps = [
-    { id: 1, title: 'Your Details', icon: FiUser, description: 'Basic information' },
-    { id: 2, title: 'Confirmation', icon: FiCheckCircle, description: 'Review & submit' }
+    {
+      id: 1,
+      title: "Your Details",
+      icon: FiUser,
+      description: "Basic information",
+    },
+    {
+      id: 2,
+      title: "Confirmation",
+      icon: FiCheckCircle,
+      description: "Review & submit",
+    },
   ];
 
   const formationBenefits = [
-    { icon: FiVideo, text: 'On-demand video lessons' },
-    { icon: FiDownload, text: 'Downloadable resources' },
-    { icon: FiUsers, text: 'Community access' },
-    { icon: FiBookOpen, text: 'Lifetime updates' },
+    { icon: FiVideo, text: "On-demand video lessons" },
+    { icon: FiDownload, text: "Downloadable resources" },
+    { icon: FiUsers, text: "Community access" },
+    { icon: FiBookOpen, text: "Lifetime updates" },
   ];
 
   useEffect(() => {
@@ -61,15 +70,16 @@ const RegistrationModal = ({
 
   useEffect(() => {
     const validateForm = () => {
-      const requiredFields = ['full_name', 'email', 'phone'];
-      const isValid = requiredFields.every(field => {
-        const value = formData[field];
-        return value && typeof value === 'string' && value.trim().length > 0;
-      }) && formData.terms_accepted === true;
-      
+      const requiredFields = ["full_name", "email", "phone"];
+      const isValid =
+        requiredFields.every((field) => {
+          const value = formData[field];
+          return value && typeof value === "string" && value.trim().length > 0;
+        }) && formData.terms_accepted === true;
+
       setIsFormValid(isValid);
     };
-    
+
     validateForm();
   }, [formData]);
 
@@ -103,9 +113,13 @@ const RegistrationModal = ({
     setTimeout(() => {
       setActiveSocial(null);
       // Pre-fill some fields for demo
-      if (platform === 'google') {
-        handleInputChange({ target: { name: 'full_name', value: 'Demo User' } });
-        handleInputChange({ target: { name: 'email', value: 'demo@example.com' } });
+      if (platform === "google") {
+        handleInputChange({
+          target: { name: "full_name", value: "Demo User" },
+        });
+        handleInputChange({
+          target: { name: "email", value: "demo@example.com" },
+        });
       }
     }, 1000);
   };
@@ -133,7 +147,7 @@ const RegistrationModal = ({
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
         className="relative w-full max-w-4xl bg-gradient-to-br from-gray-800 via-gray-800/95 to-gray-900 border border-gray-700/30 rounded-3xl shadow-2xl overflow-hidden backdrop-blur-xl"
       >
         {/* Modal Header with gradient */}
@@ -151,7 +165,9 @@ const RegistrationModal = ({
               </h2>
               <p className="text-gray-400 mt-1 text-sm">
                 Complete your registration for
-                <span className="text-primary-300 font-semibold ml-1">{selectedFormation.title}</span>
+                <span className="text-primary-300 font-semibold ml-1">
+                  {selectedFormation.title}
+                </span>
               </p>
             </div>
           </div>
@@ -171,22 +187,26 @@ const RegistrationModal = ({
               const StepIcon = step.icon;
               const isActive = currentStep === step.id;
               const isCompleted = currentStep > step.id;
-              
+
               return (
                 <div key={step.id} className="flex items-center flex-1">
                   <div className="flex flex-col items-center relative flex-1">
                     {/* Step Circle with glow effect */}
-                    <div className={`relative z-10 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 transform ${
-                      isCompleted
-                        ? 'bg-gradient-to-r from-green-500 to-emerald-600 shadow-lg shadow-green-500/25 scale-110'
-                        : isActive
-                        ? 'bg-gradient-to-r from-primary-500 to-blue-600 shadow-lg shadow-primary-500/25 scale-110'
-                        : 'bg-gray-800 border border-gray-700/50 group'
-                    }`}>
+                    <div
+                      className={`relative z-10 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 transform ${
+                        isCompleted
+                          ? "bg-gradient-to-r from-green-500 to-emerald-600 shadow-lg shadow-green-500/25 scale-110"
+                          : isActive
+                            ? "bg-gradient-to-r from-primary-500 to-blue-600 shadow-lg shadow-primary-500/25 scale-110"
+                            : "bg-gray-800 border border-gray-700/50 group"
+                      }`}
+                    >
                       {isCompleted ? (
                         <FaCheck className="text-white text-lg" />
                       ) : (
-                        <StepIcon className={`text-lg ${isActive ? 'text-white' : 'text-gray-500 group-hover:text-gray-400'}`} />
+                        <StepIcon
+                          className={`text-lg ${isActive ? "text-white" : "text-gray-500 group-hover:text-gray-400"}`}
+                        />
                       )}
                       {/* Active indicator dot */}
                       {isActive && (
@@ -197,25 +217,35 @@ const RegistrationModal = ({
                         />
                       )}
                     </div>
-                    
+
                     {/* Step Label with animation */}
                     <div className="mt-3 text-center">
-                      <span className={`text-sm font-semibold transition-colors duration-300 ${
-                        isActive ? 'text-white' : isCompleted ? 'text-green-400' : 'text-gray-500'
-                      }`}>
+                      <span
+                        className={`text-sm font-semibold transition-colors duration-300 ${
+                          isActive
+                            ? "text-white"
+                            : isCompleted
+                              ? "text-green-400"
+                              : "text-gray-500"
+                        }`}
+                      >
                         {step.title}
                       </span>
-                      <p className="text-xs text-gray-500 mt-1">{step.description}</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {step.description}
+                      </p>
                     </div>
                   </div>
-                  
+
                   {/* Connection Line with animation */}
                   {index < steps.length - 1 && (
                     <div className="flex-1 h-1 mx-4 relative">
                       <div className="absolute inset-0 bg-gray-700/50 rounded-full overflow-hidden">
-                        <motion.div 
+                        <motion.div
                           initial={{ width: "0%" }}
-                          animate={{ width: currentStep > step.id ? "100%" : "0%" }}
+                          animate={{
+                            width: currentStep > step.id ? "100%" : "0%",
+                          }}
                           transition={{ duration: 0.5, ease: "easeInOut" }}
                           className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full"
                         />
@@ -252,12 +282,19 @@ const RegistrationModal = ({
                         Welcome Aboard! 🎉
                       </h3>
                       <p className="text-gray-300 mb-3">
-                        You're now enrolled in <span className="text-primary-300 font-semibold">{selectedFormation.title}</span>. 
-                        Check your email for the verification link and access instructions.
+                        You're now enrolled in{" "}
+                        <span className="text-primary-300 font-semibold">
+                          {selectedFormation.title}
+                        </span>
+                        . Check your email for the verification link and access
+                        instructions.
                       </p>
                       <div className="flex items-center gap-2 text-green-400 text-sm">
                         <FiShield className="flex-shrink-0" />
-                        <span>Free enrollment • Email verification required • Instant access pending verification</span>
+                        <span>
+                          Free enrollment • Email verification required •
+                          Instant access pending verification
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -278,8 +315,8 @@ const RegistrationModal = ({
                   <div className="flex items-start gap-5">
                     <div className="w-20 h-20 rounded-xl overflow-hidden bg-gradient-to-br from-primary-500/20 to-blue-600/20 border border-primary-500/30 flex items-center justify-center">
                       {selectedFormation.cover_image ? (
-                        <img 
-                          src={selectedFormation.cover_image} 
+                        <img
+                          src={selectedFormation.cover_image}
                           alt={selectedFormation.title}
                           className="w-full h-full object-cover"
                         />
@@ -288,7 +325,9 @@ const RegistrationModal = ({
                       )}
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-white mb-2">{selectedFormation.title}</h3>
+                      <h3 className="text-xl font-bold text-white mb-2">
+                        {selectedFormation.title}
+                      </h3>
                       <div className="flex flex-wrap gap-3 mb-3">
                         <span className="px-3 py-1 bg-gradient-to-r from-primary-500/20 to-blue-500/20 text-primary-300 text-xs font-semibold rounded-full border border-primary-500/30">
                           {selectedFormation.category}
@@ -303,18 +342,22 @@ const RegistrationModal = ({
                       <div className="grid grid-cols-2 gap-4 mt-4">
                         <div className="flex items-center gap-2 text-gray-400">
                           <FiClock className="text-primary-400" />
-                          <span className="text-sm">{selectedFormation.duration_hours || 'Flexible'} hours</span>
+                          <span className="text-sm">
+                            {selectedFormation.duration_hours || "Flexible"}{" "}
+                            hours
+                          </span>
                         </div>
                         <div className="flex items-center gap-2 text-gray-400">
                           <FiCalendar className="text-primary-400" />
                           <span className="text-sm">
-                            {selectedFormation.start_date 
-                              ? new Date(selectedFormation.start_date).toLocaleDateString('en-US', { 
-                                  month: 'short', 
-                                  day: 'numeric' 
+                            {selectedFormation.start_date
+                              ? new Date(
+                                  selectedFormation.start_date
+                                ).toLocaleDateString("en-US", {
+                                  month: "short",
+                                  day: "numeric",
                                 })
-                              : 'Coming Soon'
-                            }
+                              : "Coming Soon"}
                           </span>
                         </div>
                       </div>
@@ -324,12 +367,32 @@ const RegistrationModal = ({
 
                 {/* Quick Registration Options */}
                 <div>
-                  <h4 className="text-lg font-semibold text-white mb-4">Quick Registration</h4>
+                  <h4 className="text-lg font-semibold text-white mb-4">
+                    Quick Registration
+                  </h4>
                   <div className="grid grid-cols-3 gap-4">
                     {[
-                      { platform: 'google', icon: FaGoogle, label: 'Google', color: 'from-red-500/20 to-red-600/20', border: 'border-red-500/30' },
-                      { platform: 'linkedin', icon: FaLinkedin, label: 'LinkedIn', color: 'from-blue-500/20 to-blue-600/20', border: 'border-blue-500/30' },
-                      { platform: 'github', icon: FaGithub, label: 'GitHub', color: 'from-gray-700/50 to-gray-800/50', border: 'border-gray-700/50' },
+                      {
+                        platform: "google",
+                        icon: FaGoogle,
+                        label: "Google",
+                        color: "from-red-500/20 to-red-600/20",
+                        border: "border-red-500/30",
+                      },
+                      {
+                        platform: "linkedin",
+                        icon: FaLinkedin,
+                        label: "LinkedIn",
+                        color: "from-blue-500/20 to-blue-600/20",
+                        border: "border-blue-500/30",
+                      },
+                      {
+                        platform: "github",
+                        icon: FaGithub,
+                        label: "GitHub",
+                        color: "from-gray-700/50 to-gray-800/50",
+                        border: "border-gray-700/50",
+                      },
                     ].map(({ platform, icon: Icon, label, color, border }) => (
                       <motion.button
                         key={platform}
@@ -351,10 +414,12 @@ const RegistrationModal = ({
                       </motion.button>
                     ))}
                   </div>
-                  
+
                   <div className="flex items-center my-6">
                     <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-700/50 to-transparent" />
-                    <span className="px-4 text-sm text-gray-500 font-medium">Or register with email</span>
+                    <span className="px-4 text-sm text-gray-500 font-medium">
+                      Or register with email
+                    </span>
                     <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-700/50 to-transparent" />
                   </div>
                 </div>
@@ -364,7 +429,7 @@ const RegistrationModal = ({
                   <div className="grid md:grid-cols-2 gap-6">
                     {/* Full Name */}
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-400 flex items-center gap-2">
+                      <label className="text-sm font-medium text-gray-400 flex items-center gap-2">
                         <FiUser className="text-primary-400" />
                         Full Name *
                       </label>
@@ -373,7 +438,7 @@ const RegistrationModal = ({
                         <input
                           type="text"
                           name="full_name"
-                          value={formData.full_name || ''}
+                          value={formData.full_name || ""}
                           onChange={handleInputChange}
                           required
                           disabled={isLoading}
@@ -385,7 +450,7 @@ const RegistrationModal = ({
 
                     {/* Email */}
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-400 flex items-center gap-2">
+                      <label className="text-sm font-medium text-gray-400 flex items-center gap-2">
                         <FiMail className="text-primary-400" />
                         Email Address *
                       </label>
@@ -394,7 +459,7 @@ const RegistrationModal = ({
                         <input
                           type="email"
                           name="email"
-                          value={formData.email || ''}
+                          value={formData.email || ""}
                           onChange={handleInputChange}
                           required
                           disabled={isLoading}
@@ -406,7 +471,7 @@ const RegistrationModal = ({
 
                     {/* Phone */}
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-400 flex items-center gap-2">
+                      <label className="text-sm font-medium text-gray-400 flex items-center gap-2">
                         <FiPhone className="text-primary-400" />
                         Phone Number *
                       </label>
@@ -415,7 +480,7 @@ const RegistrationModal = ({
                         <input
                           type="tel"
                           name="phone"
-                          value={formData.phone || ''}
+                          value={formData.phone || ""}
                           onChange={handleInputChange}
                           required
                           disabled={isLoading}
@@ -427,7 +492,8 @@ const RegistrationModal = ({
 
                     {/* Role */}
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-400 flex items-center gap-2">
+                      <label className="text-sm font-medium text-gray-400 flex items-center gap-2">
+                        {/* ✅ Only flex - for horizontal layout */}
                         <FiTrendingUp className="text-primary-400" />
                         Current Role
                       </label>
@@ -435,7 +501,7 @@ const RegistrationModal = ({
                         <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500/20 to-blue-500/20 rounded-xl blur opacity-0 group-hover:opacity-50 transition-all duration-300" />
                         <select
                           name="role"
-                          value={formData.role || ''}
+                          value={formData.role || ""}
                           onChange={handleInputChange}
                           disabled={isLoading}
                           className="relative w-full px-4 py-3.5 bg-gray-800/50 border border-gray-700/50 text-white rounded-xl focus:border-primary-500/50 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all duration-300 appearance-none disabled:opacity-50"
@@ -443,7 +509,9 @@ const RegistrationModal = ({
                           <option value="">Select your role</option>
                           <option value="student">🎓 Student</option>
                           <option value="developer">💻 Developer</option>
-                          <option value="data-scientist">📊 Data Scientist</option>
+                          <option value="data-scientist">
+                            📊 Data Scientist
+                          </option>
                           <option value="ml-engineer">🤖 ML Engineer</option>
                           <option value="manager">👔 Manager</option>
                           <option value="other">✨ Other</option>
@@ -457,7 +525,7 @@ const RegistrationModal = ({
 
                   {/* Motivation */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-400 flex items-center gap-2">
+                    <label className="text-sm font-medium text-gray-400 flex items-center gap-2">
                       <FiMessageSquare className="text-primary-400" />
                       Tell us about your goals
                     </label>
@@ -465,7 +533,7 @@ const RegistrationModal = ({
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500/20 to-blue-500/20 rounded-xl blur opacity-0 group-hover:opacity-50 transition-all duration-300" />
                       <textarea
                         name="motivation"
-                        value={formData.motivation || ''}
+                        value={formData.motivation || ""}
                         onChange={handleInputChange}
                         rows="3"
                         disabled={isLoading}
@@ -482,13 +550,28 @@ const RegistrationModal = ({
                     </label>
                     <div className="grid grid-cols-3 gap-3">
                       {[
-                        { level: 'beginner', label: ' Beginner', color: 'from-blue-500/20 to-blue-600/20', border: 'border-blue-500/30' },
-                        { level: 'intermediate', label: 'Intermediate', color: 'from-purple-500/20 to-purple-600/20', border: 'border-purple-500/30' },
-                        { level: 'advanced', label: 'Advanced', color: 'from-primary-500/20 to-primary-600/20', border: 'border-primary-500/30' },
+                        {
+                          level: "beginner",
+                          label: " Beginner",
+                          color: "from-blue-500/20 to-blue-600/20",
+                          border: "border-blue-500/30",
+                        },
+                        {
+                          level: "intermediate",
+                          label: "Intermediate",
+                          color: "from-purple-500/20 to-purple-600/20",
+                          border: "border-purple-500/30",
+                        },
+                        {
+                          level: "advanced",
+                          label: "Advanced",
+                          color: "from-primary-500/20 to-primary-600/20",
+                          border: "border-primary-500/30",
+                        },
                       ].map(({ level, label, color, border }) => (
-                        <label 
+                        <label
                           key={level}
-                          className={`relative cursor-pointer transition-all duration-300 ${formData.experience_level === level ? 'transform scale-[1.02]' : ''}`}
+                          className={`relative cursor-pointer transition-all duration-300 ${formData.experience_level === level ? "transform scale-[1.02]" : ""}`}
                         >
                           <input
                             type="radio"
@@ -499,14 +582,20 @@ const RegistrationModal = ({
                             disabled={isLoading}
                             className="sr-only"
                           />
-                          <div className={`p-4 bg-gradient-to-br ${color} border ${border} rounded-xl text-center transition-all duration-300 ${
-                            formData.experience_level === level 
-                              ? 'ring-2 ring-primary-500/50 shadow-lg' 
-                              : 'hover:border-gray-600/50 hover:shadow-md'
-                          }`}>
-                            <span className={`text-sm font-medium ${
-                              formData.experience_level === level ? 'text-white' : 'text-gray-300'
-                            }`}>
+                          <div
+                            className={`p-4 bg-gradient-to-br ${color} border ${border} rounded-xl text-center transition-all duration-300 ${
+                              formData.experience_level === level
+                                ? "ring-2 ring-primary-500/50 shadow-lg"
+                                : "hover:border-gray-600/50 hover:shadow-md"
+                            }`}
+                          >
+                            <span
+                              className={`text-sm font-medium ${
+                                formData.experience_level === level
+                                  ? "text-white"
+                                  : "text-gray-300"
+                              }`}
+                            >
                               {label}
                             </span>
                           </div>
@@ -536,11 +625,23 @@ const RegistrationModal = ({
                       </div>
                       <div className="space-y-2">
                         <p className="text-sm text-gray-300">
-                          I agree to the <a href="#" className="text-primary-400 hover:text-primary-300 font-medium">Terms of Service</a> and <a href="#" className="text-primary-400 hover:text-primary-300 font-medium">Privacy Policy</a>. I consent to receiving formation-related communications.
+                          I agree to the{" "}
+                          <p className="text-primary-400 hover:text-primary-300 font-medium">
+                            Terms of Service
+                          </p>{" "}
+                          and{" "}
+                          <p className="text-primary-400 hover:text-primary-300 font-medium">
+                            Privacy Policy
+                          </p>
+                          . I consent to receiving formation-related
+                          communications.
                         </p>
                         <div className="flex items-center gap-2 text-green-400 text-sm">
                           <FiStar className="flex-shrink-0" />
-                          <span>100% Free • No payment required • Certificate included</span>
+                          <span>
+                            100% Free • No payment required • Certificate
+                            included
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -548,9 +649,14 @@ const RegistrationModal = ({
                     {/* Benefits Section */}
                     <div className="grid grid-cols-2 gap-3">
                       {formationBenefits.map((benefit, index) => (
-                        <div key={index} className="flex items-center gap-3 p-3 bg-gray-800/30 rounded-xl border border-gray-700/30">
+                        <div
+                          key={index}
+                          className="flex items-center gap-3 p-3 bg-gray-800/30 rounded-xl border border-gray-700/30"
+                        >
                           <benefit.icon className="text-primary-400 text-lg" />
-                          <span className="text-sm text-gray-300">{benefit.text}</span>
+                          <span className="text-sm text-gray-300">
+                            {benefit.text}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -570,7 +676,9 @@ const RegistrationModal = ({
                 {/* Registration Summary Card */}
                 <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/30 rounded-2xl p-6 space-y-6">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-bold text-white">Registration Summary</h3>
+                    <h3 className="text-xl font-bold text-white">
+                      Registration Summary
+                    </h3>
                     <span className="px-4 py-1.5 bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-400 text-sm font-semibold rounded-full border border-green-500/30">
                       FREE Enrollment
                     </span>
@@ -579,39 +687,50 @@ const RegistrationModal = ({
                   <div className="grid md:grid-cols-2 gap-6">
                     {/* Formation Details */}
                     <div className="space-y-4">
-                      <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Formation Details</h4>
+                      <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
+                        Formation Details
+                      </h4>
                       <div className="space-y-3">
                         <div className="flex items-center gap-3 p-3 bg-gray-800/30 rounded-lg">
                           <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary-500/20 to-blue-600/20 border border-primary-500/30 flex items-center justify-center">
                             <FiAward className="text-primary-400 text-lg" />
                           </div>
                           <div>
-                            <p className="font-semibold text-white">{selectedFormation.title}</p>
-                            <p className="text-xs text-gray-400">{selectedFormation.category} • {selectedFormation.level}</p>
+                            <p className="font-semibold text-white">
+                              {selectedFormation.title}
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              {selectedFormation.category} •{" "}
+                              {selectedFormation.level}
+                            </p>
                           </div>
                         </div>
-                        
+
                         <div className="grid grid-cols-2 gap-3">
                           <div className="p-3 bg-gray-800/30 rounded-lg">
-                            <p className="text-xs text-gray-400 mb-1">Start Date</p>
+                            <p className="text-xs text-gray-400 mb-1">
+                              Start Date
+                            </p>
                             <p className="text-sm text-white font-medium">
-                              {selectedFormation.start_date 
-                                ? new Date(selectedFormation.start_date).toLocaleDateString('en-US', { 
-                                    month: 'short', 
-                                    day: 'numeric', 
-                                    year: 'numeric' 
+                              {selectedFormation.start_date
+                                ? new Date(
+                                    selectedFormation.start_date
+                                  ).toLocaleDateString("en-US", {
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric",
                                   })
-                                : 'Coming Soon'
-                              }
+                                : "Coming Soon"}
                             </p>
                           </div>
                           <div className="p-3 bg-gray-800/30 rounded-lg">
-                            <p className="text-xs text-gray-400 mb-1">Duration</p>
+                            <p className="text-xs text-gray-400 mb-1">
+                              Duration
+                            </p>
                             <p className="text-sm text-white font-medium">
-                              {selectedFormation.duration_hours 
-                                ? `${selectedFormation.duration_hours} hours` 
-                                : 'Flexible'
-                              }
+                              {selectedFormation.duration_hours
+                                ? `${selectedFormation.duration_hours} hours`
+                                : "Flexible"}
                             </p>
                           </div>
                         </div>
@@ -620,24 +739,38 @@ const RegistrationModal = ({
 
                     {/* Your Information */}
                     <div className="space-y-4">
-                      <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Your Information</h4>
+                      <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
+                        Your Information
+                      </h4>
                       <div className="space-y-3">
                         <div className="p-3 bg-gray-800/30 rounded-lg">
-                          <p className="text-xs text-gray-400 mb-1">Full Name</p>
-                          <p className="text-sm text-white font-medium">{formData.full_name || 'Not provided'}</p>
+                          <p className="text-xs text-gray-400 mb-1">
+                            Full Name
+                          </p>
+                          <p className="text-sm text-white font-medium">
+                            {formData.full_name || "Not provided"}
+                          </p>
                         </div>
                         <div className="p-3 bg-gray-800/30 rounded-lg">
-                          <p className="text-xs text-gray-400 mb-1">Email Address</p>
-                          <p className="text-sm text-white font-medium">{formData.email || 'Not provided'}</p>
+                          <p className="text-xs text-gray-400 mb-1">
+                            Email Address
+                          </p>
+                          <p className="text-sm text-white font-medium">
+                            {formData.email || "Not provided"}
+                          </p>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                           <div className="p-3 bg-gray-800/30 rounded-lg">
                             <p className="text-xs text-gray-400 mb-1">Phone</p>
-                            <p className="text-sm text-white font-medium">{formData.phone || 'Not provided'}</p>
+                            <p className="text-sm text-white font-medium">
+                              {formData.phone || "Not provided"}
+                            </p>
                           </div>
                           <div className="p-3 bg-gray-800/30 rounded-lg">
                             <p className="text-xs text-gray-400 mb-1">Role</p>
-                            <p className="text-sm text-white font-medium capitalize">{formData.role || 'Not provided'}</p>
+                            <p className="text-sm text-white font-medium capitalize">
+                              {formData.role || "Not provided"}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -648,8 +781,12 @@ const RegistrationModal = ({
                   <div className="pt-6 border-t border-gray-700/30">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-lg text-gray-400">Registration Fee</p>
-                        <p className="text-sm text-gray-500">No payment required</p>
+                        <p className="text-lg text-gray-400">
+                          Registration Fee
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          No payment required
+                        </p>
                       </div>
                       <div className="text-right">
                         <div className="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
@@ -671,11 +808,17 @@ const RegistrationModal = ({
                       <FiAward className="text-white text-2xl" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-white mb-3">Ready to Start Learning?</h3>
+                      <h3 className="text-xl font-bold text-white mb-3">
+                        Ready to Start Learning?
+                      </h3>
                       <div className="space-y-3">
                         <p className="text-gray-300">
-                          You're one click away from joining <span className="text-primary-300 font-semibold">{selectedFormation.title}</span>. 
-                          After registration, you'll receive a verification email to activate your access.
+                          You're one click away from joining{" "}
+                          <span className="text-primary-300 font-semibold">
+                            {selectedFormation.title}
+                          </span>
+                          . After registration, you'll receive a verification
+                          email to activate your access.
                         </p>
                         <div className="flex items-center gap-4 text-sm">
                           <div className="flex items-center gap-2 text-green-400">
@@ -721,7 +864,7 @@ const RegistrationModal = ({
                   Back
                 </motion.button>
               )}
-              
+
               {currentStep === 1 ? (
                 <motion.button
                   type="button"
@@ -775,7 +918,7 @@ const RegistrationModal = ({
 };
 
 // Add custom scrollbar styles
-const style = document.createElement('style');
+const style = document.createElement("style");
 style.textContent = `
   .custom-scrollbar::-webkit-scrollbar {
     width: 8px;

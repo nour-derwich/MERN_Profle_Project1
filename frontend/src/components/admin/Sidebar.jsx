@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   FiHome, FiBriefcase, FiBook, FiUsers, FiMail,
-  FiPieChart, FiSettings, FiChevronDown, FiChevronRight,
+  FiPieChart, FiSettings, FiChevronDown,
   FiLogOut, FiUser, FiMenu, FiBell
 } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
@@ -11,7 +11,7 @@ import messageService from '../../services/messageService';
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout } = useAuth();
   const [expandedMenu, setExpandedMenu] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);

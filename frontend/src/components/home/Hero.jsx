@@ -1,33 +1,38 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from "react";
+import { FaPython, FaReact, FaWhatsapp } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import {
-  FiLinkedin, FiFacebook, FiMail, FiPhone, FiMapPin,
-  FiArrowRight, FiDownload, FiAward, FiBriefcase,
-  FiGithub, FiZap, FiChevronRight
-} from 'react-icons/fi';
-import { FaXTwitter } from 'react-icons/fa6';
-import { FaWhatsapp, FaPython, FaReact } from 'react-icons/fa';
-import { SiPytorch, SiTensorflow } from 'react-icons/si';
-import Button from '../common/Button';
-import Naceurimage from '../../assets/images/naceeiruhncf.JPG';
-import { useNavigate } from 'react-router-dom';
-import '../../styles/components/hero.css';
+  FiAward,
+  FiBriefcase,
+  FiChevronRight,
+  FiDownload,
+  FiGithub,
+  FiLinkedin,
+  FiMail,
+  FiMapPin,
+  FiPhone,
+  FiZap,
+} from "react-icons/fi";
+import { SiPytorch, SiTensorflow } from "react-icons/si";
+import { useNavigate } from "react-router-dom";
+import Naceurimage from "../../assets/images/naceeiruhncf.JPG";
+import "../../styles/components/hero.css";
 
 const Hero = () => {
-  const [scrollY, setScrollY] = useState(0);
+  const [, setScrollY] = useState(0);
   const [yearsExperience, setYearsExperience] = useState(0);
   const [projectsCount, setProjectsCount] = useState(0);
   const [startYear] = useState(2020);
   const [totalProjects] = useState(20);
   const [activeTech, setActiveTech] = useState(0);
-  const canvasRef = useRef(null);
+  // const canvasRef = useRef(null);
   const sectionRef = useRef(null);
   const navigate = useNavigate();
 
-
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Animate counters
@@ -75,61 +80,65 @@ const Hero = () => {
   }, []);
 
   const techStack = [
-    { icon: FaPython, label: 'Python', color: 'from-blue-500 to-cyan-500' },
-    { icon: SiPytorch, label: 'PyTorch', color: 'from-red-500 to-orange-500' },
-    { icon: SiTensorflow, label: 'TensorFlow', color: 'from-orange-500 to-yellow-500' },
-    { icon: FaReact, label: 'React', color: 'from-cyan-500 to-blue-500' }
+    { icon: FaPython, label: "Python", color: "from-blue-500 to-cyan-500" },
+    { icon: SiPytorch, label: "PyTorch", color: "from-red-500 to-orange-500" },
+    {
+      icon: SiTensorflow,
+      label: "TensorFlow",
+      color: "from-orange-500 to-yellow-500",
+    },
+    { icon: FaReact, label: "React", color: "from-cyan-500 to-blue-500" },
   ];
 
   const stats = [
     {
       icon: FiAward,
-      label: 'Years Experience',
+      label: "Years Experience",
       value: yearsExperience,
-      suffix: '+',
-      description: 'Building AI solutions'
+      suffix: "+",
+      description: "Building AI solutions",
     },
     {
       icon: FiBriefcase,
-      label: 'Projects Delivered',
+      label: "Projects Delivered",
       value: projectsCount,
-      suffix: '+',
-      description: 'Successful implementations'
+      suffix: "+",
+      description: "Successful implementations",
     },
     {
       icon: FiZap,
-      label: 'IBM Certifications',
-      value: '07',
-      suffix: '+',
-      description: 'Professional credentials'
+      label: "IBM Certifications",
+      value: "07",
+      suffix: "+",
+      description: "Professional credentials",
     },
   ];
 
   const socialLinks = [
     {
       icon: FiLinkedin,
-      url: 'https://www.linkedin.com/in/keraani-naceur-49523a175/',
-      label: 'LinkedIn',
-      gradient: 'from-blue-500 to-blue-700'
+      url: "https://www.linkedin.com/in/keraani-naceur-49523a175/",
+      label: "LinkedIn",
+      gradient: "from-blue-500 to-blue-700",
     },
     {
       icon: FiGithub,
-      url: 'https://github.com',
-      label: 'GitHub',
-      gradient: 'from-gray-800 to-black'
+      url: "https://github.com",
+      label: "GitHub",
+      gradient: "from-gray-800 to-black",
     },
     {
       icon: FaXTwitter,
-      url: 'https://twitter.com',
-      label: 'Twitter',
-      gradient: 'from-sky-500 to-blue-500'
+      url: "https://twitter.com",
+      label: "Twitter",
+      gradient: "from-sky-500 to-blue-500",
     },
     {
       icon: FaWhatsapp,
-      url: 'https://api.whatsapp.com/send?phone=0021695881709&text=Hello, more information!',
-      label: 'WhatsApp',
-      gradient: 'from-green-500 to-emerald-600'
-    }
+      url: "https://api.whatsapp.com/send?phone=0021695881709&text=Hello, more information!",
+      label: "WhatsApp",
+      gradient: "from-green-500 to-emerald-600",
+    },
   ];
 
   const infoData = {
@@ -138,12 +147,14 @@ const Hero = () => {
     bio: "Transforming complex data into intelligent systems. I specialize in building scalable AI solutions that drive business growth through innovative machine learning algorithms and data-driven insights.",
     location: "Tunis, Tunisia",
     email: "naceur.keraani@gmail.com",
-    phone: "+216 95 88 17 09"
+    phone: "+216 95 88 17 09",
   };
 
   return (
-    <section ref={sectionRef} className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black"
+    >
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Gradient Mesh */}
@@ -154,8 +165,14 @@ const Hero = () => {
 
         {/* Floating Orbs */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-3xl animate-float-slow" />
-        <div className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-gradient-to-tl from-blue-500/10 to-transparent rounded-full blur-3xl animate-float-slow" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-2/3 left-2/3 w-64 h-64 bg-gradient-to-tr from-cyan-500/10 to-transparent rounded-full blur-3xl animate-float-slow" style={{ animationDelay: '4s' }} />
+        <div
+          className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-gradient-to-tl from-blue-500/10 to-transparent rounded-full blur-3xl animate-float-slow"
+          style={{ animationDelay: "2s" }}
+        />
+        <div
+          className="absolute top-2/3 left-2/3 w-64 h-64 bg-gradient-to-tr from-cyan-500/10 to-transparent rounded-full blur-3xl animate-float-slow"
+          style={{ animationDelay: "4s" }}
+        />
       </div>
 
       {/* Binary Code Animation */}
@@ -171,7 +188,7 @@ const Hero = () => {
                 animationDelay: `${Math.random() * 5}s`,
               }}
             >
-              {Math.random() > 0.5 ? '1' : '0'}
+              {Math.random() > 0.5 ? "1" : "0"}
             </span>
           ))}
         </div>
@@ -180,7 +197,6 @@ const Hero = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 pt-24 pb-16 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-
           {/* Left Content - Creative Layout */}
           <div className="relative">
             {/* Floating Tech Badges */}
@@ -192,10 +208,15 @@ const Hero = () => {
                   return (
                     <div
                       key={index}
-                      className={`absolute inset-0 transition-all duration-700 ease-out ${isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-50'
-                        }`}
+                      className={`absolute inset-0 transition-all duration-700 ease-out ${
+                        isActive
+                          ? "opacity-100 scale-100"
+                          : "opacity-0 scale-50"
+                      }`}
                     >
-                      <div className={`p-4 bg-gradient-to-br ${tech.color} rounded-2xl shadow-2xl transform rotate-12 hover:rotate-0 transition-transform duration-500`}>
+                      <div
+                        className={`p-4 bg-gradient-to-br ${tech.color} rounded-2xl shadow-2xl transform rotate-12 hover:rotate-0 transition-transform duration-500`}
+                      >
                         <Icon className="text-3xl text-white" />
                       </div>
                     </div>
@@ -207,7 +228,9 @@ const Hero = () => {
             {/* Availability Badge */}
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500/20 to-emerald-600/20 backdrop-blur-sm px-5 py-2.5 rounded-full border border-green-500/30 mb-8 ml-20">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              <span className="text-sm font-semibold text-green-300">Available for projects</span>
+              <span className="text-sm font-semibold text-green-300">
+                Available for projects
+              </span>
               <div className="w-1 h-4 bg-gradient-to-b from-green-400 to-emerald-500 rounded-full ml-2" />
             </div>
 
@@ -250,30 +273,42 @@ const Hero = () => {
               {stats.map((stat, index) => {
                 const Icon = stat.icon;
                 return (
-                  <div
-                    key={index}
-                    className="group relative"
-                  >
+                  <div key={index} className="group relative">
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-500" />
                     <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl p-4 backdrop-blur-sm hover:border-primary-500/50 transition-all duration-300">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className={`p-2 ${stat.icon === FiAward ? 'bg-yellow-500/20' :
-                          stat.icon === FiBriefcase ? 'bg-green-500/20' :
-                            'bg-blue-500/20'
-                          } rounded-lg`}>
-                          <Icon className={`${stat.icon === FiAward ? 'text-yellow-400' :
-                            stat.icon === FiBriefcase ? 'text-green-400' :
-                              'text-blue-400'
-                            }`} />
+                        <div
+                          className={`p-2 ${
+                            stat.icon === FiAward
+                              ? "bg-yellow-500/20"
+                              : stat.icon === FiBriefcase
+                                ? "bg-green-500/20"
+                                : "bg-blue-500/20"
+                          } rounded-lg`}
+                        >
+                          <Icon
+                            className={`${
+                              stat.icon === FiAward
+                                ? "text-yellow-400"
+                                : stat.icon === FiBriefcase
+                                  ? "text-green-400"
+                                  : "text-blue-400"
+                            }`}
+                          />
                         </div>
                         <div>
                           <div className="text-2xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
-                            {stat.value}{stat.suffix}
+                            {stat.value}
+                            {stat.suffix}
                           </div>
-                          <div className="text-xs text-gray-400">{stat.label}</div>
+                          <div className="text-xs text-gray-400">
+                            {stat.label}
+                          </div>
                         </div>
                       </div>
-                      <div className="text-xs text-gray-500 mt-2">{stat.description}</div>
+                      <div className="text-xs text-gray-500 mt-2">
+                        {stat.description}
+                      </div>
                     </div>
                   </div>
                 );
@@ -282,7 +317,10 @@ const Hero = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-wrap gap-4 mb-10">
-              <button onClick={() => navigate('/projects')} className="group relative bg-gradient-to-r from-primary-500 to-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 overflow-hidden">
+              <button
+                onClick={() => navigate("/projects")}
+                className="group relative bg-gradient-to-r from-primary-500 to-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 overflow-hidden"
+              >
                 <span>Start a Project</span>
                 <FiChevronRight className="group-hover:translate-x-2 transition-transform" />
                 <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -310,7 +348,9 @@ const Hero = () => {
                       className={`group relative p-3 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl backdrop-blur-sm hover:scale-110 transition-all duration-300`}
                       aria-label={social.label}
                     >
-                      <div className={`absolute inset-0 bg-gradient-to-br ${social.gradient} rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
+                      <div
+                        className={`absolute inset-0 bg-gradient-to-br ${social.gradient} rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300`}
+                      />
                       <Icon className="text-gray-400 group-hover:text-white transition-colors relative z-10" />
                     </a>
                   );
@@ -324,7 +364,9 @@ const Hero = () => {
             {/* Tech Stack Rotation Display */}
             <div className="absolute -top-10 right-10 z-20">
               <div className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-lg border border-gray-700/50 rounded-2xl p-6 shadow-2xl">
-                <h4 className="text-white font-bold mb-4 text-center">Tech Stack</h4>
+                <h4 className="text-white font-bold mb-4 text-center">
+                  Tech Stack
+                </h4>
                 <div className="grid grid-cols-2 gap-4">
                   {techStack.map((tech, index) => {
                     const Icon = tech.icon;
@@ -332,15 +374,22 @@ const Hero = () => {
                     return (
                       <div
                         key={index}
-                        className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-300 ${isActive
-                          ? 'bg-gradient-to-r from-gray-700 to-gray-800 border border-primary-500/30'
-                          : 'bg-gray-800/50'
-                          }`}
+                        className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-300 ${
+                          isActive
+                            ? "bg-gradient-to-r from-gray-700 to-gray-800 border border-primary-500/30"
+                            : "bg-gray-800/50"
+                        }`}
                       >
-                        <div className={`p-2 rounded-lg ${isActive ? tech.color.replace('from-', 'bg-gradient-to-br ') : 'bg-gray-700'}`}>
-                          <Icon className={`text-lg ${isActive ? 'text-white' : 'text-gray-400'}`} />
+                        <div
+                          className={`p-2 rounded-lg ${isActive ? tech.color.replace("from-", "bg-gradient-to-br ") : "bg-gray-700"}`}
+                        >
+                          <Icon
+                            className={`text-lg ${isActive ? "text-white" : "text-gray-400"}`}
+                          />
                         </div>
-                        <span className={`font-medium ${isActive ? 'text-white' : 'text-gray-400'}`}>
+                        <span
+                          className={`font-medium ${isActive ? "text-white" : "text-gray-400"}`}
+                        >
                           {tech.label}
                         </span>
                       </div>
@@ -416,7 +465,7 @@ const Hero = () => {
                   </a>
 
                   <a
-                    href={`tel:${infoData.phone.replace(/\s/g, '')}`}
+                    href={`tel:${infoData.phone.replace(/\s/g, "")}`}
                     className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-gray-800/50 to-gray-900/50 hover:from-green-500/10 hover:to-emerald-500/10 transition-all duration-300 border border-gray-700/50 hover:border-green-500/30"
                   >
                     <div className="p-3 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-lg group-hover:scale-110 transition-transform">
@@ -440,14 +489,14 @@ const Hero = () => {
       {/* Scroll Indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
         <div className="flex flex-col items-center gap-2 animate-bounce-slow">
-          <div className="text-sm text-gray-500 font-medium tracking-wider">EXPLORE MORE</div>
+          <div className="text-sm text-gray-500 font-medium tracking-wider">
+            EXPLORE MORE
+          </div>
           <div className="w-6 h-10 border-2 border-primary-500/30 rounded-full flex justify-center p-2">
             <div className="w-1 h-3 bg-gradient-to-b from-primary-400 to-blue-400 rounded-full animate-scroll" />
           </div>
         </div>
       </div>
-
-
     </section>
   );
 };

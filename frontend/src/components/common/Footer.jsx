@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  FiFacebook, FiTwitter, FiLinkedin, FiGithub, FiMail,
+  
+ FiTwitter, FiLinkedin, FiGithub, FiMail,
   FiPhone, FiMapPin, FiHeart, FiZap, FiCode, FiChevronRight,
   FiSend, FiArrowUpRight, FiShield, FiTerminal
 } from 'react-icons/fi';
@@ -12,7 +13,7 @@ const Footer = () => {
   const [year, setYear] = useState(new Date().getFullYear());
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [hoveredLink, setHoveredLink] = useState(null);
+  const [, setHoveredLink] = useState(null);
 
   useEffect(() => {
     setYear(new Date().getFullYear());

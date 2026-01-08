@@ -1,96 +1,115 @@
-import React, { useState, useEffect } from 'react';
+import { motion } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
+import { FaDocker, FaNodeJs, FaPython, FaReact } from "react-icons/fa";
 import {
+  FiChevronRight,
+  FiCloud,
   FiCode,
   FiCpu,
-  FiDatabase,
-  FiTrendingUp,
-  FiChevronRight,
+  FiGitBranch,
   FiGlobe,
   FiLayers,
-  FiStar,
-  FiGitBranch,
-  FiCloud,
-  FiBarChart2,
   FiTarget,
+  FiTrendingUp,
   FiZap,
-  FiAward
-} from 'react-icons/fi';
-import { FaPython, FaReact, FaNodeJs, FaDocker } from 'react-icons/fa';
-import { motion } from 'framer-motion';
+} from "react-icons/fi";
 
 const ProjectsHero = ({ isVisible = true }) => {
   const [activeTech, setActiveTech] = useState(0);
-  const [scrollY, setScrollY] = useState(0);
+  const [, setScrollY] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const techStack = useMemo(
+    () => [
+      {
+        name: "Python",
+        icon: FaPython,
+        color: "from-blue-500 to-cyan-600",
+        description: "Data Science & ML",
+      },
+      {
+        name: "TensorFlow",
+        icon: FiCpu,
+        color: "from-orange-500 to-yellow-600",
+        description: "Deep Learning",
+      },
+      {
+        name: "PyTorch",
+        icon: FiTrendingUp,
+        color: "from-red-500 to-orange-600",
+        description: "Research & Models",
+      },
+      {
+        name: "React",
+        icon: FaReact,
+        color: "from-cyan-500 to-blue-600",
+        description: "Web Applications",
+      },
+      {
+        name: "Node.js",
+        icon: FaNodeJs,
+        color: "from-green-500 to-emerald-600",
+        description: "Backend Services",
+      },
+      {
+        name: "Docker",
+        icon: FaDocker,
+        color: "from-blue-600 to-indigo-600",
+        description: "Containerization",
+      },
+    ],
+    []
+  ); // Empty dependency array means it only creates once
 
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveTech((prev) => (prev + 1) % techStack.length);
     }, 2000);
     return () => clearInterval(interval);
-  }, []);
-
-  const techStack = [
-    {
-      name: 'Python',
-      icon: FaPython,
-      color: 'from-blue-500 to-cyan-600',
-      description: 'Data Science & ML'
-    },
-    {
-      name: 'TensorFlow',
-      icon: FiCpu,
-      color: 'from-orange-500 to-yellow-600',
-      description: 'Deep Learning'
-    },
-    {
-      name: 'PyTorch',
-      icon: FiTrendingUp,
-      color: 'from-red-500 to-orange-600',
-      description: 'Research & Models'
-    },
-    {
-      name: 'React',
-      icon: FaReact,
-      color: 'from-cyan-500 to-blue-600',
-      description: 'Web Applications'
-    },
-    {
-      name: 'Node.js',
-      icon: FaNodeJs,
-      color: 'from-green-500 to-emerald-600',
-      description: 'Backend Services'
-    },
-    {
-      name: 'Docker',
-      icon: FaDocker,
-      color: 'from-blue-600 to-indigo-600',
-      description: 'Containerization'
-    }
-  ];
+  }, [techStack.length]);
 
   const projectStats = [
-    { value: '50+', label: 'Projects Built', icon: FiCode, color: 'from-primary-500 to-blue-500' },
-    { value: '95%', label: 'Success Rate', icon: FiTarget, color: 'from-green-500 to-emerald-500' },
-    { value: '10K+', label: 'Lines of Code', icon: FiGitBranch, color: 'from-purple-500 to-pink-500' },
-    { value: '24/7', label: 'Uptime', icon: FiCloud, color: 'from-yellow-500 to-orange-500' }
+    {
+      value: "50+",
+      label: "Projects Built",
+      icon: FiCode,
+      color: "from-primary-500 to-blue-500",
+    },
+    {
+      value: "95%",
+      label: "Success Rate",
+      icon: FiTarget,
+      color: "from-green-500 to-emerald-500",
+    },
+    {
+      value: "10K+",
+      label: "Lines of Code",
+      icon: FiGitBranch,
+      color: "from-purple-500 to-pink-500",
+    },
+    {
+      value: "24/7",
+      label: "Uptime",
+      icon: FiCloud,
+      color: "from-yellow-500 to-orange-500",
+    },
   ];
 
   const projectCategories = [
-    'Machine Learning',
-    'Deep Learning',
-    'Computer Vision',
-    'NLP',
-    'Web Apps',
-    'APIs',
-    'Dashboards',
-    'Automation'
+    "Machine Learning",
+    "Deep Learning",
+    "Computer Vision",
+    "NLP",
+    "Web Apps",
+    "APIs",
+    "Dashboards",
+    "Automation",
   ];
 
   const TechCard = ({ tech, index, isActive }) => {
@@ -101,22 +120,30 @@ const ProjectsHero = ({ isVisible = true }) => {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: index * 0.1 }}
-        className={`relative cursor-pointer transition-all duration-500 ${isActive ? 'scale-110' : 'scale-90 opacity-60'
-          }`}
+        className={`relative cursor-pointer transition-all duration-500 ${
+          isActive ? "scale-110" : "scale-90 opacity-60"
+        }`}
         onClick={() => setActiveTech(index)}
         onMouseEnter={() => setIsHovered(index)}
         onMouseLeave={() => setIsHovered(null)}
       >
         {/* Card Glow */}
-        <div className={`absolute -inset-0.5 bg-gradient-to-r ${tech.color} rounded-2xl blur-xl opacity-0 ${isActive || isHovered === index ? 'opacity-30' : ''
-          } transition-opacity duration-500`} />
+        <div
+          className={`absolute -inset-0.5 bg-gradient-to-r ${tech.color} rounded-2xl blur-xl opacity-0 ${
+            isActive || isHovered === index ? "opacity-30" : ""
+          } transition-opacity duration-500`}
+        />
 
         {/* Card */}
-        <div className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${isActive ? 'border-primary-500/50' : 'border-gray-700/50'
-          } rounded-xl p-6 backdrop-blur-sm hover:border-primary-500/30 transition-all duration-300`}>
-
+        <div
+          className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${
+            isActive ? "border-primary-500/50" : "border-gray-700/50"
+          } rounded-xl p-6 backdrop-blur-sm hover:border-primary-500/30 transition-all duration-300`}
+        >
           {/* Icon */}
-          <div className={`relative p-4 bg-gradient-to-br ${tech.color}/20 rounded-xl w-fit mb-4 mx-auto`}>
+          <div
+            className={`relative p-4 bg-gradient-to-br ${tech.color}/20 rounded-xl w-fit mb-4 mx-auto`}
+          >
             <Icon className="text-3xl text-white" />
           </div>
 
@@ -127,8 +154,11 @@ const ProjectsHero = ({ isVisible = true }) => {
           </div>
 
           {/* Active Indicator */}
-          <div className={`absolute -right-2 -top-2 w-4 h-4 bg-gradient-to-r ${tech.color} rounded-full border-2 border-gray-900 opacity-0 ${isActive ? 'opacity-100' : ''
-            } transition-opacity duration-300`} />
+          <div
+            className={`absolute -right-2 -top-2 w-4 h-4 bg-gradient-to-r ${tech.color} rounded-full border-2 border-gray-900 opacity-0 ${
+              isActive ? "opacity-100" : ""
+            } transition-opacity duration-300`}
+          />
         </div>
       </motion.div>
     );
@@ -136,19 +166,24 @@ const ProjectsHero = ({ isVisible = true }) => {
 
   return (
     <section className="relative min-h-[90vh] overflow-hidden bg-gradient-to-b from-gray-900 via-black to-gray-900">
-
       {/* Animated Background */}
       <div className="absolute inset-0">
         {/* Gradient Orbs */}
         <div className="absolute top-1/4 left-10 w-96 h-96 bg-gradient-to-br from-primary-600/20 to-blue-600/20 rounded-full blur-3xl animate-float-slow" />
-        <div className="absolute bottom-1/4 right-10 w-80 h-80 bg-gradient-to-tl from-purple-600/20 to-pink-600/20 rounded-full blur-3xl animate-float-slow" style={{ animationDelay: '2s' }} />
+        <div
+          className="absolute bottom-1/4 right-10 w-80 h-80 bg-gradient-to-tl from-purple-600/20 to-pink-600/20 rounded-full blur-3xl animate-float-slow"
+          style={{ animationDelay: "2s" }}
+        />
 
         {/* Code Pattern */}
         <div className="absolute inset-0 opacity-5 bg-[linear-gradient(90deg,#ffffff12_1px,transparent_1px),linear-gradient(180deg,#ffffff12_1px,transparent_1px)] bg-[size:60px_60px]" />
 
         {/* Floating Code Blocks */}
         <div className="absolute top-20 right-1/4 w-40 h-40 bg-gradient-to-br from-primary-500/5 to-transparent rounded-lg blur-3xl rotate-45 animate-float-slow" />
-        <div className="absolute bottom-20 left-1/4 w-32 h-32 bg-gradient-to-tl from-blue-500/5 to-transparent rounded-lg blur-3xl -rotate-12 animate-float-slow" style={{ animationDelay: '1s' }} />
+        <div
+          className="absolute bottom-20 left-1/4 w-32 h-32 bg-gradient-to-tl from-blue-500/5 to-transparent rounded-lg blur-3xl -rotate-12 animate-float-slow"
+          style={{ animationDelay: "1s" }}
+        />
 
         {/* Code Lines Animation */}
         <div className="absolute inset-0 overflow-hidden">
@@ -171,7 +206,6 @@ const ProjectsHero = ({ isVisible = true }) => {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="pt-32 pb-20">
-
           {/* Tech Stack Carousel */}
           <div className="relative mb-16">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-6xl mx-auto">
@@ -191,13 +225,17 @@ const ProjectsHero = ({ isVisible = true }) => {
                 <button
                   key={index}
                   onClick={() => setActiveTech(index)}
-                  className={`relative transition-all duration-300 ${activeTech === index ? 'scale-125' : ''
-                    }`}
+                  className={`relative transition-all duration-300 ${
+                    activeTech === index ? "scale-125" : ""
+                  }`}
                 >
-                  <div className={`w-2 h-2 rounded-full transition-all duration-300 ${activeTech === index
-                      ? 'bg-gradient-to-r from-primary-400 to-blue-400'
-                      : 'bg-gray-700 hover:bg-gray-600'
-                    }`} />
+                  <div
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      activeTech === index
+                        ? "bg-gradient-to-r from-primary-400 to-blue-400"
+                        : "bg-gray-700 hover:bg-gray-600"
+                    }`}
+                  />
                   {activeTech === index && (
                     <div className="absolute -inset-2 bg-gradient-to-r from-primary-400/20 to-blue-400/20 rounded-full animate-ping" />
                   )}
@@ -213,7 +251,6 @@ const ProjectsHero = ({ isVisible = true }) => {
             transition={{ duration: 0.8 }}
             className="text-center max-w-6xl mx-auto"
           >
-
             {/* Badge */}
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500/20 to-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-primary-500/30 mb-8 group hover:border-primary-500/50 transition-all duration-300">
               <div className="relative">
@@ -246,9 +283,10 @@ const ProjectsHero = ({ isVisible = true }) => {
 
             {/* Description */}
             <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed mb-12">
-              Explore my collection of production-ready projects that solve real problems.
-              From machine learning models to full-stack applications, each project demonstrates
-              technical expertise and practical problem-solving.
+              Explore my collection of production-ready projects that solve real
+              problems. From machine learning models to full-stack applications,
+              each project demonstrates technical expertise and practical
+              problem-solving.
             </p>
 
             {/* Stats Grid */}
@@ -264,18 +302,24 @@ const ProjectsHero = ({ isVisible = true }) => {
                     className="group relative"
                   >
                     {/* Glow Effect */}
-                    <div className={`absolute -inset-0.5 bg-gradient-to-r ${stat.color} rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
+                    <div
+                      className={`absolute -inset-0.5 bg-gradient-to-r ${stat.color} rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-500`}
+                    />
 
                     {/* Card */}
                     <div className="relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6 hover:border-primary-500/30 transition-all duration-300 group-hover:scale-105">
                       <div className="flex flex-col items-center gap-3">
-                        <div className={`p-3 bg-gradient-to-br ${stat.color}/20 rounded-xl`}>
+                        <div
+                          className={`p-3 bg-gradient-to-br ${stat.color}/20 rounded-xl`}
+                        >
                           <Icon className="text-xl text-white" />
                         </div>
                         <div className="text-3xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
                           {stat.value}
                         </div>
-                        <div className="text-sm text-gray-500 font-medium">{stat.label}</div>
+                        <div className="text-sm text-gray-500 font-medium">
+                          {stat.label}
+                        </div>
                       </div>
                     </div>
                   </motion.div>
@@ -291,7 +335,7 @@ const ProjectsHero = ({ isVisible = true }) => {
                     key={index}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={isVisible ? { opacity: 1, scale: 1 } : {}}
-                    transition={{ delay: 0.5 + (index * 0.05) }}
+                    transition={{ delay: 0.5 + index * 0.05 }}
                     className="px-4 py-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 rounded-full text-sm font-medium transition-all duration-300 hover:border-primary-500/30 hover:text-white hover:scale-105 flex items-center gap-2 group"
                   >
                     <FiZap className="text-primary-400 text-xs group-hover:rotate-12 transition-transform" />
@@ -332,7 +376,9 @@ const ProjectsHero = ({ isVisible = true }) => {
               className="mt-16 animate-bounce-slow"
             >
               <div className="flex flex-col items-center gap-2">
-                <div className="text-sm text-gray-500 font-medium tracking-wider">EXPLORE PROJECTS</div>
+                <div className="text-sm text-gray-500 font-medium tracking-wider">
+                  EXPLORE PROJECTS
+                </div>
                 <div className="w-6 h-10 border-2 border-primary-500/30 rounded-full flex justify-center p-2">
                   <div className="w-1 h-3 bg-gradient-to-b from-primary-400 to-blue-400 rounded-full animate-scroll" />
                 </div>

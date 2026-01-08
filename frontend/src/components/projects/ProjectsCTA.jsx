@@ -1,121 +1,122 @@
-import React, { useState, useEffect } from 'react';
+import { motion } from "framer-motion";
+import { useEffect, useState, useMemo } from "react";
+import toast from "react-hot-toast";
+import { AiOutlineStar } from "react-icons/ai";
+import { FaRobot } from "react-icons/fa";
 import {
-  FiExternalLink,
-  FiCode,
-  FiMessageSquare,
-  FiCalendar,
-  FiChevronRight,
-  FiUsers,
+  FiAlertCircle,
   FiAward,
-  FiTrendingUp,
-  FiZap,
-  FiMail,
+  FiCheckCircle,
+  FiChevronRight,
+  FiCode,
+  FiExternalLink,
   FiGithub,
   FiLinkedin,
-  FiCoffee,
-  FiBook,
   FiLoader,
-  FiAlertCircle,
-  FiCheckCircle
-} from 'react-icons/fi';
-import { FaPython, FaRobot } from 'react-icons/fa';
-import { motion } from 'framer-motion';
-import { AiOutlineStar } from 'react-icons/ai';
-import messageService from '../../services/messageService';
-import toast from 'react-hot-toast';
+  FiMail,
+  FiMessageSquare,
+  FiTrendingUp,
+  FiUsers,
+  FiZap,
+} from "react-icons/fi";
+import messageService from "../../services/messageService";
 
 const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [activeProjectType, setActiveProjectType] = useState(0);
   const [formVisible, setFormVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState('');
+  const [submitError, setSubmitError] = useState("");
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    projectType: '',
-    timeline: '',
-    budget: '',
-    description: ''
+    name: "",
+    email: "",
+    projectType: "",
+    timeline: "",
+    budget: "",
+    description: "",
   });
 
-  const projectTypes = [
-    {
-      title: 'ML Solutions',
-      icon: FiTrendingUp,
-      color: 'from-blue-500 to-cyan-600',
-      description: 'Custom ML models & algorithms'
-    },
-    {
-      title: 'AI Integration',
-      icon: FaRobot,
-      color: 'from-purple-500 to-pink-600',
-      description: 'AI-powered applications'
-    },
-    {
-      title: 'Data Pipelines',
-      icon: FiCode,
-      color: 'from-green-500 to-emerald-600',
-      description: 'ETL & data processing'
-    },
-    {
-      title: 'Web Apps',
-      icon: FiZap,
-      color: 'from-orange-500 to-yellow-600',
-      description: 'Full-stack applications'
-    }
-  ];
+  const projectTypes = useMemo(
+    () => [
+      {
+        title: "ML Solutions",
+        icon: FiTrendingUp,
+        color: "from-blue-500 to-cyan-600",
+        description: "Custom ML models & algorithms",
+      },
+      {
+        title: "AI Integration",
+        icon: FaRobot,
+        color: "from-purple-500 to-pink-600",
+        description: "AI-powered applications",
+      },
+      {
+        title: "Data Pipelines",
+        icon: FiCode,
+        color: "from-green-500 to-emerald-600",
+        description: "ETL & data processing",
+      },
+      {
+        title: "Web Apps",
+        icon: FiZap,
+        color: "from-orange-500 to-yellow-600",
+        description: "Full-stack applications",
+      },
+    ],
+    []
+  );
 
   const timelineOptions = [
-    '1-2 weeks',
-    '1 month',
-    '2-3 months',
-    '3-6 months',
-    '6+ months'
+    "1-2 weeks",
+    "1 month",
+    "2-3 months",
+    "3-6 months",
+    "6+ months",
   ];
 
   const budgetRanges = [
-    '$1K - $5K',
-    '$5K - $15K',
-    '$15K - $30K',
-    '$30K - $50K',
-    '$50K+'
+    "$1K - $5K",
+    "$5K - $15K",
+    "$15K - $30K",
+    "$30K - $50K",
+    "$50K+",
   ];
 
   const successStories = [
-    { metric: '50+', label: 'Projects Completed', icon: FiAward },
-    { metric: '95%', label: 'Client Satisfaction', icon: AiOutlineStar },
-    { metric: '30%', label: 'Cost Reduction', icon: FiTrendingUp },
-    { metric: '24/7', label: 'Support', icon: FiUsers }
+    { metric: "50+", label: "Projects Completed", icon: FiAward },
+    { metric: "95%", label: "Client Satisfaction", icon: AiOutlineStar },
+    { metric: "30%", label: "Cost Reduction", icon: FiTrendingUp },
+    { metric: "24/7", label: "Support", icon: FiUsers },
   ];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveProjectType((prev) => (prev + 1) % projectTypes.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
+   useEffect(() => {
+     const interval = setInterval(() => {
+       setActiveProjectType((prev) => (prev + 1) % projectTypes.length);
+     }, 3000);
+     return () => clearInterval(interval);
+   }, [projectTypes.length]);
 
   const validateForm = () => {
     const newErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = "Name is required";
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
+      newErrors.email = "Please enter a valid email";
     }
 
     if (!formData.description.trim()) {
-      newErrors.description = 'Project description is required';
+      newErrors.description = "Project description is required";
     } else if (formData.description.trim().length < 20) {
-      newErrors.description = 'Please provide more details (minimum 20 characters)';
+      newErrors.description =
+        "Please provide more details (minimum 20 characters)";
     }
 
     setErrors(newErrors);
@@ -124,27 +125,27 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
 
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: ''
+        [name]: "",
       }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitError('');
+    setSubmitError("");
     setSubmitSuccess(false);
 
     if (!validateForm()) {
-      toast.error('Please fix the errors in the form');
+      toast.error("Please fix the errors in the form");
       return;
     }
 
@@ -154,28 +155,32 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
       const messageData = {
         full_name: formData.name,
         email: formData.email,
-        subject: formData.projectType ? `Project Inquiry: ${formData.projectType}` : 'Project Inquiry',
+        subject: formData.projectType
+          ? `Project Inquiry: ${formData.projectType}`
+          : "Project Inquiry",
         message: formData.description,
-        message_type: 'project',
+        message_type: "project",
         project_type: formData.projectType || undefined,
         timeline: formData.timeline || undefined,
-        budget_range: formData.budget || undefined
+        budget_range: formData.budget || undefined,
       };
 
       const result = await messageService.send(messageData);
 
       if (result.success) {
         setSubmitSuccess(true);
-        toast.success('Project inquiry submitted successfully! I\'ll get back to you soon.');
+        toast.success(
+          "Project inquiry submitted successfully! I'll get back to you soon."
+        );
 
         // Reset form
         setFormData({
-          name: '',
-          email: '',
-          projectType: '',
-          timeline: '',
-          budget: '',
-          description: ''
+          name: "",
+          email: "",
+          projectType: "",
+          timeline: "",
+          budget: "",
+          description: "",
         });
         setErrors({});
 
@@ -190,12 +195,14 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
           setSubmitSuccess(false);
         }, 2000);
       } else {
-        throw new Error(result.error || 'Failed to submit project inquiry');
+        throw new Error(result.error || "Failed to submit project inquiry");
       }
     } catch (error) {
-      console.error('Error submitting project inquiry:', error);
-      setSubmitError(error.message || 'Failed to submit project inquiry. Please try again.');
-      toast.error('Failed to submit project inquiry. Please try again.');
+      console.error("Error submitting project inquiry:", error);
+      setSubmitError(
+        error.message || "Failed to submit project inquiry. Please try again."
+      );
+      toast.error("Failed to submit project inquiry. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -209,8 +216,9 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: index * 0.1 }}
-        className={`relative cursor-pointer transition-all duration-500 ${isActive ? 'scale-105' : 'scale-95 opacity-70'
-          }`}
+        className={`relative cursor-pointer transition-all duration-500 ${
+          isActive ? "scale-105" : "scale-95 opacity-70"
+        }`}
         onMouseEnter={() => setIsHovered(index)}
         onMouseLeave={() => setIsHovered(null)}
         onClick={() => {
@@ -219,15 +227,25 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
         }}
       >
         {/* Glow Effect */}
-        <div className={`absolute -inset-0.5 bg-gradient-to-r ${project.color} rounded-xl blur-lg opacity-0 ${isActive || isHovered === index ? 'opacity-30' : ''
-          } transition-opacity duration-500`} />
+        <div
+          className={`absolute -inset-0.5 bg-gradient-to-r ${project.color} rounded-xl blur-lg opacity-0 ${
+            isActive || isHovered === index ? "opacity-30" : ""
+          } transition-opacity duration-500`}
+        />
 
         {/* Card */}
-        <div className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${isActive ? 'border-primary-500/50' : 'border-gray-700/50'
-          } rounded-xl p-5 backdrop-blur-sm hover:border-primary-500/30 transition-all duration-300`}>
+        <div
+          className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${
+            isActive ? "border-primary-500/50" : "border-gray-700/50"
+          } rounded-xl p-5 backdrop-blur-sm hover:border-primary-500/30 transition-all duration-300`}
+        >
           <div className="flex items-center gap-4">
-            <div className={`p-3 bg-gradient-to-br ${project.color}/20 rounded-lg`}>
-              <Icon className={`text-2xl bg-gradient-to-r ${project.color} bg-clip-text text-transparent`} />
+            <div
+              className={`p-3 bg-gradient-to-br ${project.color}/20 rounded-lg`}
+            >
+              <Icon
+                className={`text-2xl bg-gradient-to-r ${project.color} bg-clip-text text-transparent`}
+              />
             </div>
             <div>
               <h4 className="font-bold text-white text-lg">{project.title}</h4>
@@ -241,23 +259,27 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
 
   return (
     <section className="relative py-24 overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-900">
-
       {/* Animated Background */}
       <div className="absolute inset-0">
         {/* Gradient Orbs */}
         <div className="absolute top-1/3 left-10 w-96 h-96 bg-gradient-to-br from-primary-600/20 to-blue-600/20 rounded-full blur-3xl animate-float-slow" />
-        <div className="absolute bottom-1/4 right-10 w-80 h-80 bg-gradient-to-tl from-purple-600/20 to-pink-600/20 rounded-full blur-3xl animate-float-slow" style={{ animationDelay: '2s' }} />
+        <div
+          className="absolute bottom-1/4 right-10 w-80 h-80 bg-gradient-to-tl from-purple-600/20 to-pink-600/20 rounded-full blur-3xl animate-float-slow"
+          style={{ animationDelay: "2s" }}
+        />
 
         {/* Floating Code Elements */}
         <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-br from-blue-500/5 to-transparent rounded-lg blur-3xl rotate-45 animate-float-slow" />
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-gradient-to-tl from-green-500/5 to-transparent rounded-lg blur-3xl -rotate-12 animate-float-slow" style={{ animationDelay: '1s' }} />
+        <div
+          className="absolute bottom-20 right-20 w-40 h-40 bg-gradient-to-tl from-green-500/5 to-transparent rounded-lg blur-3xl -rotate-12 animate-float-slow"
+          style={{ animationDelay: "1s" }}
+        />
 
         {/* Code Pattern */}
         <div className="absolute inset-0 opacity-5 bg-[linear-gradient(90deg,#ffffff12_1px,transparent_1px),linear-gradient(180deg,#ffffff12_1px,transparent_1px)] bg-[size:60px_60px]" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-
         {/* Decorative Element */}
         <div className="flex justify-center mb-12">
           <div className="relative">
@@ -274,7 +296,6 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
           transition={{ duration: 0.8 }}
           className="max-w-5xl mx-auto text-center"
         >
-
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500/20 to-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-primary-500/30 mb-8 group hover:border-primary-500/50 transition-all duration-300">
             <AiOutlineStar className="text-primary-300" />
@@ -305,13 +326,16 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
 
           {/* Description */}
           <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed mb-12">
-            From concept to deployment, I'll help you build cutting-edge AI solutions
-            that drive real business value. Let's discuss your project and create something extraordinary.
+            From concept to deployment, I'll help you build cutting-edge AI
+            solutions that drive real business value. Let's discuss your project
+            and create something extraordinary.
           </p>
 
           {/* Project Types */}
           <div className="mb-12">
-            <h3 className="text-2xl font-bold text-white mb-6">Project Types I Work On</h3>
+            <h3 className="text-2xl font-bold text-white mb-6">
+              Project Types I Work On
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
               {projectTypes.map((project, index) => (
                 <ProjectTypeCard
@@ -329,24 +353,38 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
             {successStories.map((story, index) => {
               const Icon = story.icon;
               return (
-                <div
-                  key={index}
-                  className="relative group"
-                >
-                  <div className={`absolute -inset-0.5 bg-gradient-to-r ${index % 2 === 0 ? 'from-primary-500 to-blue-500' : 'from-purple-500 to-pink-500'
-                    } rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-500`} />
+                <div key={index} className="relative group">
+                  <div
+                    className={`absolute -inset-0.5 bg-gradient-to-r ${
+                      index % 2 === 0
+                        ? "from-primary-500 to-blue-500"
+                        : "from-purple-500 to-pink-500"
+                    } rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
+                  />
 
                   <div className="relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6 hover:border-primary-500/30 transition-all duration-300">
                     <div className="flex flex-col items-center gap-3">
-                      <div className={`p-3 bg-gradient-to-br ${index % 2 === 0 ? 'from-primary-500/20 to-blue-500/20' : 'from-purple-500/20 to-pink-500/20'
-                        } rounded-xl`}>
-                        <Icon className={`text-xl ${index % 2 === 0 ? 'text-primary-400' : 'text-purple-400'
-                          }`} />
+                      <div
+                        className={`p-3 bg-gradient-to-br ${
+                          index % 2 === 0
+                            ? "from-primary-500/20 to-blue-500/20"
+                            : "from-purple-500/20 to-pink-500/20"
+                        } rounded-xl`}
+                      >
+                        <Icon
+                          className={`text-xl ${
+                            index % 2 === 0
+                              ? "text-primary-400"
+                              : "text-purple-400"
+                          }`}
+                        />
                       </div>
                       <div className="text-3xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
                         {story.metric}
                       </div>
-                      <div className="text-sm text-gray-500 font-medium">{story.label}</div>
+                      <div className="text-sm text-gray-500 font-medium">
+                        {story.label}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -363,8 +401,11 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
             onMouseLeave={() => setIsHovered(false)}
           >
             {/* Button Glow */}
-            <div className={`absolute -inset-1 bg-gradient-to-r from-primary-500 to-blue-500 rounded-2xl blur transition-all duration-700 ${isHovered ? 'opacity-70' : 'opacity-30'
-              }`} />
+            <div
+              className={`absolute -inset-1 bg-gradient-to-r from-primary-500 to-blue-500 rounded-2xl blur transition-all duration-700 ${
+                isHovered ? "opacity-70" : "opacity-30"
+              }`}
+            />
 
             {/* Main Button */}
             <button
@@ -439,9 +480,12 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
                 <div className="inline-flex p-4 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-full mb-6">
                   <FiCheckCircle className="text-green-400 text-5xl" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-4">Project Inquiry Submitted!</h3>
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  Project Inquiry Submitted!
+                </h3>
                 <p className="text-gray-300 mb-6">
-                  Thank you for your interest! I've received your project details and will get back to you within 24 hours.
+                  Thank you for your interest! I've received your project
+                  details and will get back to you within 24 hours.
                 </p>
                 <button
                   onClick={() => {
@@ -459,8 +503,12 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
                 <div className="p-6 border-b border-gray-700/50">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-2xl font-bold text-white">Start Your Project</h3>
-                      <p className="text-gray-400">Tell me about your idea and let's make it happen</p>
+                      <h3 className="text-2xl font-bold text-white">
+                        Start Your Project
+                      </h3>
+                      <p className="text-gray-400">
+                        Tell me about your idea and let's make it happen
+                      </p>
                     </div>
                     <button
                       onClick={() => setFormVisible(false)}
@@ -497,12 +545,17 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
                           onChange={handleInputChange}
                           required
                           disabled={isSubmitting}
-                          className={`w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border ${errors.name ? 'border-red-500/50' : 'border-gray-700/50'
-                            } text-white rounded-xl focus:border-primary-500/50 focus:outline-none transition-all duration-300 placeholder-gray-500 disabled:opacity-50`}
+                          className={`w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border ${
+                            errors.name
+                              ? "border-red-500/50"
+                              : "border-gray-700/50"
+                          } text-white rounded-xl focus:border-primary-500/50 focus:outline-none transition-all duration-300 placeholder-gray-500 disabled:opacity-50`}
                           placeholder="John Doe"
                         />
                         {errors.name && (
-                          <p className="mt-1 text-sm text-red-400">{errors.name}</p>
+                          <p className="mt-1 text-sm text-red-400">
+                            {errors.name}
+                          </p>
                         )}
                       </div>
                       <div>
@@ -516,12 +569,17 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
                           onChange={handleInputChange}
                           required
                           disabled={isSubmitting}
-                          className={`w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border ${errors.email ? 'border-red-500/50' : 'border-gray-700/50'
-                            } text-white rounded-xl focus:border-primary-500/50 focus:outline-none transition-all duration-300 placeholder-gray-500 disabled:opacity-50`}
+                          className={`w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border ${
+                            errors.email
+                              ? "border-red-500/50"
+                              : "border-gray-700/50"
+                          } text-white rounded-xl focus:border-primary-500/50 focus:outline-none transition-all duration-300 placeholder-gray-500 disabled:opacity-50`}
                           placeholder="john@example.com"
                         />
                         {errors.email && (
-                          <p className="mt-1 text-sm text-red-400">{errors.email}</p>
+                          <p className="mt-1 text-sm text-red-400">
+                            {errors.email}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -538,12 +596,19 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
                             <button
                               key={index}
                               type="button"
-                              onClick={() => !isSubmitting && setFormData({ ...formData, projectType: project.title })}
+                              onClick={() =>
+                                !isSubmitting &&
+                                setFormData({
+                                  ...formData,
+                                  projectType: project.title,
+                                })
+                              }
                               disabled={isSubmitting}
-                              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 disabled:opacity-50 ${formData.projectType === project.title
-                                ? `bg-gradient-to-r ${project.color} text-white`
-                                : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
-                                }`}
+                              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 disabled:opacity-50 ${
+                                formData.projectType === project.title
+                                  ? `bg-gradient-to-r ${project.color} text-white`
+                                  : "bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30"
+                              }`}
                             >
                               <Icon />
                               <span className="text-sm">{project.title}</span>
@@ -568,7 +633,9 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
                         >
                           <option value="">Select timeline</option>
                           {timelineOptions.map((timeline, idx) => (
-                            <option key={idx} value={timeline}>{timeline}</option>
+                            <option key={idx} value={timeline}>
+                              {timeline}
+                            </option>
                           ))}
                         </select>
                       </div>
@@ -585,7 +652,9 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
                         >
                           <option value="">Select budget</option>
                           {budgetRanges.map((budget, idx) => (
-                            <option key={idx} value={budget}>{budget}</option>
+                            <option key={idx} value={budget}>
+                              {budget}
+                            </option>
                           ))}
                         </select>
                       </div>
@@ -603,12 +672,17 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
                         rows="4"
                         required
                         disabled={isSubmitting}
-                        className={`w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border ${errors.description ? 'border-red-500/50' : 'border-gray-700/50'
-                          } text-white rounded-xl focus:border-primary-500/50 focus:outline-none resize-none transition-all duration-300 placeholder-gray-500 disabled:opacity-50`}
+                        className={`w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border ${
+                          errors.description
+                            ? "border-red-500/50"
+                            : "border-gray-700/50"
+                        } text-white rounded-xl focus:border-primary-500/50 focus:outline-none resize-none transition-all duration-300 placeholder-gray-500 disabled:opacity-50`}
                         placeholder="Describe your project in detail..."
                       />
                       {errors.description && (
-                        <p className="mt-1 text-sm text-red-400">{errors.description}</p>
+                        <p className="mt-1 text-sm text-red-400">
+                          {errors.description}
+                        </p>
                       )}
                       <div className="mt-1 text-xs text-gray-500">
                         {formData.description.length}/2000 characters

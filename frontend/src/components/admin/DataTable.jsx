@@ -7,11 +7,9 @@ import {
   FiChevronLeft, 
   FiChevronRight,
   FiSearch,
-  FiFilter,
+
   FiDownload,
   FiEye,
-  FiEdit,
-  FiTrash2
 } from 'react-icons/fi';
 
 const DataTable = ({ 

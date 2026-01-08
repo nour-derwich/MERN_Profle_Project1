@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from "react";
 import {
   FiBook,
   FiBookOpen,
@@ -16,7 +16,7 @@ import { motion } from 'framer-motion';
 
 const FormationsHero = ({ isVisible = true }) => {
   const [activeProgram, setActiveProgram] = useState(0);
-  const [scrollY, setScrollY] = useState(0);
+  const [, setScrollY] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
@@ -25,51 +25,54 @@ const FormationsHero = ({ isVisible = true }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveProgram((prev) => (prev + 1) % programs.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
+   const programs = useMemo(
+     () => [
+       {
+         title: "ML Fundamentals",
+         duration: "8 weeks",
+         level: "Beginner",
+         icon: FiBookOpen,
+         color: "from-green-500 to-emerald-600",
+         students: "2,500+",
+         projects: 4,
+       },
+       {
+         title: "Deep Learning",
+         duration: "12 weeks",
+         level: "Intermediate",
+         icon: FiCode,
+         color: "from-blue-500 to-cyan-600",
+         students: "1,800+",
+         projects: 6,
+       },
+       {
+         title: "Data Science",
+         duration: "10 weeks",
+         level: "Beginner+",
+         icon: FaPython,
+         color: "from-primary-500 to-indigo-600",
+         students: "3,200+",
+         projects: 5,
+       },
+       {
+         title: "AI Engineering",
+         duration: "16 weeks",
+         level: "Advanced",
+         icon: FiBriefcase,
+         color: "from-purple-500 to-pink-600",
+         students: "1,200+",
+         projects: 8,
+       },
+     ],
+     []
+   ); // Empty dependency array means it only creates once
 
-  const programs = [
-    {
-      title: 'ML Fundamentals',
-      duration: '8 weeks',
-      level: 'Beginner',
-      icon: FiBookOpen,
-      color: 'from-green-500 to-emerald-600',
-      students: '2,500+',
-      projects: 4
-    },
-    {
-      title: 'Deep Learning',
-      duration: '12 weeks',
-      level: 'Intermediate',
-      icon: FiCode,
-      color: 'from-blue-500 to-cyan-600',
-      students: '1,800+',
-      projects: 6
-    },
-    {
-      title: 'Data Science',
-      duration: '10 weeks',
-      level: 'Beginner+',
-      icon: FaPython,
-      color: 'from-primary-500 to-indigo-600',
-      students: '3,200+',
-      projects: 5
-    },
-    {
-      title: 'AI Engineering',
-      duration: '16 weeks',
-      level: 'Advanced',
-      icon: FiBriefcase,
-      color: 'from-purple-500 to-pink-600',
-      students: '1,200+',
-      projects: 8
-    }
-  ];
+   useEffect(() => {
+     const interval = setInterval(() => {
+       setActiveProgram((prev) => (prev + 1) % programs.length);
+     }, 4000);
+     return () => clearInterval(interval);
+   }, [programs.length]);
 
   const stats = [
     { value: '10K+', label: 'Students Trained', icon: FiUsers, color: 'from-blue-500 to-cyan-500' },

@@ -1,189 +1,204 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from "react";
+import { FaChartLine } from "react-icons/fa";
 import {
-  FiTool, FiPackage, FiCpu, FiDatabase,
-  FiServer, FiLayers, FiBarChart2, FiGrid,
-  FiZap, FiMonitor, FiCode, FiSettings
-} from 'react-icons/fi';
+  FiBarChart2,
+  FiCpu,
+  FiDatabase,
+  FiGrid,
+  FiLayers,
+  FiPackage,
+  FiServer,
+  FiSettings,
+  FiTool,
+  FiZap,
+} from "react-icons/fi";
 import {
-  SiPytorch, SiTensorflow, SiScikitlearn, SiPandas,
-  SiNumpy, SiJupyter, SiAnaconda, SiDocker,
-  SiKubernetes, SiGit, SiVisualstudiocode, SiPostman
-} from 'react-icons/si';
-import { FaGitAlt, FaDocker, FaChartLine } from 'react-icons/fa';
+  SiAnaconda,
+  SiDocker,
+  SiGit,
+  SiJupyter,
+  SiNumpy,
+  SiPandas,
+  SiPostman,
+  SiPytorch,
+  SiScikitlearn,
+  SiTensorflow,
+  SiVisualstudiocode,
+} from "react-icons/si";
 
 const ToolsLibraries = ({ isVisible }) => {
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeCategory, setActiveCategory] = useState("all");
   const [hoveredTool, setHoveredTool] = useState(null);
 
   const toolsLibraries = [
     // ML/DL Frameworks
     {
       id: 1,
-      name: 'PyTorch',
+      name: "PyTorch",
       level: 92,
-      category: 'ml-frameworks',
+      category: "ml-frameworks",
       icon: SiPytorch,
-      color: 'from-red-500 to-orange-500',
-      description: 'Deep Learning Framework',
-      complexity: 'Advanced',
-      experience: '3+ years',
-      projects: 18
+      color: "from-red-500 to-orange-500",
+      description: "Deep Learning Framework",
+      complexity: "Advanced",
+      experience: "3+ years",
+      projects: 18,
     },
     {
       id: 2,
-      name: 'TensorFlow',
+      name: "TensorFlow",
       level: 85,
-      category: 'ml-frameworks',
+      category: "ml-frameworks",
       icon: SiTensorflow,
-      color: 'from-orange-500 to-yellow-500',
-      description: 'ML Framework',
-      complexity: 'Advanced',
-      experience: '2+ years',
-      projects: 12
+      color: "from-orange-500 to-yellow-500",
+      description: "ML Framework",
+      complexity: "Advanced",
+      experience: "2+ years",
+      projects: 12,
     },
     {
       id: 3,
-      name: 'Scikit-learn',
+      name: "Scikit-learn",
       level: 95,
-      category: 'ml-frameworks',
+      category: "ml-frameworks",
       icon: SiScikitlearn,
-      color: 'from-blue-500 to-teal-500',
-      description: 'ML Library',
-      complexity: 'Expert',
-      experience: '4+ years',
-      projects: 25
+      color: "from-blue-500 to-teal-500",
+      description: "ML Library",
+      complexity: "Expert",
+      experience: "4+ years",
+      projects: 25,
     },
 
     // Data Science
     {
       id: 4,
-      name: 'Pandas',
+      name: "Pandas",
       level: 90,
-      category: 'data-science',
+      category: "data-science",
       icon: SiPandas,
-      color: 'from-purple-500 to-pink-500',
-      description: 'Data Analysis',
-      complexity: 'Expert',
-      experience: '4+ years',
-      projects: 30
+      color: "from-purple-500 to-pink-500",
+      description: "Data Analysis",
+      complexity: "Expert",
+      experience: "4+ years",
+      projects: 30,
     },
     {
       id: 5,
-      name: 'NumPy',
+      name: "NumPy",
       level: 90,
-      category: 'data-science',
+      category: "data-science",
       icon: SiNumpy,
-      color: 'from-green-500 to-emerald-500',
-      description: 'Numerical Computing',
-      complexity: 'Expert',
-      experience: '4+ years',
-      projects: 28
+      color: "from-green-500 to-emerald-500",
+      description: "Numerical Computing",
+      complexity: "Expert",
+      experience: "4+ years",
+      projects: 28,
     },
     {
       id: 6,
-      name: 'Matplotlib',
+      name: "Matplotlib",
       level: 85,
-      category: 'data-science',
+      category: "data-science",
       icon: FaChartLine,
-      color: 'from-blue-600 to-indigo-600',
-      description: 'Data Visualization',
-      complexity: 'Advanced',
-      experience: '3+ years',
-      projects: 20
+      color: "from-blue-600 to-indigo-600",
+      description: "Data Visualization",
+      complexity: "Advanced",
+      experience: "3+ years",
+      projects: 20,
     },
 
     // Development Tools
     {
       id: 7,
-      name: 'Jupyter',
+      name: "Jupyter",
       level: 88,
-      category: 'dev-tools',
+      category: "dev-tools",
       icon: SiJupyter,
-      color: 'from-orange-600 to-red-600',
-      description: 'Notebook Environment',
-      complexity: 'Advanced',
-      experience: '3+ years',
-      projects: 22
+      color: "from-orange-600 to-red-600",
+      description: "Notebook Environment",
+      complexity: "Advanced",
+      experience: "3+ years",
+      projects: 22,
     },
     {
       id: 8,
-      name: 'Docker',
+      name: "Docker",
       level: 82,
-      category: 'dev-tools',
+      category: "dev-tools",
       icon: SiDocker,
-      color: 'from-blue-400 to-cyan-400',
-      description: 'Containerization',
-      complexity: 'Intermediate',
-      experience: '2+ years',
-      projects: 15
+      color: "from-blue-400 to-cyan-400",
+      description: "Containerization",
+      complexity: "Intermediate",
+      experience: "2+ years",
+      projects: 15,
     },
     {
       id: 9,
-      name: 'Git',
+      name: "Git",
       level: 88,
-      category: 'dev-tools',
+      category: "dev-tools",
       icon: SiGit,
-      color: 'from-orange-500 to-red-500',
-      description: 'Version Control',
-      complexity: 'Expert',
-      experience: '4+ years',
-      projects: 35
+      color: "from-orange-500 to-red-500",
+      description: "Version Control",
+      complexity: "Expert",
+      experience: "4+ years",
+      projects: 35,
     },
     {
       id: 10,
-      name: 'VS Code',
+      name: "VS Code",
       level: 92,
-      category: 'dev-tools',
+      category: "dev-tools",
       icon: SiVisualstudiocode,
-      color: 'from-blue-500 to-purple-500',
-      description: 'Code Editor',
-      complexity: 'Expert',
-      experience: '4+ years',
-      projects: 40
+      color: "from-blue-500 to-purple-500",
+      description: "Code Editor",
+      complexity: "Expert",
+      experience: "4+ years",
+      projects: 40,
     },
 
     // Other Tools
     {
       id: 11,
-      name: 'Anaconda',
+      name: "Anaconda",
       level: 87,
-      category: 'other',
+      category: "other",
       icon: SiAnaconda,
-      color: 'from-green-600 to-teal-600',
-      description: 'Python Distribution',
-      complexity: 'Advanced',
-      experience: '3+ years',
-      projects: 20
+      color: "from-green-600 to-teal-600",
+      description: "Python Distribution",
+      complexity: "Advanced",
+      experience: "3+ years",
+      projects: 20,
     },
     {
       id: 12,
-      name: 'Postman',
+      name: "Postman",
       level: 85,
-      category: 'other',
+      category: "other",
       icon: SiPostman,
-      color: 'from-orange-500 to-red-500',
-      description: 'API Testing',
-      complexity: 'Advanced',
-      experience: '2+ years',
-      projects: 18
-    }
+      color: "from-orange-500 to-red-500",
+      description: "API Testing",
+      complexity: "Advanced",
+      experience: "2+ years",
+      projects: 18,
+    },
   ];
 
   const categories = [
-    { id: 'all', label: 'All Tools', count: 12, icon: FiGrid },
-    { id: 'ml-frameworks', label: 'ML Frameworks', count: 3, icon: FiCpu },
-    { id: 'data-science', label: 'Data Science', count: 3, icon: FiBarChart2 },
-    { id: 'dev-tools', label: 'Dev Tools', count: 4, icon: FiTool },
-    { id: 'other', label: 'Other', count: 2, icon: FiSettings }
+    { id: "all", label: "All Tools", count: 12, icon: FiGrid },
+    { id: "ml-frameworks", label: "ML Frameworks", count: 3, icon: FiCpu },
+    { id: "data-science", label: "Data Science", count: 3, icon: FiBarChart2 },
+    { id: "dev-tools", label: "Dev Tools", count: 4, icon: FiTool },
+    { id: "other", label: "Other", count: 2, icon: FiSettings },
   ];
 
-  const filteredTools = activeCategory === 'all'
-    ? toolsLibraries
-    : toolsLibraries.filter(tool => tool.category === activeCategory);
+  const filteredTools =
+    activeCategory === "all"
+      ? toolsLibraries
+      : toolsLibraries.filter((tool) => tool.category === activeCategory);
 
   return (
     <section className="relative py-24 bg-gradient-to-b from-black to-gray-900 overflow-hidden">
-
       {/* Background Elements */}
       <div className="absolute inset-0">
         {/* Grid Pattern */}
@@ -191,13 +206,23 @@ const ToolsLibraries = ({ isVisible }) => {
 
         {/* Floating Tools */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-primary-500/5 to-transparent rounded-full blur-3xl animate-float-slow" />
-        <div className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-gradient-to-tl from-blue-500/5 to-transparent rounded-full blur-3xl animate-float-slow" style={{ animationDelay: '2s' }} />
+        <div
+          className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-gradient-to-tl from-blue-500/5 to-transparent rounded-full blur-3xl animate-float-slow"
+          style={{ animationDelay: "2s" }}
+        />
       </div>
 
       {/* Animated Tool Icons */}
       <div className="absolute inset-0 overflow-hidden opacity-10">
         {Array.from({ length: 12 }).map((_, i) => {
-          const icons = [FiTool, FiPackage, FiCpu, FiDatabase, FiServer, FiLayers];
+          const icons = [
+            FiTool,
+            FiPackage,
+            FiCpu,
+            FiDatabase,
+            FiServer,
+            FiLayers,
+          ];
           const Icon = icons[i % icons.length];
           return (
             <div
@@ -207,7 +232,7 @@ const ToolsLibraries = ({ isVisible }) => {
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
                 animationDelay: `${Math.random() * 5}s`,
-                animationDuration: `${10 + Math.random() * 10}s`
+                animationDuration: `${10 + Math.random() * 10}s`,
               }}
             >
               <Icon className="text-primary-400/30 text-2xl" />
@@ -217,12 +242,13 @@ const ToolsLibraries = ({ isVisible }) => {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500/20 to-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-primary-500/30 mb-6">
             <FiTool className="text-primary-300" />
-            <span className="text-primary-200 font-medium tracking-wider">TECHNICAL TOOLKIT</span>
+            <span className="text-primary-200 font-medium tracking-wider">
+              TECHNICAL TOOLKIT
+            </span>
           </div>
 
           <h2 className="text-5xl md:text-6xl font-bold mb-6">
@@ -234,8 +260,8 @@ const ToolsLibraries = ({ isVisible }) => {
           </h2>
 
           <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Mastering a comprehensive suite of tools and libraries that power modern
-            AI development, from data analysis to deployment.
+            Mastering a comprehensive suite of tools and libraries that power
+            modern AI development, from data analysis to deployment.
           </p>
         </div>
 
@@ -247,19 +273,36 @@ const ToolsLibraries = ({ isVisible }) => {
               <button
                 key={category.id}
                 onClick={() => setActiveCategory(category.id)}
-                className={`group relative px-5 py-3 rounded-xl backdrop-blur-sm transition-all duration-300 flex items-center gap-2 ${activeCategory === category.id
-                    ? 'bg-gradient-to-r from-primary-500 to-blue-600 text-white'
-                    : 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30'
-                  }`}
+                className={`group relative px-5 py-3 rounded-xl backdrop-blur-sm transition-all duration-300 flex items-center gap-2 ${
+                  activeCategory === category.id
+                    ? "bg-gradient-to-r from-primary-500 to-blue-600 text-white"
+                    : "bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30"
+                }`}
               >
-                <Icon className={activeCategory === category.id ? 'text-white' : 'text-gray-500'} />
+                <Icon
+                  className={
+                    activeCategory === category.id
+                      ? "text-white"
+                      : "text-gray-500"
+                  }
+                />
                 <span className="font-semibold">{category.label}</span>
-                <span className={`ml-1 text-sm ${activeCategory === category.id ? 'text-white/80' : 'text-gray-500'
-                  }`}>
+                <span
+                  className={`ml-1 text-sm ${
+                    activeCategory === category.id
+                      ? "text-white/80"
+                      : "text-gray-500"
+                  }`}
+                >
                   ({category.count})
                 </span>
-                <div className={`absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 ${activeCategory === category.id ? 'opacity-20' : 'group-hover:opacity-10'
-                  } transition-opacity duration-500`} />
+                <div
+                  className={`absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 ${
+                    activeCategory === category.id
+                      ? "opacity-20"
+                      : "group-hover:opacity-10"
+                  } transition-opacity duration-500`}
+                />
               </button>
             );
           })}
@@ -279,19 +322,32 @@ const ToolsLibraries = ({ isVisible }) => {
                 onMouseLeave={() => setHoveredTool(null)}
               >
                 {/* Glow Effect */}
-                <div className={`absolute -inset-0.5 bg-gradient-to-r ${tool.color} rounded-3xl blur opacity-0 ${isHovered ? 'opacity-30' : 'group-hover:opacity-20'
-                  } transition-opacity duration-500`} />
+                <div
+                  className={`absolute -inset-0.5 bg-gradient-to-r ${tool.color} rounded-3xl blur opacity-0 ${
+                    isHovered ? "opacity-30" : "group-hover:opacity-20"
+                  } transition-opacity duration-500`}
+                />
 
                 {/* Main Card */}
-                <div className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${isHovered ? 'border-primary-500/50' : 'border-gray-700/50'
-                  } rounded-3xl p-6 backdrop-blur-sm transition-all duration-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-                  } ${isHovered ? 'scale-105' : 'group-hover:scale-102'}`}
-                  style={{ transitionDelay: `${index * 50}ms` }}>
-
+                <div
+                  className={`relative bg-gradient-to-br from-gray-800 to-gray-900 border ${
+                    isHovered ? "border-primary-500/50" : "border-gray-700/50"
+                  } rounded-3xl p-6 backdrop-blur-sm transition-all duration-300 ${
+                    isVisible
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-10"
+                  } ${isHovered ? "scale-105" : "group-hover:scale-102"}`}
+                  style={{ transitionDelay: `${index * 50}ms` }}
+                >
                   {/* Icon & Level */}
                   <div className="flex items-start justify-between mb-4">
-                    <div className={`p-3 bg-gradient-to-br ${tool.color}/20 rounded-xl transform ${isHovered ? 'rotate-12 scale-110' : 'group-hover:scale-110'
-                      } transition-all duration-300`}>
+                    <div
+                      className={`p-3 bg-gradient-to-br ${tool.color}/20 rounded-xl transform ${
+                        isHovered
+                          ? "rotate-12 scale-110"
+                          : "group-hover:scale-110"
+                      } transition-all duration-300`}
+                    >
                       <Icon className="text-2xl text-white" />
                     </div>
 
@@ -299,7 +355,9 @@ const ToolsLibraries = ({ isVisible }) => {
                       <div className="text-2xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
                         {tool.level}%
                       </div>
-                      <div className="text-xs text-gray-500">{tool.complexity}</div>
+                      <div className="text-xs text-gray-500">
+                        {tool.complexity}
+                      </div>
                     </div>
                   </div>
 
@@ -336,8 +394,10 @@ const ToolsLibraries = ({ isVisible }) => {
                         strokeDashoffset={`${2 * Math.PI * 36 * (1 - tool.level / 100)}`}
                         className="transition-all duration-1000 ease-out"
                         style={{
-                          strokeDashoffset: isVisible ? `${2 * Math.PI * 36 * (1 - tool.level / 100)}` : `${2 * Math.PI * 36}`,
-                          transitionDelay: `${200 + index * 50}ms`
+                          strokeDashoffset: isVisible
+                            ? `${2 * Math.PI * 36 * (1 - tool.level / 100)}`
+                            : `${2 * Math.PI * 36}`,
+                          transitionDelay: `${200 + index * 50}ms`,
                         }}
                         strokeLinecap="round"
                       />
@@ -353,25 +413,30 @@ const ToolsLibraries = ({ isVisible }) => {
                           <stop
                             offset="0%"
                             className={
-                              tool.color?.split(' ').find(c => c.startsWith('from-'))?.replace('from-', '')
-                              || 'gray-400'
+                              tool.color
+                                ?.split(" ")
+                                .find((c) => c.startsWith("from-"))
+                                ?.replace("from-", "") || "gray-400"
                             }
                           />
                           <stop
                             offset="100%"
                             className={
-                              tool.color?.split(' ').find(c => c.startsWith('to-'))?.replace('to-', '')
-                              || 'gray-600'
+                              tool.color
+                                ?.split(" ")
+                                .find((c) => c.startsWith("to-"))
+                                ?.replace("to-", "") || "gray-600"
                             }
                           />
                         </linearGradient>
                       </defs>
-
                     </svg>
 
                     {/* Center Text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <div className="text-sm font-bold text-white">{tool.level}%</div>
+                      <div className="text-sm font-bold text-white">
+                        {tool.level}%
+                      </div>
                     </div>
                   </div>
 
@@ -389,8 +454,11 @@ const ToolsLibraries = ({ isVisible }) => {
                 </div>
 
                 {/* Hover Effect Line */}
-                <div className={`absolute -bottom-2 left-1/4 right-1/4 h-0.5 bg-gradient-to-r ${tool.color} rounded-full transform ${isHovered ? 'scale-x-100' : 'scale-x-0'
-                  } transition-transform duration-300`} />
+                <div
+                  className={`absolute -bottom-2 left-1/4 right-1/4 h-0.5 bg-gradient-to-r ${tool.color} rounded-full transform ${
+                    isHovered ? "scale-x-100" : "scale-x-0"
+                  } transition-transform duration-300`}
+                />
               </div>
             );
           })}
@@ -398,22 +466,34 @@ const ToolsLibraries = ({ isVisible }) => {
 
         {/* Category Stats */}
         <div className="mt-12 bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6">
-          <h4 className="text-lg font-bold text-white mb-4 text-center">Tool Proficiency Distribution</h4>
+          <h4 className="text-lg font-bold text-white mb-4 text-center">
+            Tool Proficiency Distribution
+          </h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {categories.filter(c => c.id !== 'all').map((category) => {
-              const categoryTools = toolsLibraries.filter(t => t.category === category.id);
-              const avgLevel = categoryTools.reduce((sum, tool) => sum + tool.level, 0) / categoryTools.length;
+            {categories
+              .filter((c) => c.id !== "all")
+              .map((category) => {
+                const categoryTools = toolsLibraries.filter(
+                  (t) => t.category === category.id
+                );
+                const avgLevel =
+                  categoryTools.reduce((sum, tool) => sum + tool.level, 0) /
+                  categoryTools.length;
 
-              return (
-                <div key={category.id} className="text-center p-4">
-                  <div className="text-3xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent mb-1">
-                    {Math.round(avgLevel)}%
+                return (
+                  <div key={category.id} className="text-center p-4">
+                    <div className="text-3xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent mb-1">
+                      {Math.round(avgLevel)}%
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      {category.label}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {categoryTools.length} tools
+                    </div>
                   </div>
-                  <div className="text-sm text-gray-400">{category.label}</div>
-                  <div className="text-xs text-gray-500">{categoryTools.length} tools</div>
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
         </div>
       </div>

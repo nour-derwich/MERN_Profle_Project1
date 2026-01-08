@@ -1,32 +1,47 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { FaTelegramPlane, FaWhatsapp } from "react-icons/fa";
 import {
-  FiMail, FiPhone, FiMapPin, FiSend, FiUser, FiMessageSquare,
-  FiCheckCircle, FiClock, FiGlobe, FiLinkedin, FiGithub,
-  FiTwitter, FiCalendar, FiArrowRight, FiChevronRight,
-  FiZap, FiTerminal, FiTarget, FiLoader, FiAlertCircle
-} from 'react-icons/fi';
-import { FaWhatsapp, FaTelegramPlane } from 'react-icons/fa';
-import messageService from '../../services/messageService';
-import toast from 'react-hot-toast';
+  FiArrowRight,
+  FiCalendar,
+  FiCheckCircle,
+  FiChevronRight,
+  FiClock,
+  FiGithub,
+  FiGlobe,
+  FiLinkedin,
+  FiLoader,
+  FiMail,
+  FiMapPin,
+  FiMessageSquare,
+  FiPhone,
+  FiSend,
+  FiTarget,
+  FiTerminal,
+  FiTwitter,
+  FiUser,
+  FiZap,
+} from "react-icons/fi";
+import messageService from "../../services/messageService";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    subject: '',
-    message: ''
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [activeMethod, setActiveMethod] = useState('email');
-  const [hoveredLink, setHoveredLink] = useState(null);
+  const [activeMethod, setActiveMethod] = useState("email");
+  const [, setHoveredLink] = useState(null);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     // Add binary code animation
-    const binaryElements = document.querySelectorAll('.binary-fall');
-    binaryElements.forEach(el => {
+    const binaryElements = document.querySelectorAll(".binary-fall");
+    binaryElements.forEach((el) => {
       el.style.animationDelay = `${Math.random() * 5}s`;
     });
   }, []);
@@ -35,23 +50,23 @@ const Contact = () => {
     const newErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = "Name is required";
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
+      newErrors.email = "Please enter a valid email";
     }
 
     if (!formData.subject) {
-      newErrors.subject = 'Subject is required';
+      newErrors.subject = "Subject is required";
     }
 
     if (!formData.message.trim()) {
-      newErrors.message = 'Message is required';
+      newErrors.message = "Message is required";
     } else if (formData.message.trim().length < 10) {
-      newErrors.message = 'Message must be at least 10 characters';
+      newErrors.message = "Message must be at least 10 characters";
     }
 
     setErrors(newErrors);
@@ -64,9 +79,9 @@ const Contact = () => {
 
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: ''
+        [name]: "",
       }));
     }
   };
@@ -75,7 +90,7 @@ const Contact = () => {
     e.preventDefault();
 
     if (!validateForm()) {
-      toast.error('Please fix the errors in the form');
+      toast.error("Please fix the errors in the form");
       return;
     }
 
@@ -87,34 +102,34 @@ const Contact = () => {
         email: formData.email,
         subject: formData.subject,
         message: formData.message,
-        message_type: 'contact',
-        phone: formData.phone || undefined
+        message_type: "contact",
+        phone: formData.phone || undefined,
       };
 
       const result = await messageService.send(messageData);
 
       if (result.success) {
         setIsSubmitted(true);
-        toast.success('Message sent successfully! I\'ll get back to you soon.');
+        toast.success("Message sent successfully! I'll get back to you soon.");
 
         // Reset form
         setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          subject: '',
-          message: ''
+          name: "",
+          email: "",
+          phone: "",
+          subject: "",
+          message: "",
         });
         setErrors({});
 
         // Reset success message after 5 seconds
         setTimeout(() => setIsSubmitted(false), 5000);
       } else {
-        throw new Error(result.error || 'Failed to send message');
+        throw new Error(result.error || "Failed to send message");
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
-      toast.error('Failed to send message. Please try again.');
+      console.error("Error submitting form:", error);
+      toast.error("Failed to send message. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -123,113 +138,127 @@ const Contact = () => {
   // Contact Methods
   const contactMethods = [
     {
-      id: 'email',
+      id: "email",
       icon: FiMail,
-      title: 'Email',
-      value: 'naceur.keraani@gmail.com',
-      gradient: 'from-blue-500 to-cyan-500',
-      delay: '24h',
-      description: 'Detailed discussions',
-      link: 'mailto:naceur.keraani@gmail.com'
+      title: "Email",
+      value: "naceur.keraani@gmail.com",
+      gradient: "from-blue-500 to-cyan-500",
+      delay: "24h",
+      description: "Detailed discussions",
+      link: "mailto:naceur.keraani@gmail.com",
     },
     {
-      id: 'whatsapp',
+      id: "whatsapp",
       icon: FaWhatsapp,
-      title: 'WhatsApp',
-      value: '+216 95 88 17 09',
-      gradient: 'from-green-500 to-emerald-500',
-      delay: 'Instant',
-      description: 'Quick conversations',
-      link: 'https://api.whatsapp.com/send?phone=0021695881709&text=Hello, I\'d like to discuss a project'
+      title: "WhatsApp",
+      value: "+216 95 88 17 09",
+      gradient: "from-green-500 to-emerald-500",
+      delay: "Instant",
+      description: "Quick conversations",
+      link: "https://api.whatsapp.com/send?phone=0021695881709&text=Hello, I'd like to discuss a project",
     },
     {
-      id: 'telegram',
+      id: "telegram",
       icon: FaTelegramPlane,
-      title: 'Telegram',
-      value: '@naceur_keraani',
-      gradient: 'from-sky-500 to-blue-500',
-      delay: 'Instant',
-      description: 'File sharing available',
-      link: 'https://t.me/naceur_keraani'
+      title: "Telegram",
+      value: "@naceur_keraani",
+      gradient: "from-sky-500 to-blue-500",
+      delay: "Instant",
+      description: "File sharing available",
+      link: "https://t.me/naceur_keraani",
     },
     {
-      id: 'location',
+      id: "location",
       icon: FiMapPin,
-      title: 'Location',
-      value: 'Tunis, Tunisia',
-      gradient: 'from-purple-500 to-pink-500',
-      delay: 'Remote',
-      description: 'Available worldwide',
-      link: 'https://maps.google.com/?q=Tunis,Tunisia'
-    }
+      title: "Location",
+      value: "Tunis, Tunisia",
+      gradient: "from-purple-500 to-pink-500",
+      delay: "Remote",
+      description: "Available worldwide",
+      link: "https://maps.google.com/?q=Tunis,Tunisia",
+    },
   ];
 
   // Quick Actions
   const quickActions = [
     {
-      title: 'AI/ML Project Consultation',
-      description: 'Discuss your AI project requirements',
+      title: "AI/ML Project Consultation",
+      description: "Discuss your AI project requirements",
       icon: FiTerminal,
-      button: 'Schedule a Call',
-      link: 'https://calendly.com/naceurkeraani/30min',
-      gradient: 'from-blue-500 to-cyan-500'
+      button: "Schedule a Call",
+      link: "https://calendly.com/naceurkeraani/30min",
+      gradient: "from-blue-500 to-cyan-500",
     },
     {
-      title: 'Training Program Inquiry',
-      description: 'Learn about our ML training programs',
+      title: "Training Program Inquiry",
+      description: "Learn about our ML training programs",
       icon: FiTarget,
-      button: 'View Programs',
-      link: '/formations',
-      gradient: 'from-purple-500 to-pink-500'
+      button: "View Programs",
+      link: "/formations",
+      gradient: "from-purple-500 to-pink-500",
     },
     {
-      title: 'Quick Question',
-      description: 'Send me a direct message',
+      title: "Quick Question",
+      description: "Send me a direct message",
       icon: FiZap,
-      button: 'DM on WhatsApp',
-      link: 'https://api.whatsapp.com/send?phone=0021695881709',
-      gradient: 'from-green-500 to-emerald-500'
-    }
+      button: "DM on WhatsApp",
+      link: "https://api.whatsapp.com/send?phone=0021695881709",
+      gradient: "from-green-500 to-emerald-500",
+    },
   ];
 
   // Social Links
   const socialLinks = [
     {
       icon: FiLinkedin,
-      url: 'https://linkedin.com/in/keraani-naceur-49523a175/',
-      label: 'LinkedIn',
-      gradient: 'from-blue-500 to-blue-700'
+      url: "https://linkedin.com/in/keraani-naceur-49523a175/",
+      label: "LinkedIn",
+      gradient: "from-blue-500 to-blue-700",
     },
     {
       icon: FiGithub,
-      url: 'https://github.com/naceur-keraani',
-      label: 'GitHub',
-      gradient: 'from-gray-800 to-black'
+      url: "https://github.com/naceur-keraani",
+      label: "GitHub",
+      gradient: "from-gray-800 to-black",
     },
     {
       icon: FiTwitter,
-      url: 'https://twitter.com',
-      label: 'Twitter',
-      gradient: 'from-sky-500 to-blue-500'
+      url: "https://twitter.com",
+      label: "Twitter",
+      gradient: "from-sky-500 to-blue-500",
     },
     {
       icon: FaWhatsapp,
-      url: 'https://api.whatsapp.com/send?phone=0021695881709',
-      label: 'WhatsApp',
-      gradient: 'from-green-500 to-emerald-600'
-    }
+      url: "https://api.whatsapp.com/send?phone=0021695881709",
+      label: "WhatsApp",
+      gradient: "from-green-500 to-emerald-600",
+    },
   ];
 
   // Stats
   const stats = [
-    { label: 'Response Rate', value: '100%', icon: FiCheckCircle, color: 'from-green-400 to-emerald-400' },
-    { label: 'Max Response Time', value: '24h', icon: FiClock, color: 'from-blue-400 to-cyan-400' },
-    { label: 'Availability', value: 'Global', icon: FiGlobe, color: 'from-purple-400 to-pink-400' }
+    {
+      label: "Response Rate",
+      value: "100%",
+      icon: FiCheckCircle,
+      color: "from-green-400 to-emerald-400",
+    },
+    {
+      label: "Max Response Time",
+      value: "24h",
+      icon: FiClock,
+      color: "from-blue-400 to-cyan-400",
+    },
+    {
+      label: "Availability",
+      value: "Global",
+      icon: FiGlobe,
+      color: "from-purple-400 to-pink-400",
+    },
   ];
 
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 overflow-hidden">
-
       {/* Animated Background */}
       <div className="absolute inset-0">
         {/* Gradient Mesh */}
@@ -248,7 +277,7 @@ const Contact = () => {
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
                 animationDelay: `${Math.random() * 5}s`,
-                animationDuration: `${5 + Math.random() * 10}s`
+                animationDuration: `${5 + Math.random() * 10}s`,
               }}
             />
           ))}
@@ -263,10 +292,10 @@ const Contact = () => {
               style={{
                 left: `${Math.random() * 100}%`,
                 animationDelay: `${Math.random() * 10}s`,
-                animationDuration: `${15 + Math.random() * 15}s`
+                animationDuration: `${15 + Math.random() * 15}s`,
               }}
             >
-              {Math.random() > 0.5 ? '1101001' : '0010110'}
+              {Math.random() > 0.5 ? "1101001" : "0010110"}
             </div>
           ))}
         </div>
@@ -281,7 +310,9 @@ const Contact = () => {
           <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-primary-500/20 to-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-primary-500/30 mb-6">
               <FiMail className="text-primary-300" />
-              <span className="text-primary-200 font-medium tracking-wider">GET IN TOUCH</span>
+              <span className="text-primary-200 font-medium tracking-wider">
+                GET IN TOUCH
+              </span>
             </div>
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
               Let's Build
@@ -301,7 +332,6 @@ const Contact = () => {
       <section className="relative py-10">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-3 gap-8">
-
             {/* Left Column - Contact Methods */}
             <div className="lg:col-span-1 space-y-6">
               {/* Contact Methods Cards */}
@@ -319,25 +349,40 @@ const Contact = () => {
                       <button
                         key={index}
                         onClick={() => setActiveMethod(method.id)}
-                        className={`group relative p-4 rounded-xl backdrop-blur-sm transition-all duration-300 ${isActive
-                          ? 'bg-gradient-to-br from-gray-800 to-gray-900 border border-primary-500/50'
-                          : 'bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 hover:border-primary-500/30'
-                          }`}
+                        className={`group relative p-4 rounded-xl backdrop-blur-sm transition-all duration-300 ${
+                          isActive
+                            ? "bg-gradient-to-br from-gray-800 to-gray-900 border border-primary-500/50"
+                            : "bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 hover:border-primary-500/30"
+                        }`}
                       >
-                        <div className={`absolute inset-0 bg-gradient-to-r ${method.gradient} rounded-xl opacity-0 ${isActive ? 'opacity-10' : 'group-hover:opacity-5'
-                          } transition-opacity duration-300`} />
+                        <div
+                          className={`absolute inset-0 bg-gradient-to-r ${method.gradient} rounded-xl opacity-0 ${
+                            isActive ? "opacity-10" : "group-hover:opacity-5"
+                          } transition-opacity duration-300`}
+                        />
 
                         <div className="relative z-10">
-                          <div className={`inline-flex p-2 rounded-lg mb-3 ${isActive ? `bg-gradient-to-r ${method.gradient}` : 'bg-gray-800'
-                            }`}>
-                            <Icon className={`text-lg ${isActive ? 'text-white' : 'text-gray-400'}`} />
+                          <div
+                            className={`inline-flex p-2 rounded-lg mb-3 ${
+                              isActive
+                                ? `bg-gradient-to-r ${method.gradient}`
+                                : "bg-gray-800"
+                            }`}
+                          >
+                            <Icon
+                              className={`text-lg ${isActive ? "text-white" : "text-gray-400"}`}
+                            />
                           </div>
 
-                          <h4 className={`text-sm font-bold mb-1 ${isActive ? 'text-white' : 'text-gray-300'}`}>
+                          <h4
+                            className={`text-sm font-bold mb-1 ${isActive ? "text-white" : "text-gray-300"}`}
+                          >
                             {method.title}
                           </h4>
 
-                          <div className={`text-xs ${isActive ? 'text-gray-300' : 'text-gray-500'}`}>
+                          <div
+                            className={`text-xs ${isActive ? "text-gray-300" : "text-gray-500"}`}
+                          >
                             {method.value}
                           </div>
                         </div>
@@ -350,40 +395,60 @@ const Contact = () => {
               {/* Active Contact Details */}
               <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-white">Contact Details</h3>
+                  <h3 className="text-lg font-bold text-white">
+                    Contact Details
+                  </h3>
                   <div className="px-3 py-1 bg-gradient-to-r from-primary-500/20 to-blue-500/20 text-primary-300 text-sm font-semibold rounded-full">
-                    {contactMethods.find(m => m.id === activeMethod)?.delay}
+                    {contactMethods.find((m) => m.id === activeMethod)?.delay}
                   </div>
                 </div>
 
                 <div className="space-y-4">
                   {contactMethods
-                    .filter(m => m.id === activeMethod)
-                    .map(method => {
+                    .filter((m) => m.id === activeMethod)
+                    .map((method) => {
                       const Icon = method.icon;
                       return (
                         <div key={method.id} className="space-y-3">
                           <div className="flex items-center gap-3">
-                            <div className={`p-3 bg-gradient-to-r ${method.gradient} rounded-xl`}>
+                            <div
+                              className={`p-3 bg-gradient-to-r ${method.gradient} rounded-xl`}
+                            >
                               <Icon className="text-white text-xl" />
                             </div>
                             <div>
-                              <div className="text-white font-bold">{method.title}</div>
-                              <div className="text-gray-300 text-sm">{method.value}</div>
+                              <div className="text-white font-bold">
+                                {method.title}
+                              </div>
+                              <div className="text-gray-300 text-sm">
+                                {method.value}
+                              </div>
                             </div>
                           </div>
 
                           <a
                             href={method.link}
-                            target={method.id !== 'email' && method.id !== 'location' ? '_blank' : '_self'}
-                            rel={method.id !== 'email' && method.id !== 'location' ? 'noopener noreferrer' : ''}
+                            target={
+                              method.id !== "email" && method.id !== "location"
+                                ? "_blank"
+                                : "_self"
+                            }
+                            rel={
+                              method.id !== "email" && method.id !== "location"
+                                ? "noopener noreferrer"
+                                : ""
+                            }
                             className="block group"
                           >
                             <button className="w-full group relative bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-700/50 text-gray-300 py-3 rounded-xl font-semibold hover:text-white hover:border-primary-500/30 transition-all duration-300 flex items-center justify-center gap-2">
                               <span>
-                                {method.id === 'email' ? 'Send Email' :
-                                  method.id === 'whatsapp' ? 'Open WhatsApp' :
-                                    method.id === 'telegram' ? 'Open Telegram' : 'View Location'}
+                                {method.id === "email"
+                                  ? "Send Email"
+                                  : method.id === "whatsapp"
+                                    ? "Open WhatsApp"
+                                    : method.id === "telegram"
+                                      ? "Open Telegram"
+                                      : "View Location"}
                               </span>
                               <FiChevronRight className="group-hover:translate-x-1 transition-transform" />
                             </button>
@@ -401,16 +466,26 @@ const Contact = () => {
               {/* Stats */}
               <div className="grid grid-cols-3 gap-3">
                 {stats.map((stat, index) => {
-                  const Icon = stat.icon;
+                  const Icon = stat.icon; // Now this will be used
                   return (
                     <div
                       key={index}
                       className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-3 text-center group hover:border-primary-500/30 transition-all duration-300"
                     >
-                      <div className={`text-lg font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-1 group-hover:scale-110 transition-transform duration-300`}>
+                      {/* Add the icon here */}
+                      <div className="flex justify-center mb-2">
+                        <Icon
+                          className={`text-lg ${stat.color.includes("green") ? "text-green-400" : stat.color.includes("blue") ? "text-blue-400" : "text-purple-400"}`}
+                        />
+                      </div>
+                      <div
+                        className={`text-lg font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-1 group-hover:scale-110 transition-transform duration-300`}
+                      >
                         {stat.value}
                       </div>
-                      <div className="text-xs text-gray-500 group-hover:text-gray-300">{stat.label}</div>
+                      <div className="text-xs text-gray-500 group-hover:text-gray-300">
+                        {stat.label}
+                      </div>
                     </div>
                   );
                 })}
@@ -426,8 +501,12 @@ const Contact = () => {
                     <FiMessageSquare className="text-primary-400 text-2xl" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-white">Send a Message</h2>
-                    <p className="text-gray-400 text-sm">Get a response within 24 hours</p>
+                    <h2 className="text-2xl font-bold text-white">
+                      Send a Message
+                    </h2>
+                    <p className="text-gray-400 text-sm">
+                      Get a response within 24 hours
+                    </p>
                   </div>
                 </div>
 
@@ -436,10 +515,13 @@ const Contact = () => {
                     <div className="inline-flex p-4 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-full mb-4">
                       <FiCheckCircle className="text-green-400 text-4xl" />
                     </div>
-                    <h3 className="text-2xl font-bold text-white mb-2">Message Sent!</h3>
+                    <h3 className="text-2xl font-bold text-white mb-2">
+                      Message Sent!
+                    </h3>
                     <p className="text-gray-400 mb-6">
-                      Thank you for reaching out. I'll review your message and get back to you within 24 hours.
-                      Check your email for confirmation.
+                      Thank you for reaching out. I'll review your message and
+                      get back to you within 24 hours. Check your email for
+                      confirmation.
                     </p>
                     <button
                       onClick={() => setIsSubmitted(false)}
@@ -463,12 +545,17 @@ const Contact = () => {
                           onChange={handleChange}
                           required
                           disabled={isSubmitting}
-                          className={`w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border ${errors.name ? 'border-red-500/50' : 'border-gray-700/50'
-                            } rounded-xl text-white placeholder-gray-500 focus:border-primary-500/50 focus:outline-none transition-all disabled:opacity-50`}
+                          className={`w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border ${
+                            errors.name
+                              ? "border-red-500/50"
+                              : "border-gray-700/50"
+                          } rounded-xl text-white placeholder-gray-500 focus:border-primary-500/50 focus:outline-none transition-all disabled:opacity-50`}
                           placeholder="Enter your full name"
                         />
                         {errors.name && (
-                          <p className="mt-1 text-sm text-red-400">{errors.name}</p>
+                          <p className="mt-1 text-sm text-red-400">
+                            {errors.name}
+                          </p>
                         )}
                       </div>
 
@@ -484,12 +571,17 @@ const Contact = () => {
                           onChange={handleChange}
                           required
                           disabled={isSubmitting}
-                          className={`w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border ${errors.email ? 'border-red-500/50' : 'border-gray-700/50'
-                            } rounded-xl text-white placeholder-gray-500 focus:border-primary-500/50 focus:outline-none transition-all disabled:opacity-50`}
+                          className={`w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border ${
+                            errors.email
+                              ? "border-red-500/50"
+                              : "border-gray-700/50"
+                          } rounded-xl text-white placeholder-gray-500 focus:border-primary-500/50 focus:outline-none transition-all disabled:opacity-50`}
                           placeholder="your.email@example.com"
                         />
                         {errors.email && (
-                          <p className="mt-1 text-sm text-red-400">{errors.email}</p>
+                          <p className="mt-1 text-sm text-red-400">
+                            {errors.email}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -521,18 +613,31 @@ const Contact = () => {
                           onChange={handleChange}
                           required
                           disabled={isSubmitting}
-                          className={`w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border ${errors.subject ? 'border-red-500/50' : 'border-gray-700/50'
-                            } rounded-xl text-white focus:border-primary-500/50 focus:outline-none transition-all disabled:opacity-50`}
+                          className={`w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border ${
+                            errors.subject
+                              ? "border-red-500/50"
+                              : "border-gray-700/50"
+                          } rounded-xl text-white focus:border-primary-500/50 focus:outline-none transition-all disabled:opacity-50`}
                         >
                           <option value="">Select a subject</option>
-                          <option value="AI/ML Project Consultation">AI/ML Project Consultation</option>
-                          <option value="Training Program Inquiry">Training Program Inquiry</option>
-                          <option value="Business Collaboration">Business Collaboration</option>
+                          <option value="AI/ML Project Consultation">
+                            AI/ML Project Consultation
+                          </option>
+                          <option value="Training Program Inquiry">
+                            Training Program Inquiry
+                          </option>
+                          <option value="Business Collaboration">
+                            Business Collaboration
+                          </option>
                           <option value="Freelance Work">Freelance Work</option>
-                          <option value="General Inquiry">General Inquiry</option>
+                          <option value="General Inquiry">
+                            General Inquiry
+                          </option>
                         </select>
                         {errors.subject && (
-                          <p className="mt-1 text-sm text-red-400">{errors.subject}</p>
+                          <p className="mt-1 text-sm text-red-400">
+                            {errors.subject}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -549,12 +654,17 @@ const Contact = () => {
                         required
                         disabled={isSubmitting}
                         rows="6"
-                        className={`w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border ${errors.message ? 'border-red-500/50' : 'border-gray-700/50'
-                          } rounded-xl text-white placeholder-gray-500 focus:border-primary-500/50 focus:outline-none transition-all resize-none disabled:opacity-50`}
+                        className={`w-full px-4 py-3 bg-gradient-to-br from-gray-800 to-gray-900 border ${
+                          errors.message
+                            ? "border-red-500/50"
+                            : "border-gray-700/50"
+                        } rounded-xl text-white placeholder-gray-500 focus:border-primary-500/50 focus:outline-none transition-all resize-none disabled:opacity-50`}
                         placeholder="Tell me about your project, timeline, and budget..."
                       />
                       {errors.message && (
-                        <p className="mt-1 text-sm text-red-400">{errors.message}</p>
+                        <p className="mt-1 text-sm text-red-400">
+                          {errors.message}
+                        </p>
                       )}
                       <div className="mt-1 text-xs text-gray-500">
                         {formData.message.length}/2000 characters
@@ -588,7 +698,8 @@ const Contact = () => {
                     </div>
 
                     <div className="text-xs text-gray-500 text-center pt-4 border-t border-gray-700/50">
-                      By submitting, you agree to our privacy policy. You'll receive a confirmation email.
+                      By submitting, you agree to our privacy policy. You'll
+                      receive a confirmation email.
                     </div>
                   </form>
                 )}
@@ -607,15 +718,29 @@ const Contact = () => {
                       <a
                         key={index}
                         href={action.link}
-                        target={action.link.startsWith('http') ? '_blank' : '_self'}
-                        rel={action.link.startsWith('http') ? 'noopener noreferrer' : ''}
+                        target={
+                          action.link.startsWith("http") ? "_blank" : "_self"
+                        }
+                        rel={
+                          action.link.startsWith("http")
+                            ? "noopener noreferrer"
+                            : ""
+                        }
                         className="group"
                       >
                         <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-5 hover:border-primary-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
-                          <div className={`h-1 rounded-t-xl bg-gradient-to-r ${action.gradient} mb-4`}></div>
-                          <Icon className={`text-xl mb-3 ${action.gradient.includes('blue') ? 'text-blue-400' : action.gradient.includes('purple') ? 'text-purple-400' : 'text-green-400'}`} />
-                          <h4 className="font-bold text-white mb-2">{action.title}</h4>
-                          <p className="text-sm text-gray-400 mb-4">{action.description}</p>
+                          <div
+                            className={`h-1 rounded-t-xl bg-gradient-to-r ${action.gradient} mb-4`}
+                          ></div>
+                          <Icon
+                            className={`text-xl mb-3 ${action.gradient.includes("blue") ? "text-blue-400" : action.gradient.includes("purple") ? "text-purple-400" : "text-green-400"}`}
+                          />
+                          <h4 className="font-bold text-white mb-2">
+                            {action.title}
+                          </h4>
+                          <p className="text-sm text-gray-400 mb-4">
+                            {action.description}
+                          </p>
                           <button className="w-full py-2 bg-gradient-to-r from-gray-800 to-gray-900 text-gray-300 rounded-lg font-semibold hover:text-white hover:border-primary-500/30 transition-colors border border-gray-700/50">
                             {action.button}
                           </button>
@@ -646,15 +771,19 @@ const Contact = () => {
                         onMouseEnter={() => setHoveredLink(social.label)}
                         onMouseLeave={() => setHoveredLink(null)}
                       >
-                        <div className={`absolute inset-0 bg-gradient-to-br ${social.gradient} rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
+                        <div
+                          className={`absolute inset-0 bg-gradient-to-br ${social.gradient} rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300`}
+                        />
                         <Icon className="text-gray-400 group-hover:text-white transition-colors relative z-10" />
 
                         {/* Tooltip */}
-                        <div className={`
+                        <div
+                          className={`
                           absolute -top-10 left-1/2 -translate-x-1/2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 px-3 py-1 rounded-lg text-xs font-medium text-white whitespace-nowrap
                           opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none
                           after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800
-                        `}>
+                        `}
+                        >
                           {social.label}
                         </div>
                       </a>
@@ -674,19 +803,26 @@ const Contact = () => {
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500/20 to-blue-500/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-primary-500/30 mb-6">
               <FiCalendar className="text-primary-300" />
-              <span className="text-primary-200 font-medium tracking-wider">READY TO INNOVATE?</span>
+              <span className="text-primary-200 font-medium tracking-wider">
+                READY TO INNOVATE?
+              </span>
             </div>
 
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
               Let's Start Your AI Journey
             </h2>
             <p className="text-xl text-gray-400 mb-8">
-              Whether you're looking to implement AI solutions or enhance your team's skills,
-              I'm here to help you succeed.
+              Whether you're looking to implement AI solutions or enhance your
+              team's skills, I'm here to help you succeed.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <button
-                onClick={() => window.open('https://calendly.com/naceurkeraani/30min', '_blank')}
+                onClick={() =>
+                  window.open(
+                    "https://calendly.com/naceurkeraani/30min",
+                    "_blank"
+                  )
+                }
                 className="group relative bg-gradient-to-r from-primary-500 to-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center space-x-2"
               >
                 <FiCalendar />

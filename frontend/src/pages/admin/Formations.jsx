@@ -1,61 +1,68 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Sidebar from '../../components/admin/Sidebar';
-import DataTable from '../../components/admin/DataTable';
+import { useEffect, useState, useCallback } from "react";
 import {
-  FiPlus, FiSearch, FiFilter, FiDownload,
-  FiEye, FiEdit, FiTrash2, FiRefreshCw,
-  FiBook, FiUsers, FiDollarSign, FiTrendingUp
-} from 'react-icons/fi';
-import formationService from '../../services/formationService';
+  FiBook,
+  FiDownload,
+  FiEdit,
+  FiPlus,
+  FiRefreshCw,
+  FiSearch,
+  FiTrash2,
+  FiTrendingUp,
+  FiUsers,
+} from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import DataTable from "../../components/admin/DataTable";
+import Sidebar from "../../components/admin/Sidebar";
+import formationService from "../../services/formationService";
 
 const AdminFormations = () => {
   const navigate = useNavigate();
   const [formations, setFormations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [filterCategory, setFilterCategory] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterCategory, setFilterCategory] = useState("all");
   const [stats, setStats] = useState({
     total_formations: 0,
     published_formations: 0,
     draft_formations: 0,
-    total_participants: 0
+    total_participants: 0,
   });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedFormation, setSelectedFormation] = useState(null);
 
-  useEffect(() => {
-    loadFormations();
-    loadStats();
-  }, [filterStatus, filterCategory]);
+   const loadFormations = useCallback(async () => {
+     try {
+       setLoading(true);
+       const filters = { admin: true }; // Add admin flag to see all formations
+       if (filterStatus !== "all") filters.status = filterStatus;
+       if (filterCategory !== "all") filters.category = filterCategory;
 
-  const loadFormations = async () => {
-    try {
-      setLoading(true);
-      const filters = { admin: true }; // Add admin flag to see all formations
-      if (filterStatus !== 'all') filters.status = filterStatus;
-      if (filterCategory !== 'all') filters.category = filterCategory;
+       const data = await formationService.getAll(filters);
+       console.log("📚 Formations loaded:", data);
+       setFormations(data.data || []);
+     } catch (error) {
+       console.error("Error loading formations:", error);
+     } finally {
+       setLoading(false);
+     }
+   }, [filterStatus, filterCategory]); // Add filter dependencies
 
-      const data = await formationService.getAll(filters);
-      console.log('📚 Formations loaded:', data);
-      setFormations(data.data || []);
-    } catch (error) {
-      console.error('Error loading formations:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+   // Wrap loadStats in useCallback
+   const loadStats = useCallback(async () => {
+     try {
+       const data = await formationService.getStats();
+       console.log("📊 Stats loaded:", data);
+       setStats(data.data || {});
+     } catch (error) {
+       console.error("Error loading stats:", error);
+     }
+   }, []); // Empty dependency array since it doesn't depend on component state
 
-  const loadStats = async () => {
-    try {
-      const data = await formationService.getStats();
-      console.log('📊 Stats loaded:', data);
-      setStats(data.data || {});
-    } catch (error) {
-      console.error('Error loading stats:', error);
-    }
-  };
+   useEffect(() => {
+     loadFormations();
+     loadStats();
+   }, [loadFormations, loadStats]);
 
   const handleDelete = async (formation) => {
     setSelectedFormation(formation);
@@ -69,7 +76,7 @@ const AdminFormations = () => {
       loadFormations();
       loadStats();
     } catch (error) {
-      console.error('Error deleting formation:', error);
+      console.error("Error deleting formation:", error);
     }
   };
 
@@ -77,26 +84,30 @@ const AdminFormations = () => {
     navigate(`/admin/formations/edit/${formation.id}`);
   };
 
-
-
   const handleExport = async () => {
     try {
-      console.log('Exporting formations...');
-      const data = await formationService.exportToCSV({ status: filterStatus, category: filterCategory });
+      console.log("Exporting formations...");
+      const data = await formationService.exportToCSV({
+        status: filterStatus,
+        category: filterCategory,
+      });
       // Create blob and download
       const url = window.URL.createObjectURL(new Blob([data]));
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.setAttribute('download', `formations-${new Date().toISOString()}.csv`);
+      link.setAttribute(
+        "download",
+        `formations-${new Date().toISOString()}.csv`
+      );
       document.body.appendChild(link);
       link.click();
       link.remove();
     } catch (error) {
-      console.error('Error exporting formations:', error);
+      console.error("Error exporting formations:", error);
     }
   };
 
-  const filteredFormations = formations.filter(formation => {
+  const filteredFormations = formations.filter((formation) => {
     const searchLower = searchTerm.toLowerCase();
     return (
       formation.title?.toLowerCase().includes(searchLower) ||
@@ -108,86 +119,86 @@ const AdminFormations = () => {
 
   const columns = [
     {
-      key: 'image',
-      title: 'Image',
+      key: "image",
+      title: "Image",
       render: (item) => (
         <img
-          src={item.cover_image || 'https://via.placeholder.com/50'}
+          src={item.cover_image || "https://via.placeholder.com/50"}
           alt={item.title}
           className="w-12 h-12 rounded-lg object-cover"
         />
-      )
+      ),
     },
-    { key: 'title', title: 'Title' },
+    { key: "title", title: "Title" },
     {
-      key: 'category',
-      title: 'Category',
+      key: "category",
+      title: "Category",
       render: (item) => (
         <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">
           {item.category}
         </span>
-      )
+      ),
     },
     {
-      key: 'level',
-      title: 'Level',
+      key: "level",
+      title: "Level",
       render: (item) => (
         <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">
           {item.level}
         </span>
-      )
+      ),
     },
     {
-      key: 'duration_hours',
-      title: 'Duration',
-      render: (item) => `${item.duration_hours || 0} hours`
+      key: "duration_hours",
+      title: "Duration",
+      render: (item) => `${item.duration_hours || 0} hours`,
     },
     {
-      key: 'price',
-      title: 'Price',
+      key: "price",
+      title: "Price",
       render: (item) => (
-        <span className="font-bold text-green-600">
-          ${item.price || 0}
-        </span>
-      )
+        <span className="font-bold text-green-600">${item.price || 0}</span>
+      ),
     },
     {
-      key: 'status',
-      title: 'Status',
+      key: "status",
+      title: "Status",
       render: (item) => (
-        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${item.status === 'published'
-            ? 'bg-green-100 text-green-800'
-            : item.status === 'draft'
-              ? 'bg-yellow-100 text-yellow-800'
-              : 'bg-red-100 text-red-800'
-          }`}>
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+            item.status === "published"
+              ? "bg-green-100 text-green-800"
+              : item.status === "draft"
+                ? "bg-yellow-100 text-yellow-800"
+                : "bg-red-100 text-red-800"
+          }`}
+        >
           {item.status}
         </span>
-      )
+      ),
     },
     {
-      key: 'current_participants',
-      title: 'Enrollments',
+      key: "current_participants",
+      title: "Enrollments",
       render: (item) => (
         <span className="font-semibold text-indigo-600">
           {item.current_participants || 0}
         </span>
-      )
-    }
+      ),
+    },
   ];
 
   const tableActions = [
-   
     {
-      label: 'Edit',
+      label: "Edit",
       handler: handleEdit,
-      color: 'bg-indigo-500 text-white hover:bg-indigo-600'
+      color: "bg-indigo-500 text-white hover:bg-indigo-600",
     },
     {
-      label: 'Delete',
+      label: "Delete",
       handler: handleDelete,
-      color: 'bg-red-500 text-white hover:bg-red-600'
-    }
+      color: "bg-red-500 text-white hover:bg-red-600",
+    },
   ];
 
   return (
@@ -212,7 +223,7 @@ const AdminFormations = () => {
                 disabled={loading}
                 className="flex items-center space-x-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 hover:shadow-md transition-all"
               >
-                <FiRefreshCw className={loading ? 'animate-spin' : ''} />
+                <FiRefreshCw className={loading ? "animate-spin" : ""} />
                 <span className="font-medium">Refresh</span>
               </button>
               <button
@@ -223,7 +234,7 @@ const AdminFormations = () => {
                 <span className="font-medium">Export</span>
               </button>
               <button
-                onClick={() => navigate('/admin/formations/new')}
+                onClick={() => navigate("/admin/formations/new")}
                 className="flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:shadow-lg transition-all"
               >
                 <FiPlus size={20} />
@@ -238,7 +249,9 @@ const AdminFormations = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-sm font-semibold uppercase">Total Formations</p>
+                <p className="text-gray-500 text-sm font-semibold uppercase">
+                  Total Formations
+                </p>
                 <h3 className="text-3xl font-bold text-gray-900 mt-2">
                   {stats.total_formations || 0}
                 </h3>
@@ -252,7 +265,9 @@ const AdminFormations = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-sm font-semibold uppercase">Published</p>
+                <p className="text-gray-500 text-sm font-semibold uppercase">
+                  Published
+                </p>
                 <h3 className="text-3xl font-bold text-gray-900 mt-2">
                   {stats.published_formations || 0}
                 </h3>
@@ -266,7 +281,9 @@ const AdminFormations = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-sm font-semibold uppercase">Total Participants</p>
+                <p className="text-gray-500 text-sm font-semibold uppercase">
+                  Total Participants
+                </p>
                 <h3 className="text-3xl font-bold text-gray-900 mt-2">
                   {stats.total_participants || 0}
                 </h3>
@@ -280,7 +297,9 @@ const AdminFormations = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-sm font-semibold uppercase">Draft</p>
+                <p className="text-gray-500 text-sm font-semibold uppercase">
+                  Draft
+                </p>
                 <h3 className="text-3xl font-bold text-gray-900 mt-2">
                   {stats.draft_formations || 0}
                 </h3>
@@ -353,21 +372,25 @@ const AdminFormations = () => {
         ) : filteredFormations.length === 0 ? (
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-12 text-center">
             <FiBook className="text-6xl text-gray-300 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">No Formations Found</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              No Formations Found
+            </h3>
             <p className="text-gray-600 mb-6">
-              {searchTerm || filterStatus !== 'all' || filterCategory !== 'all'
-                ? 'Try adjusting your filters or search term'
-                : 'Get started by creating your first formation'}
+              {searchTerm || filterStatus !== "all" || filterCategory !== "all"
+                ? "Try adjusting your filters or search term"
+                : "Get started by creating your first formation"}
             </p>
-            {!searchTerm && filterStatus === 'all' && filterCategory === 'all' && (
-              <button
-                onClick={() => navigate('/admin/formations/new')}
-                className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:shadow-lg transition-all"
-              >
-                <FiPlus size={20} />
-                <span className="font-medium">Create First Formation</span>
-              </button>
-            )}
+            {!searchTerm &&
+              filterStatus === "all" &&
+              filterCategory === "all" && (
+                <button
+                  onClick={() => navigate("/admin/formations/new")}
+                  className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:shadow-lg transition-all"
+                >
+                  <FiPlus size={20} />
+                  <span className="font-medium">Create First Formation</span>
+                </button>
+              )}
           </div>
         ) : (
           <DataTable
@@ -388,7 +411,8 @@ const AdminFormations = () => {
                 Delete Formation
               </h3>
               <p className="text-gray-600 text-center mb-6">
-                Are you sure you want to delete "{selectedFormation?.title}"? This action cannot be undone.
+                Are you sure you want to delete "{selectedFormation?.title}"?
+                This action cannot be undone.
               </p>
               <div className="flex space-x-3">
                 <button

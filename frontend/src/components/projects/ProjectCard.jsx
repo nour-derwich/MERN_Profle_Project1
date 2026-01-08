@@ -1,31 +1,41 @@
-import React, { useState } from 'react';
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { FaAws, FaDocker, FaNodeJs, FaPython, FaReact } from "react-icons/fa";
 import {
-  FiExternalLink,
-  FiGithub,
-  FiStar,
-  FiGitBranch,
-  FiEye,
-  FiHeart,
-  FiCode,
-  FiZap,
-  FiTrendingUp,
-  FiClock,
-  FiUsers,
   FiBarChart2,
-  FiShield,
+  FiBookmark,
+  FiChevronRight,
+  FiClock,
   FiCloud,
+  FiCode,
+  FiExternalLink,
+  FiEye,
+  FiGitBranch,
+  FiGithub,
+  FiHeart,
   FiLayers,
   FiShare2,
-  FiBookmark,
-  FiChevronRight
-} from 'react-icons/fi';
-import { FaPython, FaReact, FaNodeJs, FaDocker, FaAws } from 'react-icons/fa';
-import { motion } from 'framer-motion';
+  FiShield,
+  FiStar,
+  FiTrendingUp,
+  FiZap,
+} from "react-icons/fi";
 
 // Define FiDatabase icon at the top, before it's used
 const FiDatabase = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
+    ></path>
   </svg>
 );
 
@@ -39,68 +49,71 @@ const ProjectCard = ({
   onQuickView,
   onShare,
   bookmarks = [],
-  toggleBookmark
+  toggleBookmark,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const getComplexityColor = (complexity) => {
     const colors = {
-      'Beginner': 'from-green-500 to-emerald-600',
-      'Intermediate': 'from-blue-500 to-cyan-600',
-      'Advanced': 'from-purple-500 to-pink-600',
-      'Expert': 'from-red-500 to-orange-600'
+      Beginner: "from-green-500 to-emerald-600",
+      Intermediate: "from-blue-500 to-cyan-600",
+      Advanced: "from-purple-500 to-pink-600",
+      Expert: "from-red-500 to-orange-600",
     };
-    return colors[complexity] || 'from-gray-600 to-gray-800';
+    return colors[complexity] || "from-gray-600 to-gray-800";
   };
 
   const getCategoryIcon = (category) => {
     const icons = {
-      'Machine Learning': FiTrendingUp,
-      'Deep Learning': FiCode,
-      'Computer Vision': FiEye,
-      'NLP': FiBarChart2,
-      'Web Apps': FaReact,
-      'APIs': FaNodeJs,
-      'Automation': FiZap,
-      'Dashboards': FiLayers,
-      'Cloud': FiCloud,
-      'Security': FiShield,
-      'Data Science': FiDatabase, // Added Data Science
-      'AI Finance': FiTrendingUp,
-      'default': FiCode
+      "Machine Learning": FiTrendingUp,
+      "Deep Learning": FiCode,
+      "Computer Vision": FiEye,
+      NLP: FiBarChart2,
+      "Web Apps": FaReact,
+      APIs: FaNodeJs,
+      Automation: FiZap,
+      Dashboards: FiLayers,
+      Cloud: FiCloud,
+      Security: FiShield,
+      "Data Science": FiDatabase, // Added Data Science
+      "AI Finance": FiTrendingUp,
+      default: FiCode,
     };
     return icons[category] || icons.default;
   };
 
   const getTechIcon = (tech) => {
     const icons = {
-      'Python': FaPython,
-      'TensorFlow': FiTrendingUp,
-      'PyTorch': FiCode,
-      'React': FaReact,
-      'Node.js': FaNodeJs,
-      'Docker': FaDocker,
-      'AWS': FaAws,
-      'FastAPI': FiZap,
-      'PostgreSQL': FiDatabase,
-      'MongoDB': FiDatabase,
-      'MySQL': FiDatabase,
-      'Redis': FiDatabase,
-      'Elasticsearch': FiDatabase,
-      'SQLite': FiDatabase,
-      'default': FiCode
+      Python: FaPython,
+      TensorFlow: FiTrendingUp,
+      PyTorch: FiCode,
+      React: FaReact,
+      "Node.js": FaNodeJs,
+      Docker: FaDocker,
+      AWS: FaAws,
+      FastAPI: FiZap,
+      PostgreSQL: FiDatabase,
+      MongoDB: FiDatabase,
+      MySQL: FiDatabase,
+      Redis: FiDatabase,
+      Elasticsearch: FiDatabase,
+      SQLite: FiDatabase,
+      default: FiCode,
     };
     return icons[tech] || icons.default;
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'Recently';
+    if (!dateString) return "Recently";
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        year: "numeric",
+      });
     } catch {
-      return 'Recently';
+      return "Recently";
     }
   };
 
@@ -147,11 +160,12 @@ const ProjectCard = ({
       onClick={() => setSelectedProject && setSelectedProject(project)}
     >
       {/* Card Glow Effect */}
-      <div className={`absolute -inset-0.5 bg-gradient-to-r ${getComplexityColor(project.complexity)} rounded-2xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
+      <div
+        className={`absolute -inset-0.5 bg-gradient-to-r ${getComplexityColor(project.complexity)} rounded-2xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500`}
+      />
 
       {/* Main Card */}
       <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl overflow-hidden backdrop-blur-sm transition-all duration-500 group-hover:border-primary-500/30 group-hover:scale-[1.02]">
-
         {/* Image/Header Section */}
         <div className="relative h-56 overflow-hidden">
           {/* Loading State */}
@@ -161,13 +175,14 @@ const ProjectCard = ({
 
           {/* Project Image */}
           <img
-            src={project.image || project.cover_image || '/default-project.jpg'}
+            src={project.image || project.cover_image || "/default-project.jpg"}
             alt={project.title}
-            className={`w-full h-full object-cover transition-all duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'
-              } ${isHovered ? 'scale-110' : 'scale-100'}`}
+            className={`w-full h-full object-cover transition-all duration-700 ${
+              imageLoaded ? "opacity-100" : "opacity-0"
+            } ${isHovered ? "scale-110" : "scale-100"}`}
             onLoad={() => setImageLoaded(true)}
             onError={(e) => {
-              e.target.src = '/default-project.jpg';
+              e.target.src = "/default-project.jpg";
               setImageLoaded(true);
             }}
           />
@@ -189,8 +204,10 @@ const ProjectCard = ({
             )}
 
             {/* Complexity Badge */}
-            <div className={`relative px-3 py-1 bg-gradient-to-r ${getComplexityColor(project.complexity)} text-white text-xs font-bold rounded-full backdrop-blur-sm`}>
-              {project.complexity || 'Intermediate'}
+            <div
+              className={`relative px-3 py-1 bg-gradient-to-r ${getComplexityColor(project.complexity)} text-white text-xs font-bold rounded-full backdrop-blur-sm`}
+            >
+              {project.complexity || "Intermediate"}
             </div>
           </div>
 
@@ -203,10 +220,11 @@ const ProjectCard = ({
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-pink-500 rounded-full blur opacity-0 group-hover/btn:opacity-30 transition-opacity duration-500" />
               <FiHeart
-                className={`relative text-lg ${isFavorite
-                    ? 'fill-red-500 text-red-500 animate-heart-beat'
-                    : 'text-gray-400 group-hover/btn:text-red-400'
-                  }`}
+                className={`relative text-lg ${
+                  isFavorite
+                    ? "fill-red-500 text-red-500 animate-heart-beat"
+                    : "text-gray-400 group-hover/btn:text-red-400"
+                }`}
               />
             </button>
 
@@ -217,10 +235,11 @@ const ProjectCard = ({
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full blur opacity-0 group-hover/btn:opacity-30 transition-opacity duration-500" />
               <FiBookmark
-                className={`relative text-lg ${isBookmarked
-                    ? 'fill-yellow-500 text-yellow-500'
-                    : 'text-gray-400 group-hover/btn:text-yellow-400'
-                  }`}
+                className={`relative text-lg ${
+                  isBookmarked
+                    ? "fill-yellow-500 text-yellow-500"
+                    : "text-gray-400 group-hover/btn:text-yellow-400"
+                }`}
               />
             </button>
 
@@ -240,27 +259,44 @@ const ProjectCard = ({
               <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full blur opacity-30" />
               <span className="relative px-3 py-1.5 bg-gradient-to-r from-primary-600 to-blue-600 text-white text-xs font-semibold rounded-full backdrop-blur-sm flex items-center gap-1">
                 <CategoryIcon className="text-xs" />
-                {project.category || 'Project'}
+                {project.category || "Project"}
               </span>
             </div>
           </div>
 
           {/* Status Indicator */}
           <div className="absolute bottom-4 right-4">
-            <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full backdrop-blur-sm ${project.status === 'completed' || project.status === 'published'
-                ? 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 text-green-300'
-                : project.status === 'in-progress' || project.status === 'draft'
-                  ? 'bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30 text-blue-300'
-                  : 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 text-yellow-300'
-              }`}>
-              <div className={`w-2 h-2 rounded-full ${project.status === 'completed' || project.status === 'published' ? 'bg-green-400' :
-                  project.status === 'in-progress' || project.status === 'draft' ? 'bg-blue-400 animate-pulse' :
-                    'bg-yellow-400'
-                }`} />
+            <div
+              className={`flex items-center gap-1 px-3 py-1.5 rounded-full backdrop-blur-sm ${
+                project.status === "completed" || project.status === "published"
+                  ? "bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 text-green-300"
+                  : project.status === "in-progress" ||
+                      project.status === "draft"
+                    ? "bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30 text-blue-300"
+                    : "bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 text-yellow-300"
+              }`}
+            >
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  project.status === "completed" ||
+                  project.status === "published"
+                    ? "bg-green-400"
+                    : project.status === "in-progress" ||
+                        project.status === "draft"
+                      ? "bg-blue-400 animate-pulse"
+                      : "bg-yellow-400"
+                }`}
+              />
               <span className="text-xs font-medium">
-                {project.status === 'completed' || project.status === 'published' ? 'Completed' :
-                  project.status === 'in-progress' || project.status === 'draft' ? 'In Progress' :
-                    project.status === 'maintained' ? 'Maintained' : project.status || 'Active'}
+                {project.status === "completed" ||
+                project.status === "published"
+                  ? "Completed"
+                  : project.status === "in-progress" ||
+                      project.status === "draft"
+                    ? "In Progress"
+                    : project.status === "maintained"
+                      ? "Maintained"
+                      : project.status || "Active"}
               </span>
             </div>
           </div>
@@ -275,7 +311,10 @@ const ProjectCard = ({
 
           {/* Short Description */}
           <p className="text-sm text-gray-400 mb-4 leading-relaxed line-clamp-2">
-            {project.shortDescription || project.short_description || project.description || 'No description available'}
+            {project.shortDescription ||
+              project.short_description ||
+              project.description ||
+              "No description available"}
           </p>
 
           {/* Stats */}
@@ -283,19 +322,29 @@ const ProjectCard = ({
             <div className="flex flex-col items-center p-3 bg-gradient-to-br from-gray-800/30 to-gray-900/30 rounded-lg">
               <FiStar className="text-yellow-400 text-sm mb-1" />
               <div className="text-xs text-gray-500">Stars</div>
-              <div className="text-white font-bold">{project.stars?.toLocaleString() || '0'}</div>
+              <div className="text-white font-bold">
+                {project.stars?.toLocaleString() || "0"}
+              </div>
             </div>
 
             <div className="flex flex-col items-center p-3 bg-gradient-to-br from-gray-800/30 to-gray-900/30 rounded-lg">
               <FiGitBranch className="text-blue-400 text-sm mb-1" />
               <div className="text-xs text-gray-500">Forks</div>
-              <div className="text-white font-bold">{project.forks?.toLocaleString() || '0'}</div>
+              <div className="text-white font-bold">
+                {project.forks?.toLocaleString() || "0"}
+              </div>
             </div>
 
             <div className="flex flex-col items-center p-3 bg-gradient-to-br from-gray-800/30 to-gray-900/30 rounded-lg">
               <FiClock className="text-green-400 text-sm mb-1" />
               <div className="text-xs text-gray-500">Updated</div>
-              <div className="text-white font-bold text-xs">{formatDate(project.lastUpdated || project.updated_at || project.created_at)}</div>
+              <div className="text-white font-bold text-xs">
+                {formatDate(
+                  project.lastUpdated ||
+                    project.updated_at ||
+                    project.created_at
+                )}
+              </div>
             </div>
           </div>
 
@@ -378,8 +427,11 @@ const ProjectCard = ({
       </div>
 
       {/* 3D Floating Effect */}
-      <div className={`absolute inset-0 bg-gradient-to-r ${getComplexityColor(project.complexity)} rounded-2xl blur-xl -z-10 transition-all duration-500 ${isHovered ? 'opacity-20 translate-y-2' : 'opacity-0'
-        }`} />
+      <div
+        className={`absolute inset-0 bg-gradient-to-r ${getComplexityColor(project.complexity)} rounded-2xl blur-xl -z-10 transition-all duration-500 ${
+          isHovered ? "opacity-20 translate-y-2" : "opacity-0"
+        }`}
+      />
     </motion.div>
   );
 };
