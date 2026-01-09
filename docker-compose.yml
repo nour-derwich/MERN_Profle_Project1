@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # PostgreSQL Database
+  # PostgreSQL Database (unchanged - using official image)
   postgres:
     image: postgres:15-alpine
     container_name: portfolio_postgres
@@ -12,8 +12,6 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      # Updated path - schema.sql location (if you have it)
-      # If you have database schema in a different location, update this path
       - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
       - portfolio_network
@@ -23,11 +21,12 @@ services:
       timeout: 5s
       retries: 5
 
-  # Backend API (from root directory)
+  # Backend API - Modified for Docker Hub
   backend:
     build:
-      context: .                  # Changed from ./backend to . (root)
-      dockerfile: Dockerfile      # Dockerfile in root
+      context: ./backend
+      dockerfile: Dockerfile
+    image: nourderouich/portfolio-backend:latest  # Add this line
     container_name: portfolio_backend
     restart: unless-stopped
     environment:
@@ -63,27 +62,20 @@ services:
       timeout: 10s
       retries: 3
 
-  # Frontend
+  # Frontend - Modified for Docker Hub
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
+    image: nourderouich/portfolio-frontend:latest  # Add this line
     container_name: portfolio_frontend
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "3000:3000"
-    environment:
-    - DANGEROUSLY_DISABLE_HOST_CHECK=true
-    - REACT_APP_API_URL=http://backend:5000/api
-    - WDS_SOCKET_HOST=0.0.0.0
-    - CHOKIDAR_USEPOLLING=true
+      - "3000:80"
     depends_on:
       - backend
     networks:
       - portfolio_network
-    volumes:
-      - ./nginx/ssl:/etc/nginx/ssl:ro
 
 volumes:
   postgres_data:
