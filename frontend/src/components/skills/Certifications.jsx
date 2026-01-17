@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FaDatabase, FaPython, FaRobot } from "react-icons/fa";
 import {
   FiAward,
@@ -16,13 +16,13 @@ import {
 import { SiMicrosoftazure, SiTensorflow } from "react-icons/si";
 import { useNavigate } from "react-router-dom";
 import DAWPCertife from "../skills/data/pdf/Data Analysis with Python.pdf";
-import P101FDSCertifcate from "../skills/data/pdf/Python 101 for Data Science.pdf";
-import ITAICertufucat from "../skills/data/pdf/Naceur Keraani-Introduction to Artificial Intelligence Certificate of Completion.pdf";
-import MLPCertificate from "../skills/data/pdf/Machine Learning with Python.pdf";
 import DVPCertificate from "../skills/data/pdf/Data Visualization with Python.pdf";
+import MLPCertificate from "../skills/data/pdf/Machine Learning with Python.pdf";
+import ITAICertufucat from "../skills/data/pdf/Naceur Keraani-Introduction to Artificial Intelligence Certificate of Completion.pdf";
+import CertificateCompt from "../skills/data/pdf/Networking_Devices_and_Initial_Configuration_Badge20240219-34-yq8bxu.pdf";
+import P101FDSCertifcate from "../skills/data/pdf/Python 101 for Data Science.pdf";
 import RDSCertificate from "../skills/data/pdf/R for Data Science.pdf";
 import STOLCertificate from "../skills/data/pdf/Siemens Tia portal  levels 1_2_3 .pdf";
-import CertificateCompt from "../skills/data/pdf/Networking_Devices_and_Initial_Configuration_Badge20240219-34-yq8bxu.pdf";
 
 const Certifications = () => {
   const [activeFilter, setActiveFilter] = useState("all");
@@ -31,6 +31,28 @@ const Certifications = () => {
   const [sortedCertifications, setSortedCertifications] = useState([]);
   const navigate = useNavigate();
 
+  // Parse date string to Date object for sorting
+  const parseDate = (dateString) => {
+    const months = {
+      January: 0,
+      February: 1,
+      March: 2,
+      April: 3,
+      May: 4,
+      June: 5,
+      July: 6,
+      August: 7,
+      September: 8,
+      October: 9,
+      November: 10,
+      December: 11,
+    };
+
+    const [month, year] = dateString.split(" ");
+    return new Date(parseInt(year), months[month]);
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const certifications = [
     {
       id: 1,
@@ -258,37 +280,19 @@ const Certifications = () => {
       certificate_pdf: CertificateCompt,
     },
   ];
-
-  // Parse date string to Date object for sorting
-  const parseDate = (dateString) => {
-    const months = {
-      January: 0,
-      February: 1,
-      March: 2,
-      April: 3,
-      May: 4,
-      June: 5,
-      July: 6,
-      August: 7,
-      September: 8,
-      October: 9,
-      November: 10,
-      December: 11,
-    };
-
-    const [month, year] = dateString.split(" ");
-    return new Date(parseInt(year), months[month]);
-  };
-
   // Sort certifications by date (newest first)
   useEffect(() => {
-    const sorted = [...certifications].sort((a, b) => {
-      const dateA = parseDate(a.date);
-      const dateB = parseDate(b.date);
-      return dateB - dateA; // Newest first
-    });
+    const sortCertifications = (certs) => {
+      return [...certs].sort((a, b) => {
+        const dateA = parseDate(a.date);
+        const dateB = parseDate(b.date);
+        return dateB - dateA; // Newest first
+      });
+    };
+
+    const sorted = sortCertifications(certifications);
     setSortedCertifications(sorted);
-  }, []);
+  }, [certifications]);
 
   const filters = [
     { id: "all", label: "All Certifications", count: 15, icon: FiAward },
@@ -731,6 +735,6 @@ const Certifications = () => {
       `}</style>
     </section>
   );
-};
+};;
 
 export default Certifications;

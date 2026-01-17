@@ -1,18 +1,24 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from "react";
 import {
-  FiMenu, FiX, FiHome, FiUser, FiBookOpen, FiBriefcase,
-  FiAward, FiMail, FiCode,
-  FiChevronDown, FiExternalLink
-} from 'react-icons/fi';
-import { FaPython, FaReact } from 'react-icons/fa';
-import { SiPytorch } from 'react-icons/si';
+  FiAward,
+  FiBookOpen,
+  FiBriefcase,
+  FiChevronDown,
+  FiCode,
+  FiExternalLink,
+  FiHome,
+  FiMail,
+  FiMenu,
+  FiUser,
+  FiX,
+} from "react-icons/fi";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [, setIsLoaded] = useState(false);
   const location = useLocation();
   const navRef = useRef(null);
 
@@ -22,8 +28,8 @@ const Nav = () => {
       setScrolled(window.scrollY > 20);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
@@ -33,50 +39,50 @@ const Nav = () => {
 
   const navLinks = [
     {
-      path: '/',
-      label: 'Home',
+      path: "/",
+      label: "Home",
       icon: FiHome,
-      highlight: false
+      highlight: false,
     },
     {
-      path: '/skills',
-      label: 'Skills',
+      path: "/skills",
+      label: "Skills",
       icon: FiAward,
-      highlight: true
+      highlight: true,
     },
     {
-      path: '/qualification',
-      label: 'Qualification',
+      path: "/qualification",
+      label: "Qualification",
       icon: FiUser,
-      highlight: false
+      highlight: false,
     },
     {
-      path: '/formations',
-      label: 'Training',
+      path: "/formations",
+      label: "Training",
       icon: FiBriefcase,
-      highlight: false
+      highlight: false,
     },
     {
-      path: '/projects',
-      label: 'Projects',
+      path: "/projects",
+      label: "Projects",
       icon: FiCode,
-      highlight: true
+      highlight: true,
     },
     {
-      path: '/courses',
-      label: 'Courses',
+      path: "/courses",
+      label: "Courses",
       icon: FiBookOpen,
-      highlight: false
+      highlight: false,
     },
     {
-      path: '/contact',
-      label: 'Contact',
+      path: "/contact",
+      label: "Contact",
       icon: FiMail,
-      highlight: true
-    }
+      highlight: true,
+    },
   ];
 
-  const techIcons = [FaPython, SiPytorch, FaReact];
+  // const techIcons = [FaPython, SiPytorch, FaReact];
 
   return (
     <>
