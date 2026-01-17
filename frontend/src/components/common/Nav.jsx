@@ -83,55 +83,47 @@ const Nav = () => {
       {/* Nav Background Blur */}
       <div
         ref={navRef}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-            ? 'bg-gray-900/95 backdrop-blur-xl border-b border-gray-800/50 py-2'
-            : 'bg-gradient-to-b from-gray-900/90 to-transparent py-4'
-          }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          scrolled
+            ? "bg-gray-900/95 backdrop-blur-xl border-b border-gray-800/50 py-2"
+            : "bg-gradient-to-b from-gray-900/90 to-transparent py-4"
+        }`}
       >
         {/* Animated Top Border */}
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500 to-transparent" />
 
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between">
-
             {/* Logo with Animation */}
-            <Link
-              to="/"
-              className="relative group"
-            >
+            <Link to="/" className="relative group">
               <div className="flex items-center gap-3">
-                {/* Animated Tech Icons */}
-                <div className="relative w-10 h-10">
-                  {techIcons.map((Icon, index) => (
-                    <div
-                      key={index}
-                      className={`absolute inset-0 transition-all duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'
-                        }`}
-                      style={{
-                        animationDelay: `${index * 200}ms`,
-                        transform: isLoaded ? 'scale(1)' : 'scale(0.5)'
-                      }}
-                    >
-                      <div className="p-2 bg-gradient-to-br from-primary-500/20 to-blue-500/20 backdrop-blur-sm border border-primary-500/30 rounded-lg">
-                        <Icon className="text-primary-400" />
-                      </div>
-                    </div>
-                  ))}
+                {/* Refined Logo Container */}
+                <div className="relative w-12 h-12 flex items-center justify-center">
+                  {/* Background Glow Effect */}
+                  <div className="absolute inset-0 bg-primary-500/20 blur-lg rounded-full group-hover:bg-primary-500/40 transition-all duration-500" />
+
+                  {/* The Logo Image */}
+                  <div className="relative z-10 p-1.5 bg-gray-900/50 backdrop-blur-md border border-white/10 rounded-xl group-hover:border-primary-500/50 transition-all duration-300">
+                    <img
+                      src="logo.png"
+                      alt="NK Logo"
+                      className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-500"
+                    />
+                  </div>
                 </div>
 
                 <div className="flex flex-col">
-                  <span className={`text-xl font-bold transition-all duration-300 ${scrolled ? 'text-white' : 'text-white'
-                    }`}>
+                  <span className="text-xl font-bold tracking-tighter text-white">
                     NACEUR
                   </span>
-                  <span className="text-xs text-primary-400 font-medium tracking-wider">
-                    AI DEVELOPER
+                  <span className="text-[10px] text-primary-400 font-bold uppercase tracking-[0.2em]">
+                    AI & Automation
                   </span>
                 </div>
               </div>
 
-              {/* Hover Effect */}
-              <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+              {/* Hover Underline Effect */}
+              <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
             </Link>
 
             {/* Desktop Menu */}
@@ -147,27 +139,39 @@ const Nav = () => {
                       onMouseEnter={() => setActiveDropdown(link.path)}
                       onMouseLeave={() => setActiveDropdown(null)}
                     >
-                      <button className={`
+                      <button
+                        className={`
                         relative flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all duration-300
-                        ${location.pathname === link.path || location.pathname.startsWith(link.path + '/')
-                          ? 'text-white bg-gradient-to-r from-primary-500/20 to-blue-500/20 border border-primary-500/30'
-                          : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                        ${
+                          location.pathname === link.path ||
+                          location.pathname.startsWith(link.path + "/")
+                            ? "text-white bg-gradient-to-r from-primary-500/20 to-blue-500/20 border border-primary-500/30"
+                            : "text-gray-400 hover:text-white hover:bg-gray-800/50"
                         }
-                      `}>
-                        <Icon className={`${link.highlight ? 'text-primary-400' : ''}`} />
+                      `}
+                      >
+                        <Icon
+                          className={`${link.highlight ? "text-primary-400" : ""}`}
+                        />
                         <span>{link.label}</span>
-                        <FiChevronDown className={`transition-transform duration-300 ${activeDropdown === link.path ? 'rotate-180' : ''
-                          }`} />
+                        <FiChevronDown
+                          className={`transition-transform duration-300 ${
+                            activeDropdown === link.path ? "rotate-180" : ""
+                          }`}
+                        />
                       </button>
 
                       {/* Dropdown Menu */}
-                      <div className={`
+                      <div
+                        className={`
                         absolute top-full left-0 mt-2 min-w-[200px] transition-all duration-300 origin-top
-                        ${activeDropdown === link.path
-                          ? 'opacity-100 scale-100 translate-y-0'
-                          : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
+                        ${
+                          activeDropdown === link.path
+                            ? "opacity-100 scale-100 translate-y-0"
+                            : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
                         }
-                      `}>
+                      `}
+                      >
                         <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl backdrop-blur-xl shadow-2xl overflow-hidden">
                           {link.dropdown.map((item) => {
                             const DropdownIcon = item.icon;
@@ -195,15 +199,16 @@ const Nav = () => {
                       <div
                         className={`
                     relative flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all duration-300 group
-                    ${isActive
-                            ? 'text-white bg-gradient-to-r from-primary-500/20 to-blue-500/20 border border-primary-500/30'
-                            : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
-                          }
+                    ${
+                      isActive
+                        ? "text-white bg-gradient-to-r from-primary-500/20 to-blue-500/20 border border-primary-500/30"
+                        : "text-gray-400 hover:text-white hover:bg-gray-800/50"
+                    }
                   `}
                       >
                         <Icon
                           className={`
-                      ${link.highlight ? 'text-primary-400 group-hover:scale-110 transition-transform' : ''}
+                      ${link.highlight ? "text-primary-400 group-hover:scale-110 transition-transform" : ""}
                     `}
                         />
                         <span>{link.label}</span>
@@ -212,10 +217,11 @@ const Nav = () => {
                         <div
                           className={`
                       absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full transition-all duration-300
-                      ${isActive
-                              ? 'bg-primary-400'
-                              : 'bg-transparent group-hover:bg-primary-400/50'
-                            }
+                      ${
+                        isActive
+                          ? "bg-primary-400"
+                          : "bg-transparent group-hover:bg-primary-400/50"
+                      }
                     `}
                         />
                       </div>
@@ -242,9 +248,10 @@ const Nav = () => {
               onClick={() => setIsOpen(!isOpen)}
               className={`
                 lg:hidden p-3 rounded-xl backdrop-blur-sm transition-all duration-300 relative overflow-hidden
-                ${scrolled
-                  ? 'bg-gray-800/50 border border-gray-700/50 text-gray-300 hover:text-white hover:border-primary-500/30'
-                  : 'bg-gray-800/30 border border-gray-700/30 text-white'
+                ${
+                  scrolled
+                    ? "bg-gray-800/50 border border-gray-700/50 text-gray-300 hover:text-white hover:border-primary-500/30"
+                    : "bg-gray-800/30 border border-gray-700/30 text-white"
                 }
               `}
             >
@@ -262,9 +269,10 @@ const Nav = () => {
         <div
           className={`
             lg:hidden fixed inset-0 z-40 transition-all duration-500 ease-out
-            ${isOpen
-              ? 'opacity-100 pointer-events-auto'
-              : 'opacity-0 pointer-events-none'
+            ${
+              isOpen
+                ? "opacity-100 pointer-events-auto"
+                : "opacity-0 pointer-events-none"
             }
           `}
           onClick={() => setIsOpen(false)}
@@ -275,7 +283,7 @@ const Nav = () => {
             className={`
               absolute top-0 right-0 h-full w-80 bg-gradient-to-b from-gray-900 to-black border-l border-gray-800/50
               transform transition-transform duration-500 ease-out
-              ${isOpen ? 'translate-x-0' : 'translate-x-full'}
+              ${isOpen ? "translate-x-0" : "translate-x-full"}
             `}
             onClick={(e) => e.stopPropagation()}
           >
@@ -287,7 +295,9 @@ const Nav = () => {
                 </div>
                 <div>
                   <div className="text-xl font-bold text-white">Navigation</div>
-                  <div className="text-sm text-gray-400">Explore the portfolio</div>
+                  <div className="text-sm text-gray-400">
+                    Explore the portfolio
+                  </div>
                 </div>
               </div>
             </div>
@@ -304,14 +314,17 @@ const Nav = () => {
                       to={link.path}
                       className={`
                         flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 relative
-                        ${isActive
-                          ? 'text-white bg-gradient-to-r from-primary-500/20 to-blue-500/20'
-                          : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                        ${
+                          isActive
+                            ? "text-white bg-gradient-to-r from-primary-500/20 to-blue-500/20"
+                            : "text-gray-400 hover:text-white hover:bg-gray-800/50"
                         }
                       `}
                       onClick={() => setIsOpen(false)}
                     >
-                      <Icon className={link.highlight ? 'text-primary-400' : ''} />
+                      <Icon
+                        className={link.highlight ? "text-primary-400" : ""}
+                      />
                       <span className="font-medium">{link.label}</span>
 
                       {isActive && (
@@ -324,7 +337,8 @@ const Nav = () => {
                       <div className="ml-4 pl-4 border-l border-gray-800/50 space-y-1">
                         {link.dropdown.map((item) => {
                           const DropdownIcon = item.icon;
-                          const isDropdownActive = location.pathname === item.path;
+                          const isDropdownActive =
+                            location.pathname === item.path;
 
                           return (
                             <NavLink
@@ -332,9 +346,10 @@ const Nav = () => {
                               to={item.path}
                               className={`
                                 flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-300
-                                ${isDropdownActive
-                                  ? 'text-primary-300 bg-primary-500/10'
-                                  : 'text-gray-500 hover:text-gray-300 hover:bg-gray-800/30'
+                                ${
+                                  isDropdownActive
+                                    ? "text-primary-300 bg-primary-500/10"
+                                    : "text-gray-500 hover:text-gray-300 hover:bg-gray-800/30"
                                 }
                               `}
                               onClick={() => setIsOpen(false)}
@@ -366,10 +381,14 @@ const Nav = () => {
             {/* Mobile Menu Footer */}
             <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-800/50">
               <div className="text-center">
-                <div className="text-xs text-gray-500 mb-2">Available for work</div>
+                <div className="text-xs text-gray-500 mb-2">
+                  Available for work
+                </div>
                 <div className="flex items-center justify-center gap-2">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                  <div className="text-sm text-green-400 font-medium">Open to Opportunities</div>
+                  <div className="text-sm text-green-400 font-medium">
+                    Open to Opportunities
+                  </div>
                 </div>
               </div>
             </div>
@@ -382,7 +401,7 @@ const Nav = () => {
         <div
           className="h-full bg-gradient-to-r from-primary-500 to-blue-500 transition-all duration-300"
           style={{
-            width: `${(window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100}%`
+            width: `${(window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100}%`,
           }}
         />
       </div>

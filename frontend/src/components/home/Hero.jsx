@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { FaPython, FaReact, FaWhatsapp } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
 import {
   FiAward,
   FiBriefcase,
   FiChevronRight,
-  FiDownload,
   FiGithub,
   FiLinkedin,
   FiMail,
@@ -25,14 +23,27 @@ const Hero = () => {
   const [startYear] = useState(2020);
   const [totalProjects] = useState(20);
   const [activeTech, setActiveTech] = useState(0);
-  // const canvasRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
+
+    // Check if mobile on mount and resize
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024); // lg breakpoint
+    };
+
+    checkMobile();
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("resize", checkMobile);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", checkMobile);
+    };
   }, []);
 
   // Animate counters
@@ -128,12 +139,6 @@ const Hero = () => {
       gradient: "from-gray-800 to-black",
     },
     {
-      icon: FaXTwitter,
-      url: "https://twitter.com",
-      label: "Twitter",
-      gradient: "from-sky-500 to-blue-500",
-    },
-    {
       icon: FaWhatsapp,
       url: "https://api.whatsapp.com/send?phone=0021695881709&text=Hello, more information!",
       label: "WhatsApp",
@@ -143,8 +148,8 @@ const Hero = () => {
 
   const infoData = {
     fullName: "Naceur Keraani",
-    position: "AI & Machine Learning Developer",
-    bio: "Transforming complex data into intelligent systems. I specialize in building scalable AI solutions that drive business growth through innovative machine learning algorithms and data-driven insights.",
+    position: "AI & Automation Engineer",
+    bio: "I am an AI & Automation Engineer specializing in the integration of industrial automation systems with artificial intelligence and data-driven technologies. I design and develop intelligent solutions that improve efficiency, reliability, and performance across industrial and real-world applications. My expertise includes PLC programming, industrial control systems, machine learning, and data analysis, allowing me to bridge the gap between physical systems and intelligent software. I focus on creating practical, scalable automation solutions that turn complex challenges into optimized processes.Driven by innovation, discipline, and continuous learning, I aim to build smart automation systems that deliver measurable impact and long-term value.",
     location: "Tunis, Tunisia",
     email: "naceur.keraani@gmail.com",
     phone: "+216 95 88 17 09",
@@ -198,9 +203,9 @@ const Hero = () => {
       <div className="container mx-auto px-4 pt-24 pb-16 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left Content - Creative Layout */}
-          <div className="relative">
-            {/* Floating Tech Badges */}
-            <div className="absolute -top-6 -left-6 z-20">
+          <div className="relative order-2 lg:order-1">
+            {/* Floating Tech Badges - Hidden on mobile, shown on desktop */}
+            <div className="hidden lg:block absolute -top-6 -left-6 z-20">
               <div className="relative w-32 h-32">
                 {techStack.map((tech, index) => {
                   const Icon = tech.icon;
@@ -226,7 +231,7 @@ const Hero = () => {
             </div>
 
             {/* Availability Badge */}
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500/20 to-emerald-600/20 backdrop-blur-sm px-5 py-2.5 rounded-full border border-green-500/30 mb-8 ml-20">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500/20 to-emerald-600/20 backdrop-blur-sm px-5 py-2.5 rounded-full border border-green-500/30 mb-8 lg:ml-20">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
               <span className="text-sm font-semibold text-green-300">
                 Available for projects
@@ -236,17 +241,17 @@ const Hero = () => {
 
             {/* Name & Title with Glitch Effect */}
             <div className="mb-8">
-              <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold leading-tight mb-4">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-tight mb-4">
                 <span className="block text-white">NACEUR</span>
                 <span className="block bg-gradient-to-r from-primary-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
                   KERAANI
                 </span>
               </h1>
 
-              <div className="flex items-center gap-4 mb-6">
-                <div className="h-1 w-16 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full" />
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-6">
+                <div className="h-1 w-16 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full hidden sm:block" />
                 <div className="relative">
-                  <h2 className="text-2xl md:text-3xl font-bold text-gray-300">
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-300">
                     {infoData.position}
                   </h2>
                   <div className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
@@ -263,13 +268,13 @@ const Hero = () => {
             {/* Bio */}
             <div className="mb-10 relative">
               <div className="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-blue-500 rounded-full" />
-              <p className="text-lg text-gray-400 leading-relaxed pl-6">
+              <p className="text-base sm:text-lg text-gray-400 leading-relaxed pl-6">
                 {infoData.bio}
               </p>
             </div>
 
             {/* Stats Cards - Creative Layout */}
-            <div className="grid grid-cols-3 gap-4 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
               {stats.map((stat, index) => {
                 const Icon = stat.icon;
                 return (
@@ -316,26 +321,21 @@ const Hero = () => {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-4 mb-10">
+            <div className="flex flex-col sm:flex-row gap-4 mb-10">
               <button
                 onClick={() => navigate("/projects")}
-                className="group relative bg-gradient-to-r from-primary-500 to-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 overflow-hidden"
+                className="group relative bg-gradient-to-r from-primary-500 to-blue-600 text-white px-6 sm:px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center justify-center gap-3 overflow-hidden"
               >
                 <span>Start a Project</span>
                 <FiChevronRight className="group-hover:translate-x-2 transition-transform" />
                 <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </button>
-
-              <button className="group relative bg-transparent border-2 border-gray-700 text-gray-300 px-8 py-4 rounded-xl font-bold hover:border-primary-500 hover:text-white transition-all duration-300 flex items-center gap-3">
-                <FiDownload />
-                <span>Download CV</span>
-              </button>
             </div>
 
             {/* Social Links */}
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <span className="text-gray-500 font-medium">Connect</span>
-              <div className="h-0.5 w-8 bg-gradient-to-r from-gray-700 to-transparent" />
+              <div className="h-0.5 w-8 bg-gradient-to-r from-gray-700 to-transparent hidden sm:block" />
               <div className="flex items-center gap-3">
                 {socialLinks.map((social, index) => {
                   const Icon = social.icon;
@@ -360,35 +360,37 @@ const Hero = () => {
           </div>
 
           {/* Right Content - Image & Tech Stack */}
-          <div className="relative">
-            {/* Tech Stack Rotation Display */}
-            <div className="absolute -top-10 right-10 z-20">
-              <div className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-lg border border-gray-700/50 rounded-2xl p-6 shadow-2xl">
-                <h4 className="text-white font-bold mb-4 text-center">
+          <div className="relative order-1 lg:order-2">
+            {/* Tech Stack Rotation Display - Responsive positioning */}
+            <div
+              className={`${isMobile ? "relative -top-4 mb-8" : "absolute -top-10 right-10 z-20"}`}
+            >
+              <div className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-lg border border-gray-700/50 rounded-2xl p-4 sm:p-6 shadow-2xl">
+                <h4 className="text-white font-bold mb-4 text-center text-sm sm:text-base">
                   Tech Stack
                 </h4>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
                   {techStack.map((tech, index) => {
                     const Icon = tech.icon;
                     const isActive = index === activeTech;
                     return (
                       <div
                         key={index}
-                        className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-300 ${
+                        className={`flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg transition-all duration-300 ${
                           isActive
                             ? "bg-gradient-to-r from-gray-700 to-gray-800 border border-primary-500/30"
                             : "bg-gray-800/50"
                         }`}
                       >
                         <div
-                          className={`p-2 rounded-lg ${isActive ? tech.color.replace("from-", "bg-gradient-to-br ") : "bg-gray-700"}`}
+                          className={`p-1.5 sm:p-2 rounded-lg ${isActive ? tech.color.replace("from-", "bg-gradient-to-br ") : "bg-gray-700"}`}
                         >
                           <Icon
-                            className={`text-lg ${isActive ? "text-white" : "text-gray-400"}`}
+                            className={`text-base sm:text-lg ${isActive ? "text-white" : "text-gray-400"}`}
                           />
                         </div>
                         <span
-                          className={`font-medium ${isActive ? "text-white" : "text-gray-400"}`}
+                          className={`font-medium text-sm sm:text-base ${isActive ? "text-white" : "text-gray-400"}`}
                         >
                           {tech.label}
                         </span>
@@ -400,9 +402,9 @@ const Hero = () => {
             </div>
 
             {/* Main Image with Futuristic Frame */}
-            <div className="relative">
+            <div className="relative mt-8 lg:mt-0">
               {/* Outer Glow */}
-              <div className="absolute -inset-4 bg-gradient-to-br from-primary-500/20 via-blue-500/20 to-cyan-500/20 rounded-3xl blur-xl" />
+              <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-br from-primary-500/20 via-blue-500/20 to-cyan-500/20 rounded-3xl blur-xl" />
 
               {/* Image Container */}
               <div className="relative z-10 group">
@@ -433,51 +435,55 @@ const Hero = () => {
                 </div>
               </div>
 
-              {/* Floating Elements Around Image */}
-              <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-2xl" />
-              <div className="absolute -top-6 -right-6 w-40 h-40 bg-gradient-to-tr from-blue-500/10 to-transparent rounded-full blur-2xl" />
+              {/* Floating Elements Around Image - Hidden on mobile */}
+              <div className="hidden lg:block absolute -bottom-6 -left-6 w-32 h-32 bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-2xl" />
+              <div className="hidden lg:block absolute -top-6 -right-6 w-40 h-40 bg-gradient-to-tr from-blue-500/10 to-transparent rounded-full blur-2xl" />
             </div>
 
             {/* Contact Info - Modern Card */}
-            <div className="mt-10 relative">
+            <div className="mt-8 sm:mt-10 relative">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-gray-700 to-gray-900 rounded-2xl blur opacity-50" />
-              <div className="relative bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-lg border border-gray-700/50 rounded-2xl p-6 shadow-2xl">
-                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-                  <div className="w-1 h-8 bg-gradient-to-b from-primary-500 to-blue-500 rounded-full" />
+              <div className="relative bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-lg border border-gray-700/50 rounded-2xl p-4 sm:p-6 shadow-2xl">
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-6 flex items-center gap-3">
+                  <div className="w-1 h-6 sm:h-8 bg-gradient-to-b from-primary-500 to-blue-500 rounded-full" />
                   <span>Get In Touch</span>
                 </h3>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <a
                     href={`mailto:${infoData.email}`}
-                    className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-gray-800/50 to-gray-900/50 hover:from-primary-500/10 hover:to-blue-500/10 transition-all duration-300 border border-gray-700/50 hover:border-primary-500/30"
+                    className="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-gradient-to-r from-gray-800/50 to-gray-900/50 hover:from-primary-500/10 hover:to-blue-500/10 transition-all duration-300 border border-gray-700/50 hover:border-primary-500/30"
                   >
-                    <div className="p-3 bg-gradient-to-br from-primary-500/20 to-blue-500/20 rounded-lg group-hover:scale-110 transition-transform">
-                      <FiMail className="text-primary-400" />
+                    <div className="p-2 sm:p-3 bg-gradient-to-br from-primary-500/20 to-blue-500/20 rounded-lg group-hover:scale-110 transition-transform">
+                      <FiMail className="text-primary-400 text-sm sm:text-base" />
                     </div>
-                    <div className="flex-1">
-                      <div className="text-sm text-gray-400">Email</div>
-                      <div className="text-white font-medium group-hover:text-primary-300 transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs sm:text-sm text-gray-400">
+                        Email
+                      </div>
+                      <div className="text-white font-medium text-sm sm:text-base group-hover:text-primary-300 transition-colors truncate">
                         {infoData.email}
                       </div>
                     </div>
-                    <FiChevronRight className="text-gray-500 group-hover:text-primary-400 group-hover:translate-x-1 transition-all" />
+                    <FiChevronRight className="text-gray-500 group-hover:text-primary-400 group-hover:translate-x-1 transition-all flex-shrink-0" />
                   </a>
 
                   <a
                     href={`tel:${infoData.phone.replace(/\s/g, "")}`}
-                    className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-gray-800/50 to-gray-900/50 hover:from-green-500/10 hover:to-emerald-500/10 transition-all duration-300 border border-gray-700/50 hover:border-green-500/30"
+                    className="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-gradient-to-r from-gray-800/50 to-gray-900/50 hover:from-green-500/10 hover:to-emerald-500/10 transition-all duration-300 border border-gray-700/50 hover:border-green-500/30"
                   >
-                    <div className="p-3 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-lg group-hover:scale-110 transition-transform">
-                      <FiPhone className="text-green-400" />
+                    <div className="p-2 sm:p-3 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-lg group-hover:scale-110 transition-transform">
+                      <FiPhone className="text-green-400 text-sm sm:text-base" />
                     </div>
-                    <div className="flex-1">
-                      <div className="text-sm text-gray-400">Phone</div>
-                      <div className="text-white font-medium group-hover:text-green-300 transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs sm:text-sm text-gray-400">
+                        Phone
+                      </div>
+                      <div className="text-white font-medium text-sm sm:text-base group-hover:text-green-300 transition-colors">
                         {infoData.phone}
                       </div>
                     </div>
-                    <FiChevronRight className="text-gray-500 group-hover:text-green-400 group-hover:translate-x-1 transition-all" />
+                    <FiChevronRight className="text-gray-500 group-hover:text-green-400 group-hover:translate-x-1 transition-all flex-shrink-0" />
                   </a>
                 </div>
               </div>
@@ -489,7 +495,7 @@ const Hero = () => {
       {/* Scroll Indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
         <div className="flex flex-col items-center gap-2 animate-bounce-slow">
-          <div className="text-sm text-gray-500 font-medium tracking-wider">
+          <div className="text-sm text-gray-500 font-medium tracking-wider hidden sm:block">
             EXPLORE MORE
           </div>
           <div className="w-6 h-10 border-2 border-primary-500/30 rounded-full flex justify-center p-2">

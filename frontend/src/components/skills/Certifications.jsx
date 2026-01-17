@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaDatabase, FaPython, FaRobot } from "react-icons/fa";
 import {
   FiAward,
@@ -15,11 +15,20 @@ import {
 } from "react-icons/fi";
 import { SiMicrosoftazure, SiTensorflow } from "react-icons/si";
 import { useNavigate } from "react-router-dom";
+import DAWPCertife from "../skills/data/pdf/Data Analysis with Python.pdf";
+import P101FDSCertifcate from "../skills/data/pdf/Python 101 for Data Science.pdf";
+import ITAICertufucat from "../skills/data/pdf/Naceur Keraani-Introduction to Artificial Intelligence Certificate of Completion.pdf";
+import MLPCertificate from "../skills/data/pdf/Machine Learning with Python.pdf";
+import DVPCertificate from "../skills/data/pdf/Data Visualization with Python.pdf";
+import RDSCertificate from "../skills/data/pdf/R for Data Science.pdf";
+import STOLCertificate from "../skills/data/pdf/Siemens Tia portal  levels 1_2_3 .pdf";
+import CertificateCompt from "../skills/data/pdf/Networking_Devices_and_Initial_Configuration_Badge20240219-34-yq8bxu.pdf";
 
 const Certifications = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [hoveredCert, setHoveredCert] = useState(null);
   const [showDetails, setShowDetails] = useState(null);
+  const [sortedCertifications, setSortedCertifications] = useState([]);
   const navigate = useNavigate();
 
   const certifications = [
@@ -51,7 +60,7 @@ const Certifications = () => {
       skills: ["Scikit-learn", "Pandas", "Model Evaluation"],
       verified: true,
       badge: "Verified",
-      link: "#",
+      certificate_pdf: MLPCertificate,
     },
     {
       id: 3,
@@ -126,13 +135,13 @@ const Certifications = () => {
       skills: ["NumPy", "Pandas", "Matplotlib"],
       verified: true,
       badge: "Completed",
-      link: "#",
+      certificate_pdf: DAWPCertife,
     },
     {
       id: 8,
       name: "Python 101 for Data Science",
       issuer: "IBM Developer Skills Network",
-      date: "April 2023",
+      date: "October 2023",
       icon: FaPython,
       color: "from-teal-600 to-green-600",
       category: "data-science",
@@ -141,7 +150,7 @@ const Certifications = () => {
       skills: ["Python Basics", "Data Types", "Functions"],
       verified: true,
       badge: "Fundamentals",
-      link: "#",
+      certificate_pdf: P101FDSCertifcate,
     },
     {
       id: 9,
@@ -158,25 +167,157 @@ const Certifications = () => {
       badge: "Intensive",
       link: "#",
     },
+    {
+      id: 10,
+      name: "Data Analytics With Python",
+      issuer: "IBM Developer Skills Network",
+      date: "December 2023",
+      icon: FiAward,
+      color: "from-gray-600 to-gray-800",
+      category: "ai-ml",
+      duration: "3 weeks",
+      level: "Beginner",
+      skills: ["AI Concepts", "Use Cases", "Ethics"],
+      verified: true,
+      badge: "Introductory",
+      certificate_pdf: DAWPCertife,
+    },
+    {
+      id: 11,
+      name: "Introduction To Artificial Intelligence",
+      issuer: "GOMYCODE",
+      date: "February 2023",
+      icon: FiBookOpen,
+      color: "from-yellow-700 to-yellow-900",
+      category: "ai-ml",
+      duration: "5 months",
+      level: "Beginner",
+      skills: ["AI Basics", "History", "Applications"],
+      verified: true,
+      badge: "Fundamentals",
+      certificate_pdf: ITAICertufucat,
+    },
+    {
+      id: 12,
+      name: "Data Visualization with Python",
+      issuer: "IBM Developer Skills Network",
+      date: "February 2024",
+      icon: FaRobot,
+      color: "from-pink-600 to-red-600",
+      category: "ai-ml",
+      duration: "8 weeks",
+      level: "Advanced",
+      skills: ["Matplotlib", "Seaborn", "Plotly"],
+      verified: true,
+      badge: "Advanced",
+      certificate_pdf: DVPCertificate,
+    },
+    {
+      id: 13,
+      name: "R for Data Science",
+      issuer: "IBM Developer Skills Network",
+      date: "October 2025",
+      icon: FaDatabase,
+      color: "from-green-700 to-teal-700",
+      category: "data-science",
+      duration: "4 weeks",
+      level: "Expert",
+      skills: ["R Programming", "Data Wrangling", "Visualization"],
+      verified: true,
+      badge: "Expert",
+      certificate_pdf: RDSCertificate,
+    },
+    {
+      id: 14,
+      name: "Plc programmer siemens Tia portal levels 1/2/3",
+      issuer: "High Tech Lerning",
+      date: "October 2019",
+      icon: FiShield,
+      color: "from-blue-600 to-indigo-600",
+      category: "data-science",
+      duration: "6 weeks",
+      level: "Intermediate",
+      skills: ["Siemens PLC", "Tia Portal", "Automation"],
+      verified: true,
+      badge: "Intermediate",
+      certificate_pdf: STOLCertificate,
+    },
+    {
+      id: 15,
+      name: "Certificate of Course Completion",
+      issuer: "CISCO Networking Academy",
+      date: "February 2019",
+      icon: FiZap,
+      color: "from-red-600 to-orange-600",
+      category: "data-science",
+      duration: "4 weeks",
+      level: "expert",
+      skills: ["Networking Basics", "Network Security", "Troubleshooting"],
+      verified: true,
+      badge: "Fundamentals",
+      certificate_pdf: CertificateCompt,
+    },
   ];
 
+  // Parse date string to Date object for sorting
+  const parseDate = (dateString) => {
+    const months = {
+      January: 0,
+      February: 1,
+      March: 2,
+      April: 3,
+      May: 4,
+      June: 5,
+      July: 6,
+      August: 7,
+      September: 8,
+      October: 9,
+      November: 10,
+      December: 11,
+    };
+
+    const [month, year] = dateString.split(" ");
+    return new Date(parseInt(year), months[month]);
+  };
+
+  // Sort certifications by date (newest first)
+  useEffect(() => {
+    const sorted = [...certifications].sort((a, b) => {
+      const dateA = parseDate(a.date);
+      const dateB = parseDate(b.date);
+      return dateB - dateA; // Newest first
+    });
+    setSortedCertifications(sorted);
+  }, []);
+
   const filters = [
-    { id: "all", label: "All Certifications", count: 9, icon: FiAward },
-    { id: "ai-ml", label: "AI & Machine Learning", count: 5, icon: FaRobot },
-    { id: "data-science", label: "Data Science", count: 3, icon: FaDatabase },
+    { id: "all", label: "All Certifications", count: 15, icon: FiAward },
+    { id: "ai-ml", label: "AI & Machine Learning", count: 8, icon: FaRobot },
+    { id: "data-science", label: "Data Science", count: 6, icon: FaDatabase },
     { id: "cloud-ai", label: "Cloud AI", count: 1, icon: SiMicrosoftazure },
   ];
 
   const filteredCerts =
     activeFilter === "all"
-      ? certifications
-      : certifications.filter((cert) => cert.category === activeFilter);
+      ? sortedCertifications
+      : sortedCertifications.filter((cert) => cert.category === activeFilter);
 
   const issuerStats = {
-    "IBM Developer Skills Network": 6,
+    "IBM Developer Skills Network": 9,
     "TensorFlow / Google": 1,
     Microsoft: 1,
-    GOMYCODE: 1,
+    GOMYCODE: 2,
+    "High Tech Lerning": 1,
+    "CISCO Networking Academy": 1,
+  };
+
+  // Function to handle PDF opening
+  const handleOpenPDF = (cert) => {
+    if (cert.certificate_pdf) {
+      window.open(cert.certificate_pdf, "_blank", "noopener,noreferrer");
+    } else if (cert.link && cert.link !== "#") {
+      window.open(cert.link, "_blank", "noopener,noreferrer");
+    }
   };
 
   return (
@@ -253,7 +394,7 @@ const Certifications = () => {
           </div>
           <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6 text-center">
             <div className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">
-              4
+              {Object.keys(issuerStats).length}
             </div>
             <div className="text-gray-400">Issuing Organizations</div>
           </div>
@@ -322,7 +463,6 @@ const Certifications = () => {
                   setHoveredCert(null);
                   if (!showDetail) setShowDetails(null);
                 }}
-                onClick={() => setShowDetails(showDetail ? null : cert.id)}
               >
                 {/* Card Glow */}
                 <div
@@ -416,9 +556,28 @@ const Certifications = () => {
                         ))}
                       </div>
 
-                      <button className="w-full group relative bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-700/50 text-gray-300 py-2 rounded-lg font-medium hover:text-white hover:border-primary-500/30 transition-all duration-300 flex items-center justify-center gap-2">
-                        <span>View Credential</span>
-                        <FiExternalLink className="group-hover:translate-x-1 transition-transform" />
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenPDF(cert);
+                        }}
+                        className="w-full group relative bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-700/50 text-gray-300 py-2 rounded-lg font-medium hover:text-white hover:border-primary-500/30 transition-all duration-300 flex items-center justify-center gap-2"
+                        disabled={
+                          !cert.certificate_pdf &&
+                          (!cert.link || cert.link === "#")
+                        }
+                      >
+                        <span>
+                          {cert.certificate_pdf
+                            ? "View Certificate"
+                            : cert.link && cert.link !== "#"
+                              ? "View Details"
+                              : "No Link Available"}
+                        </span>
+                        {(cert.certificate_pdf ||
+                          (cert.link && cert.link !== "#")) && (
+                          <FiExternalLink className="group-hover:translate-x-1 transition-transform" />
+                        )}
                       </button>
                     </div>
                   )}
@@ -430,7 +589,13 @@ const Certifications = () => {
                         <FiCheckCircle className="text-green-400" />
                         <span>Verified Credential</span>
                       </div>
-                      <button className="text-primary-400 hover:text-primary-300 transition-colors">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowDetails(showDetail ? null : cert.id);
+                        }}
+                        className="text-primary-400 hover:text-primary-300 transition-colors"
+                      >
                         <FiChevronRight
                           className={`transform transition-transform duration-300 ${
                             showDetail ? "rotate-90" : ""
