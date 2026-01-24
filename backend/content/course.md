@@ -10,41 +10,41 @@ The Courses API manages educational resources (primarily books) for your learnin
 
 ### Courses Table Structure
 
-| Field | Type | Description | Required |
-|-------|------|-------------|----------|
-| id | UUID | Primary key (auto-generated) | ✅ |
-| title | VARCHAR(200) | Book title | ✅ |
-| author | VARCHAR(100) | Author name | ✅ |
-| description | TEXT | Full description | ✅ |
-| short_description | VARCHAR(500) | Brief summary | ✅ |
-| cover_image | TEXT | Book cover image URL | ✅ |
-| category | VARCHAR(50) | Category (ML, DL, Data Science, etc.) | ✅ |
-| level | VARCHAR(20) | Difficulty level (Beginner/Intermediate/Advanced) | ✅ |
-| amazon_link | TEXT | Amazon purchase link | ✅ |
-| price | DECIMAL(10,2) | Current price | ✅ |
-| original_price | DECIMAL(10,2) | Original price (for discounts) | ❌ |
-| rating | DECIMAL(3,2) | Average rating (0-5) | ❌ |
-| reviews | INTEGER | Number of reviews | ❌ |
-| reviews_count | INTEGER | Alias for reviews | ❌ |
-| priority | VARCHAR(50) | Recommendation priority (Essential/Foundational/etc.) | ❌ |
-| personal_insight | TEXT | Why you recommend this book | ❌ |
-| time_to_read | VARCHAR(50) | Estimated reading time | ❌ |
-| year | INTEGER | Publication year | ❌ |
-| pages | INTEGER | Number of pages | ❌ |
-| why_recommend | TEXT[] | Array of reasons (Career, Practical, etc.) | ❌ |
-| bestseller | BOOLEAN | Is a bestseller | ❌ |
-| featured | BOOLEAN | Featured on homepage | ❌ |
-| clicks_count | INTEGER | Amazon link click count | ❌ |
-| tags | TEXT[] | Searchable tags | ❌ |
-| created_at | TIMESTAMP | Creation timestamp | ✅ |
-| updated_at | TIMESTAMP | Last update timestamp | ✅ |
+| Field             | Type          | Description                                           | Required |
+| ----------------- | ------------- | ----------------------------------------------------- | -------- |
+| id                | UUID          | Primary key (auto-generated)                          | ✅       |
+| title             | VARCHAR(200)  | Book title                                            | ✅       |
+| author            | VARCHAR(100)  | Author name                                           | ✅       |
+| description       | TEXT          | Full description                                      | ✅       |
+| short_description | VARCHAR(500)  | Brief summary                                         | ✅       |
+| cover_image       | TEXT          | Book cover image URL                                  | ✅       |
+| category          | VARCHAR(50)   | Category (ML, DL, Data Science, etc.)                 | ✅       |
+| level             | VARCHAR(20)   | Difficulty level (Beginner/Intermediate/Advanced)     | ✅       |
+| amazon_link       | TEXT          | Amazon purchase link                                  | ✅       |
+| price             | DECIMAL(10,2) | Current price                                         | ✅       |
+| original_price    | DECIMAL(10,2) | Original price (for discounts)                        | ❌       |
+| rating            | DECIMAL(3,2)  | Average rating (0-5)                                  | ❌       |
+| reviews           | INTEGER       | Number of reviews                                     | ❌       |
+| reviews_count     | INTEGER       | Alias for reviews                                     | ❌       |
+| priority          | VARCHAR(50)   | Recommendation priority (Essential/Foundational/etc.) | ❌       |
+| personal_insight  | TEXT          | Why you recommend this book                           | ❌       |
+| time_to_read      | VARCHAR(50)   | Estimated reading time                                | ❌       |
+| year              | INTEGER       | Publication year                                      | ❌       |
+| pages             | INTEGER       | Number of pages                                       | ❌       |
+| why_recommend     | TEXT[]        | Array of reasons (Career, Practical, etc.)            | ❌       |
+| bestseller        | BOOLEAN       | Is a bestseller                                       | ❌       |
+| featured          | BOOLEAN       | Featured on homepage                                  | ❌       |
+| clicks_count      | INTEGER       | Amazon link click count                               | ❌       |
+| tags              | TEXT[]        | Searchable tags                                       | ❌       |
+| created_at        | TIMESTAMP     | Creation timestamp                                    | ✅       |
+| updated_at        | TIMESTAMP     | Last update timestamp                                 | ✅       |
 
 ## 🚀 API Endpoints
 
 ### Base URL
 
 ```
-https://yourdomain.com/api/courses
+https://naceur-keraani.com/api/courses
 ```
 
 ## Public Endpoints (No Authentication Required)
@@ -57,23 +57,25 @@ Returns a paginated list of courses with advanced filtering options.
 
 **Query Parameters:**
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| category | string | all | Filter by category |
-| level | string | all | Filter by difficulty level |
-| priceRange | string | all | Price range filter |
-| sortBy | string | featured | Sort order |
-| search | string | '' | Search query |
-| page | integer | 1 | Page number |
-| limit | integer | 9 | Items per page |
+| Parameter  | Type    | Default  | Description                |
+| ---------- | ------- | -------- | -------------------------- |
+| category   | string  | all      | Filter by category         |
+| level      | string  | all      | Filter by difficulty level |
+| priceRange | string  | all      | Price range filter         |
+| sortBy     | string  | featured | Sort order                 |
+| search     | string  | ''       | Search query               |
+| page       | integer | 1        | Page number                |
+| limit      | integer | 9        | Items per page             |
 
 **Price Range Options:**
+
 - `under40`: Price < $40
 - `40-80`: $40 ≤ Price ≤ $80
 - `80-120`: $80 ≤ Price ≤ $120
 - `over120`: Price > $120
 
 **Sort Options:**
+
 - `featured`: Featured first, then by date
 - `price-low`: Price ascending
 - `price-high`: Price descending
@@ -134,9 +136,9 @@ Returns featured courses for recommendations section.
 
 **Query Parameters:**
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| limit | integer | 3 | Number of recommendations |
+| Parameter | Type    | Default | Description               |
+| --------- | ------- | ------- | ------------------------- |
+| limit     | integer | 3       | Number of recommendations |
 
 **Example Request:**
 
@@ -186,7 +188,7 @@ GET /api/courses/123e4567-e89b-12d3-a456-426614174000
     "id": "123e4567-e89b-12d3-a456-426614174000",
     "title": "Python for Data Analysis",
     "author": "Wes McKinney",
-    "description": "Data wrangling with Pandas...",
+    "description": "Data wrangling with Pandas..."
     // ... all fields
   }
 }
@@ -206,7 +208,7 @@ Returns all unique categories.
   "count": 4,
   "data": [
     "Machine Learning",
-    "Deep Learning", 
+    "Deep Learning",
     "Data Science",
     "Python Programming"
   ]
@@ -225,11 +227,7 @@ Returns all unique difficulty levels.
 {
   "success": true,
   "count": 3,
-  "data": [
-    "Beginner",
-    "Intermediate",
-    "Advanced"
-  ]
+  "data": ["Beginner", "Intermediate", "Advanced"]
 }
 ```
 
@@ -241,11 +239,11 @@ Advanced search across multiple fields.
 
 **Query Parameters:**
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| q | string | Search query |
-| category | string | Filter by category |
-| level | string | Filter by level |
+| Parameter | Type   | Description        |
+| --------- | ------ | ------------------ |
+| q         | string | Search query       |
+| category  | string | Filter by category |
+| level     | string | Filter by level    |
 
 **Example Request:**
 
@@ -359,7 +357,7 @@ Content-Type: application/json
   "success": true,
   "message": "Course created successfully",
   "data": {
-    "id": "new-uuid-here",
+    "id": "new-uuid-here"
     // ... all fields
   }
 }
@@ -454,12 +452,12 @@ Content-Type: application/json
   "courses": [
     {
       "title": "Book 1",
-      "author": "Author 1",
+      "author": "Author 1"
       // ... other fields
     },
     {
       "title": "Book 2",
-      "author": "Author 2",
+      "author": "Author 2"
       // ... other fields
     }
   ]
@@ -474,7 +472,7 @@ Content-Type: application/json
 // Using axios
 const fetchBooks = async () => {
   try {
-    const response = await axios.get('/api/courses', {
+    const response = await axios.get("/api/courses", {
       params: {
         category: selectedCategory,
         level: selectedLevel,
@@ -482,14 +480,14 @@ const fetchBooks = async () => {
         sortBy,
         search: searchQuery,
         page: currentPage,
-        limit: 9
-      }
+        limit: 9,
+      },
     });
-    
+
     setBooks(response.data.data);
     setTotalPages(response.data.totalPages);
   } catch (error) {
-    console.error('Error fetching books:', error);
+    console.error("Error fetching books:", error);
   }
 };
 ```
@@ -499,12 +497,12 @@ const fetchBooks = async () => {
 ```javascript
 const fetchRecommendations = async () => {
   try {
-    const response = await axios.get('/api/courses/featured', {
-      params: { limit: 3 }
+    const response = await axios.get("/api/courses/featured", {
+      params: { limit: 3 },
     });
     setRecommendations(response.data.data);
   } catch (error) {
-    console.error('Error fetching recommendations:', error);
+    console.error("Error fetching recommendations:", error);
   }
 };
 ```
@@ -516,11 +514,11 @@ const handleAmazonClick = async (bookId) => {
   try {
     await axios.post(`/api/courses/${bookId}/click`);
     // Open Amazon link in new tab
-    window.open(amazonLink, '_blank');
+    window.open(amazonLink, "_blank");
   } catch (error) {
-    console.error('Error tracking click:', error);
+    console.error("Error tracking click:", error);
     // Still open the link even if tracking fails
-    window.open(amazonLink, '_blank');
+    window.open(amazonLink, "_blank");
   }
 };
 ```
@@ -530,13 +528,13 @@ const handleAmazonClick = async (bookId) => {
 ```javascript
 const createBook = async (bookData) => {
   try {
-    const token = localStorage.getItem('token');
-    const response = await axios.post('/api/courses', bookData, {
-      headers: { Authorization: `Bearer ${token}` }
+    const token = localStorage.getItem("token");
+    const response = await axios.post("/api/courses", bookData, {
+      headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
   } catch (error) {
-    console.error('Error creating book:', error);
+    console.error("Error creating book:", error);
     throw error;
   }
 };
@@ -552,7 +550,8 @@ const sampleBook = {
   author: "Aurélien Géron",
   description: "Comprehensive guide to building intelligent systems...",
   short_description: "Practical ML with Scikit-Learn & TensorFlow",
-  cover_image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&q=80",
+  cover_image:
+    "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&q=80",
   category: "Machine Learning",
   level: "Intermediate",
   amazon_link: "https://amazon.com/dp/1492032646",
@@ -561,15 +560,23 @@ const sampleBook = {
   rating: 4.7,
   reviews: 2834,
   priority: "Essential",
-  personal_insight: "This book completely changed how I approach machine learning projects...",
+  personal_insight:
+    "This book completely changed how I approach machine learning projects...",
   time_to_read: "3-4 weeks",
   year: 2022,
   pages: 850,
   why_recommend: ["Career", "Practical", "Foundation", "Reference"],
   bestseller: true,
   featured: true,
-  tags: ["Python", "Machine Learning", "Scikit-Learn", "TensorFlow", "Keras", "Deep Learning"],
-  clicks_count: 0
+  tags: [
+    "Python",
+    "Machine Learning",
+    "Scikit-Learn",
+    "TensorFlow",
+    "Keras",
+    "Deep Learning",
+  ],
+  clicks_count: 0,
 };
 ```
 
@@ -607,15 +614,15 @@ CORS_ORIGIN=http://localhost:3000
 
 ### Common HTTP Status Codes
 
-| Code | Meaning | Description |
-|------|---------|-------------|
-| 200 | OK | Request successful |
-| 201 | Created | Resource created successfully |
-| 400 | Bad Request | Invalid request data |
-| 401 | Unauthorized | Authentication required |
-| 403 | Forbidden | Insufficient permissions |
-| 404 | Not Found | Resource not found |
-| 500 | Internal Server Error | Server error |
+| Code | Meaning               | Description                   |
+| ---- | --------------------- | ----------------------------- |
+| 200  | OK                    | Request successful            |
+| 201  | Created               | Resource created successfully |
+| 400  | Bad Request           | Invalid request data          |
+| 401  | Unauthorized          | Authentication required       |
+| 403  | Forbidden             | Insufficient permissions      |
+| 404  | Not Found             | Resource not found            |
+| 500  | Internal Server Error | Server error                  |
 
 ### Error Response Format
 
@@ -633,6 +640,7 @@ CORS_ORIGIN=http://localhost:3000
 ### 1. Pagination
 
 Always use pagination for large datasets:
+
 - Default limit: 9 items per page
 - Include page and limit parameters
 - Return totalPages and currentPage in response
@@ -685,6 +693,7 @@ Always use pagination for large datasets:
 ## 🆘 Support
 
 For issues or questions:
+
 - Check the error logs
 - Verify database connection
 - Test API endpoints with Postman
