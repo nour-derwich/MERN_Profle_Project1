@@ -4,10 +4,10 @@ const bcrypt = require("bcrypt");
 const simpleSetup = async () => {
   try {
     console.log("🚀 Simple Database Setup...\n");
-    
+
     // 1. Create tables (simplified version)
     console.log("📋 Creating tables...");
-    
+
     const tables = [
       // Users table
       `CREATE TABLE IF NOT EXISTS users (
@@ -21,7 +21,7 @@ const simpleSetup = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )`,
-      
+
       // Projects table (simplified)
       `CREATE TABLE IF NOT EXISTS projects (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -39,7 +39,7 @@ const simpleSetup = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )`,
-      
+
       // Courses table (simplified)
       `CREATE TABLE IF NOT EXISTS courses (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -56,7 +56,7 @@ const simpleSetup = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )`,
-      
+
       // Formations table (simplified)
       `CREATE TABLE IF NOT EXISTS formations (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -73,23 +73,27 @@ const simpleSetup = async () => {
         tags VARCHAR(100)[],
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )`
+      )`,
     ];
-    
+
     for (const tableSql of tables) {
       try {
         await query(tableSql);
-        const tableName = tableSql.match(/CREATE TABLE IF NOT EXISTS (\w+)/i)[1];
+        const tableName = tableSql.match(
+          /CREATE TABLE IF NOT EXISTS (\w+)/i,
+        )[1];
         console.log(`✓ Created table: ${tableName}`);
       } catch (error) {
-        console.log(`ℹ️  Table may already exist: ${error.message.split('\n')[0]}`);
+        console.log(
+          `ℹ️  Table may already exist: ${error.message.split("\n")[0]}`,
+        );
       }
     }
-    
+
     // 2. Create admin user
     console.log("\n👤 Creating admin user...");
-    const passwordHash = await bcrypt.hash("admin123", 10);
-    
+    const passwordHash = await bcrypt.hash("naceur159@", 10);
+
     try {
       await query(
         `INSERT INTO users (username, email, password_hash, full_name, role) 
@@ -97,18 +101,24 @@ const simpleSetup = async () => {
          ON CONFLICT (username) DO UPDATE SET 
          password_hash = EXCLUDED.password_hash,
          full_name = EXCLUDED.full_name`,
-        ["admin", "admin@portfolio.com", passwordHash, "Naceur Keraani", "admin"]
+        [
+          "admin",
+          "naceur.vps@keraani.com",
+          passwordHash,
+          "Naceur Keraani",
+          "admin",
+        ],
       );
       console.log("✅ Admin user created/updated");
-      console.log("   📧 Email: admin@portfolio.com");
-      console.log("   🔑 Password: admin123");
+      console.log("   📧 Email: naceur.vps@keraani.com");
+      console.log("   🔑 Password: naceur159@");
     } catch (error) {
-      console.log(`ℹ️  Admin user: ${error.message.split('\n')[0]}`);
+      console.log(`ℹ️  Admin user: ${error.message.split("\n")[0]}`);
     }
-    
+
     console.log("\n✅ Simple setup completed!");
     console.log("💡 You can now run 'npm run dev' to start your application\n");
-    
+
     process.exit(0);
   } catch (error) {
     console.error("\n❌ Setup failed:", error.message);

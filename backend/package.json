@@ -9,7 +9,7 @@
     "db:setup": "node scripts/setup-database.js",
     "db:seed": "node scripts/seed-database.js",
     "db:reset": "node scripts/reset-database.js",
-    "db:fresh": "npm run db:reset && npm run db:setup && npm run db:seed && npm run db:migrate",
+    "db:fresh": "npm run db:setup && npm run db:seed",
     "db:seed-courses": "node scripts/seed-courses.js"
   },
   "keywords": [],

@@ -89,7 +89,7 @@ CREATE TABLE projects (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    slug VARCHAR(255) UNIQUE,
+    slug VARCHAR(255) UNIQUE
 );
 
 -- ============================================
@@ -143,6 +143,7 @@ CREATE TABLE formations (
     tags VARCHAR(100)[],
     meta_description VARCHAR(300),
     meta_keywords VARCHAR(200),
+    slug VARCHAR(255) UNIQUE,  -- ADD THIS LINE
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -179,6 +180,7 @@ CREATE TABLE courses (
     bestseller BOOLEAN DEFAULT false,
     tags TEXT[],
     reviews INTEGER DEFAULT 0,
+    slug VARCHAR(255) UNIQUE,  -- ADD THIS LINE
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

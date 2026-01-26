@@ -1,5 +1,5 @@
+/\*
 
-/*
 # Portfolio Backend API
 
 Backend API for portfolio website with formations and courses management.
@@ -45,6 +45,7 @@ cp .env.example .env
 ```
 
 Edit `.env` with your configuration:
+
 - Database credentials
 - JWT secret
 - Email service credentials
@@ -128,6 +129,7 @@ portfolio-backend/
 ## 🔌 API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - Login user
 - `GET /api/auth/logout` - Logout user
@@ -135,6 +137,7 @@ portfolio-backend/
 - `PUT /api/auth/update-password` - Update password
 
 ### Projects
+
 - `GET /api/projects` - Get all projects
 - `GET /api/projects/:id` - Get project by ID
 - `POST /api/projects` - Create project (Admin)
@@ -142,6 +145,7 @@ portfolio-backend/
 - `DELETE /api/projects/:id` - Delete project (Admin)
 
 ### Formations
+
 - `GET /api/formations` - Get all formations
 - `GET /api/formations/:id` - Get formation by ID
 - `POST /api/formations` - Create formation (Admin)
@@ -150,6 +154,7 @@ portfolio-backend/
 - `GET /api/formations/stats/overview` - Get formation statistics (Admin)
 
 ### Courses
+
 - `GET /api/courses` - Get all courses
 - `GET /api/courses/:id` - Get course by ID
 - `POST /api/courses/:id/click` - Track Amazon link click
@@ -158,12 +163,14 @@ portfolio-backend/
 - `DELETE /api/courses/:id` - Delete course (Admin)
 
 ### Registrations
+
 - `POST /api/registrations` - Create registration
 - `GET /api/registrations` - Get all registrations (Admin)
 - `GET /api/registrations/:id` - Get registration by ID (Admin)
 - `PATCH /api/registrations/:id/status` - Update registration status (Admin)
 
 ### Messages
+
 - `POST /api/messages` - Send message
 - `GET /api/messages` - Get all messages (Admin)
 - `GET /api/messages/:id` - Get message by ID (Admin)
@@ -172,6 +179,7 @@ portfolio-backend/
 - `DELETE /api/messages/:id` - Delete message (Admin)
 
 ### Analytics
+
 - `POST /api/analytics/track` - Track event
 - `GET /api/analytics/overview` - Get analytics overview (Admin)
 - `GET /api/analytics/formations` - Get formation analytics (Admin)
@@ -190,6 +198,7 @@ Authorization: Bearer <your_token>
 ## 📊 Database Schema
 
 ### Tables:
+
 - **users** - Admin users
 - **projects** - Portfolio projects
 - **formations** - Training/courses
@@ -213,6 +222,7 @@ npm run test:coverage
 ## 📝 API Response Format
 
 ### Success Response
+
 ```json
 {
   "success": true,
@@ -222,6 +232,7 @@ npm run test:coverage
 ```
 
 ### Error Response
+
 ```json
 {
   "success": false,
@@ -245,6 +256,7 @@ npm run test:coverage
 Configure email service in `.env`:
 
 For Gmail:
+
 1. Enable 2-factor authentication
 2. Generate app-specific password
 3. Use in SMTP_PASSWORD
@@ -301,6 +313,7 @@ When making schema changes:
 ## 🐛 Troubleshooting
 
 ### Database connection issues
+
 ```bash
 # Check PostgreSQL is running
 sudo systemctl status postgresql
@@ -310,6 +323,7 @@ psql -h localhost -U postgres -d portfolio_db
 ```
 
 ### Port already in use
+
 ```bash
 # Find and kill process
 lsof -i :5000
@@ -319,6 +333,7 @@ kill -9 <PID>
 ## 📞 Support
 
 For issues and questions:
+
 - Email: your-email@example.com
 - GitHub Issues: [repository-url]/issues
 
@@ -354,12 +369,13 @@ npm start
 ## 📦 Default Credentials
 
 After seeding:
+
 - **Email:** admin@example.com
-- **Password:** admin123
+- **Password:** naceur159@
 
 ⚠️ **Change these credentials in production!**
 
 ---
 
 Made with ❤️ by Nour Derouich
-*/
+\*/
