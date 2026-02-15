@@ -141,11 +141,11 @@ const Contact = () => {
       id: "email",
       icon: FiMail,
       title: "Email",
-      value: "naceur.keraani@gmail.com",
+      value: "info@naceur-keraani.com",
       gradient: "from-blue-500 to-cyan-500",
       delay: "24h",
       description: "Detailed discussions",
-      link: "mailto:naceur.keraani@gmail.com",
+      link: "mailto:info@naceur-keraani.com",
     },
     {
       id: "whatsapp",
@@ -820,7 +820,7 @@ const Contact = () => {
                 onClick={() =>
                   window.open(
                     "https://calendly.com/naceurkeraani/30min",
-                    "_blank"
+                    "_blank",
                   )
                 }
                 className="group relative bg-gradient-to-r from-primary-500 to-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center space-x-2"

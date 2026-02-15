@@ -108,6 +108,7 @@ const ProgrammingSkills = ({ isVisible }) => {
 
   const levels = [
     { id: "all", label: "All Languages", count: 8 },
+    { id: "siemens", label: "SIEMENS", count: 2 },
     { id: "expert", label: "Expert (85%+)", count: 3 },
     { id: "advanced", label: "Advanced (75-84%)", count: 3 },
     { id: "intermediate", label: "Intermediate (65-74%)", count: 2 },
@@ -117,6 +118,10 @@ const ProgrammingSkills = ({ isVisible }) => {
     activeLevel === "all"
       ? programmingSkills
       : programmingSkills.filter((skill) => {
+          if (activeLevel === "siemens") {
+            // Filter for SIEMENS-related languages (Python for automation, C++ for PLC)
+            return skill.name === "Python" || skill.name === "C++";
+          }
           if (activeLevel === "expert") return skill.level >= 85;
           if (activeLevel === "advanced")
             return skill.level >= 75 && skill.level < 85;

@@ -1,17 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { FaPython, FaReact, FaWhatsapp } from "react-icons/fa";
 import {
-  
- FiTwitter, FiLinkedin, FiGithub, FiMail,
-  FiPhone, FiMapPin, FiHeart, FiZap, FiCode, FiChevronRight,
-  FiSend, FiArrowUpRight, FiShield, FiTerminal
-} from 'react-icons/fi';
-import { FaPython, FaReact, FaWhatsapp } from 'react-icons/fa';
-import { SiPytorch, SiTensorflow } from 'react-icons/si';
+  FiArrowUpRight,
+  FiChevronRight,
+  FiCode,
+  FiGithub,
+  FiHeart,
+  FiLinkedin,
+  FiMail,
+  FiMapPin,
+  FiPhone,
+  FiSend,
+  FiShield,
+  FiTerminal,
+  FiTwitter,
+  FiZap,
+} from "react-icons/fi";
+import { SiPytorch, SiTensorflow } from "react-icons/si";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const [year, setYear] = useState(new Date().getFullYear());
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [, setHoveredLink] = useState(null);
 
@@ -20,65 +30,68 @@ const Footer = () => {
   }, []);
 
   const quickLinks = [
-    { path: '/', label: 'Home', icon: FiZap },
-    { path: '/skills', label: 'Skills', icon: FiCode },
-    { path: '/qualification', label: 'Qualification', icon: FiTerminal },
-    { path: '/services', label: 'Services', icon: FiSend }
+    { path: "/", label: "Home", icon: FiZap },
+    { path: "/skills", label: "Skills", icon: FiCode },
+    { path: "/qualification", label: "Qualification", icon: FiTerminal },
+    { path: "/services", label: "Services", icon: FiSend },
   ];
 
   const resources = [
-    { path: '/projects', label: 'Projects', icon: FiCode },
-    { path: '/formations', label: 'Training', icon: FiZap },
-    { path: '/courses', label: 'Courses', icon: FiTerminal },
-    { path: '/contact', label: 'Contact', icon: FiSend }
+    { path: "/projects", label: "Projects", icon: FiCode },
+    { path: "/formations", label: "Training", icon: FiZap },
+    { path: "/courses", label: "Courses", icon: FiTerminal },
+    { path: "/contact", label: "Contact", icon: FiSend },
   ];
 
   const techStack = [
-    { icon: FaPython, label: 'Python', color: 'from-blue-500 to-cyan-500' },
-    { icon: SiPytorch, label: 'PyTorch', color: 'from-red-500 to-orange-500' },
-    { icon: SiTensorflow, label: 'TensorFlow', color: 'from-orange-500 to-yellow-500' },
-    { icon: FaReact, label: 'React', color: 'from-cyan-500 to-blue-500' }
+    { icon: FaPython, label: "Python", color: "from-blue-500 to-cyan-500" },
+    { icon: SiPytorch, label: "PyTorch", color: "from-red-500 to-orange-500" },
+    {
+      icon: SiTensorflow,
+      label: "TensorFlow",
+      color: "from-orange-500 to-yellow-500",
+    },
+    { icon: FaReact, label: "React", color: "from-cyan-500 to-blue-500" },
   ];
 
   const socialLinks = [
     {
       icon: FiLinkedin,
-      url: 'https://linkedin.com/in/keraani-naceur-49523a175/',
-      label: 'LinkedIn',
-      gradient: 'from-blue-500 to-blue-700'
+      url: "https://linkedin.com/in/keraani-naceur-49523a175/",
+      label: "LinkedIn",
+      gradient: "from-blue-500 to-blue-700",
     },
     {
       icon: FiGithub,
-      url: 'https://github.com',
-      label: 'GitHub',
-      gradient: 'from-gray-800 to-black'
+      url: "https://github.com",
+      label: "GitHub",
+      gradient: "from-gray-800 to-black",
     },
     {
       icon: FiTwitter,
-      url: 'https://twitter.com',
-      label: 'Twitter',
-      gradient: 'from-sky-500 to-blue-500'
+      url: "https://twitter.com",
+      label: "Twitter",
+      gradient: "from-sky-500 to-blue-500",
     },
     {
       icon: FaWhatsapp,
-      url: 'https://api.whatsapp.com/send?phone=0021695881709',
-      label: 'WhatsApp',
-      gradient: 'from-green-500 to-emerald-600'
-    }
+      url: "https://api.whatsapp.com/send?phone=0021695881709",
+      label: "WhatsApp",
+      gradient: "from-green-500 to-emerald-600",
+    },
   ];
 
   const handleSubscribe = (e) => {
     e.preventDefault();
     if (email) {
       setIsSubscribed(true);
-      setEmail('');
+      setEmail("");
       setTimeout(() => setIsSubscribed(false), 3000);
     }
   };
 
   return (
     <footer className="relative bg-gradient-to-b from-gray-900 to-black border-t border-gray-800/50 overflow-hidden">
-
       {/* Background Elements */}
       <div className="absolute inset-0">
         {/* Circuit Pattern */}
@@ -98,19 +111,17 @@ const Footer = () => {
             style={{
               left: `${Math.random() * 100}%`,
               animationDelay: `${Math.random() * 10}s`,
-              animationDuration: `${15 + Math.random() * 15}s`
+              animationDuration: `${15 + Math.random() * 15}s`,
             }}
           >
-            {Math.random() > 0.5 ? '1101001' : '0010110'}
+            {Math.random() > 0.5 ? "1101001" : "0010110"}
           </div>
         ))}
       </div>
 
       <div className="container mx-auto px-4 py-12 relative z-10">
-
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-12">
-
           {/* Logo & About */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-6">
@@ -121,19 +132,26 @@ const Footer = () => {
                 </div>
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-white">NACEUR KERAANI</h3>
-                <div className="text-sm text-primary-400 font-medium tracking-wider">AI & ML DEVELOPER</div>
+                <h3 className="text-2xl font-bold text-white">
+                  NACEUR KERAANI
+                </h3>
+                <div className="text-sm text-primary-400 font-medium tracking-wider">
+                  AI & ML DEVELOPER
+                </div>
               </div>
             </div>
 
             <p className="text-gray-400 mb-6 leading-relaxed">
-              Transforming complex data into intelligent solutions through cutting-edge
-              machine learning algorithms and innovative AI applications. Building the future, one algorithm at a time.
+              Transforming complex data into intelligent solutions through
+              cutting-edge machine learning algorithms and innovative AI
+              applications. Building the future, one algorithm at a time.
             </p>
 
             {/* Tech Stack */}
             <div className="mb-6">
-              <div className="text-sm text-gray-500 uppercase tracking-wider mb-3">Tech Stack</div>
+              <div className="text-sm text-gray-500 uppercase tracking-wider mb-3">
+                Tech Stack
+              </div>
               <div className="flex flex-wrap gap-3">
                 {techStack.map((tech, index) => {
                   const Icon = tech.icon;
@@ -144,7 +162,9 @@ const Footer = () => {
                       title={tech.label}
                     >
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-gray-700 to-gray-900 rounded-lg blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-                      <div className={`relative p-2 bg-gradient-to-br ${tech.color}/20 backdrop-blur-sm border border-gray-700/50 rounded-lg group-hover:scale-110 transition-all duration-300`}>
+                      <div
+                        className={`relative p-2 bg-gradient-to-br ${tech.color}/20 backdrop-blur-sm border border-gray-700/50 rounded-lg group-hover:scale-110 transition-all duration-300`}
+                      >
                         <Icon className="text-gray-300 group-hover:text-white text-xl" />
                       </div>
                     </div>
@@ -168,15 +188,19 @@ const Footer = () => {
                     onMouseEnter={() => setHoveredLink(social.label)}
                     onMouseLeave={() => setHoveredLink(null)}
                   >
-                    <div className={`absolute inset-0 bg-gradient-to-br ${social.gradient} rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-br ${social.gradient} rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300`}
+                    />
                     <Icon className="text-gray-400 group-hover:text-white transition-colors relative z-10" />
 
                     {/* Tooltip */}
-                    <div className={`
+                    <div
+                      className={`
                       absolute -top-10 left-1/2 -translate-x-1/2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 px-3 py-1 rounded-lg text-xs font-medium text-white whitespace-nowrap
                       opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none
                       after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800
-                    `}>
+                    `}
+                    >
                       {social.label}
                     </div>
                   </a>
@@ -253,14 +277,18 @@ const Footer = () => {
                   <FiHeart className="text-green-400 animate-pulse" />
                   <div>
                     <div className="text-white font-medium">Subscribed!</div>
-                    <div className="text-green-300 text-sm">You'll receive updates soon</div>
+                    <div className="text-green-300 text-sm">
+                      You'll receive updates soon
+                    </div>
                   </div>
                 </div>
               </div>
             ) : (
               <form onSubmit={handleSubscribe} className="mb-6">
                 <div className="mb-3">
-                  <label className="text-sm text-gray-500 mb-2 block">Get AI insights & updates</label>
+                  <label className="text-sm text-gray-500 mb-2 block">
+                    Get AI insights & updates
+                  </label>
                   <div className="relative">
                     <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
                     <input
@@ -285,7 +313,7 @@ const Footer = () => {
 
             <div className="space-y-3">
               <a
-                href="mailto:naceur.keraani@gmail.com"
+                href="mailto:info@naceur-keraani.com"
                 className="flex items-center gap-3 p-3 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-xl hover:border-primary-500/30 transition-all duration-300 group"
               >
                 <div className="p-2 bg-gradient-to-br from-primary-500/20 to-blue-500/20 rounded-lg">
@@ -294,7 +322,7 @@ const Footer = () => {
                 <div className="flex-1">
                   <div className="text-sm text-gray-500">Email</div>
                   <div className="text-white group-hover:text-primary-300 transition-colors">
-                    naceur.keraani@gmail.com
+                    info@naceur-keraani.com
                   </div>
                 </div>
               </a>
@@ -361,7 +389,7 @@ const Footer = () => {
 
         {/* Back to Top Button */}
         <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="fixed bottom-8 right-8 p-3 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl backdrop-blur-sm text-gray-400 hover:text-white hover:border-primary-500/30 transition-all duration-300 hover:scale-110 group"
           aria-label="Back to top"
         >

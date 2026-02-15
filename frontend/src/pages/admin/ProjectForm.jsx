@@ -133,6 +133,7 @@ const ProjectForm = () => {
     "Mobile Development",
     "Blockchain",
     "IoT",
+    "Python"
   ];
 
   const complexityOptions = [

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineStar } from "react-icons/ai";
 import { FaRobot } from "react-icons/fa";
@@ -66,7 +66,7 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
         description: "Full-stack applications",
       },
     ],
-    []
+    [],
   );
 
   const timelineOptions = [
@@ -92,12 +92,12 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
     { metric: "24/7", label: "Support", icon: FiUsers },
   ];
 
-   useEffect(() => {
-     const interval = setInterval(() => {
-       setActiveProjectType((prev) => (prev + 1) % projectTypes.length);
-     }, 3000);
-     return () => clearInterval(interval);
-   }, [projectTypes.length]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveProjectType((prev) => (prev + 1) % projectTypes.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [projectTypes.length]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -170,7 +170,7 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
       if (result.success) {
         setSubmitSuccess(true);
         toast.success(
-          "Project inquiry submitted successfully! I'll get back to you soon."
+          "Project inquiry submitted successfully! I'll get back to you soon.",
         );
 
         // Reset form
@@ -200,7 +200,7 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
     } catch (error) {
       console.error("Error submitting project inquiry:", error);
       setSubmitError(
-        error.message || "Failed to submit project inquiry. Please try again."
+        error.message || "Failed to submit project inquiry. Please try again.",
       );
       toast.error("Failed to submit project inquiry. Please try again.");
     } finally {
@@ -431,11 +431,11 @@ const ProjectsCTA = ({ isVisible = true, onStartProject }) => {
           {/* Alternative Contact Methods */}
           <div className="flex flex-wrap justify-center gap-6 mt-8">
             <a
-              href="mailto:naceur.keraani@gmail.com"
+              href="mailto:info@naceur-keraani.com"
               className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors duration-300 group"
             >
               <FiMail className="group-hover:scale-110 transition-transform" />
-              <span>naceur.keraani@gmail.com</span>
+              <span>info@naceur-keraani.com</span>
             </a>
             <a
               href="https://github.com/naceur-keraani"

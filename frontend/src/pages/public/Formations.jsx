@@ -646,26 +646,7 @@ const Formations = () => {
     );
   }
 
-  // Show error state
-  if (error && formations.length === 0) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 flex items-center justify-center">
-        <div className="text-center p-8 rounded-xl bg-red-900/20 border border-red-700/30 max-w-md">
-          <div className="text-5xl text-red-500 mb-4">⚠️</div>
-          <h3 className="text-xl font-bold text-red-400 mb-2">
-            Oops! Something went wrong
-          </h3>
-          <p className="text-gray-300 mb-6">{error}</p>
-          <button
-            onClick={fetchFormations}
-            className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
+  
 
   // Main Formations List View
   return (

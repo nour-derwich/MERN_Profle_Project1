@@ -13,7 +13,7 @@ import {
 } from "react-icons/fi";
 import { SiPytorch, SiTensorflow } from "react-icons/si";
 import { useNavigate } from "react-router-dom";
-import Naceurimage from "../../assets/images/naceeiruhncf.JPG";
+import Naceurimage from "../../assets/images/naceeiruhncf.jpeg";
 import "../../styles/components/hero.css";
 
 const Hero = () => {
@@ -151,7 +151,7 @@ const Hero = () => {
     position: "AI & Automation Engineer",
     bio: "I am an AI & Automation Engineer specializing in the integration of industrial automation systems with artificial intelligence and data-driven technologies. I design and develop intelligent solutions that improve efficiency, reliability, and performance across industrial and real-world applications. My expertise includes PLC programming, industrial control systems, machine learning, and data analysis, allowing me to bridge the gap between physical systems and intelligent software. I focus on creating practical, scalable automation solutions that turn complex challenges into optimized processes.Driven by innovation, discipline, and continuous learning, I aim to build smart automation systems that deliver measurable impact and long-term value.",
     location: "Tunis, Tunisia",
-    email: "naceur.keraani@gmail.com",
+    email: "info@naceur-keraani.com",
     phone: "+216 95 88 17 09",
   };
 
@@ -359,41 +359,184 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* Right Content - Image & Tech Stack */}
+          {/* Right Content - Ultra Premium Showcase */}
           <div className="relative order-1 lg:order-2">
-            {/* Tech Stack Rotation Display - Responsive positioning */}
-            <div
-              className={`${isMobile ? "relative -top-4 mb-8" : "absolute -top-10 right-10 z-20"}`}
-            >
-              <div className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-lg border border-gray-700/50 rounded-2xl p-4 sm:p-6 shadow-2xl">
-                <h4 className="text-white font-bold mb-4 text-center text-sm sm:text-base">
-                  Tech Stack
-                </h4>
-                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            {/* Professional Image Display */}
+            <div className="relative group/showcase">
+              {/* Ambient Background Light */}
+              <div className="absolute -inset-12 bg-gradient-to-br from-primary-400/20 via-blue-500/15 to-cyan-400/20 rounded-[4rem] blur-[80px] opacity-60 group-hover/showcase:opacity-90 transition-all duration-1000" />
+
+              {/* Main Showcase Card */}
+              <div className="relative max-w-sm mx-auto lg:max-w-md">
+                {/* Premium Border System */}
+                <div className="absolute -inset-0.5 bg-gradient-to-br from-primary-400 via-blue-500 to-cyan-400 rounded-[2rem] opacity-75 blur-sm" />
+                <div className="absolute -inset-0.5 bg-gradient-to-tl from-cyan-400 via-blue-500 to-primary-400 rounded-[2rem] opacity-0 group-hover/showcase:opacity-50 blur-sm transition-opacity duration-700" />
+
+                {/* Image Card */}
+                <div className="relative bg-gradient-to-br from-gray-900 via-black to-gray-900 rounded-[2rem] overflow-hidden shadow-2xl">
+                  {/* Top Glass Bar */}
+                  <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-black/80 to-transparent backdrop-blur-sm z-20 border-b border-white/5">
+                    <div className="flex items-center justify-between px-5 py-3">
+                      {/* Status Pill */}
+                      <div className="flex items-center gap-2 bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-lg px-3 py-1.5 rounded-full border border-green-400/30">
+                        <div className="relative">
+                          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                          <div className="absolute inset-0 w-2 h-2 bg-green-400 rounded-full animate-ping" />
+                        </div>
+                        <span className="text-xs font-bold text-green-300 tracking-wide">
+                          AVAILABLE
+                        </span>
+                      </div>
+
+                      {/* Pro Badge */}
+                      <div className="flex items-center gap-1.5 bg-gradient-to-r from-yellow-500/20 to-amber-500/20 backdrop-blur-lg px-3 py-1.5 rounded-full border border-yellow-400/30">
+                        <FiZap className="text-yellow-400 text-xs animate-pulse" />
+                        <span className="text-xs font-bold text-yellow-300 tracking-wide">
+                          EXPERT
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Portrait Image */}
+                  <div className="relative aspect-[3/4] overflow-hidden">
+                    <img
+                      src={Naceurimage}
+                      alt="Naceur Keraani - AI & Automation Engineer"
+                      className="w-full h-full object-cover object-center transform group-hover/showcase:scale-110 transition-transform duration-[1500ms] ease-out"
+                    />
+
+                    {/* Cinematic Vignette */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-60" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30" />
+
+                    {/* Signature Corner Accent */}
+                    <div className="absolute top-20 left-4 right-4 h-px bg-gradient-to-r from-transparent via-primary-400/40 to-transparent" />
+                    <div className="absolute bottom-24 left-4 right-4 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
+                  </div>
+
+                  {/* Bottom Info Panel */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/95 to-transparent backdrop-blur-md p-6 border-t border-white/10">
+                    <div className="space-y-2">
+                      <h3 className="text-2xl font-bold text-white tracking-tight">
+                        Naceur Keraani
+                      </h3>
+                      <p className="text-sm text-gray-300 font-medium">
+                        AI & Automation Engineer
+                      </p>
+                      <div className="flex items-center gap-2 pt-1">
+                        <div className="w-1 h-1 rounded-full bg-primary-400" />
+                        <FiMapPin className="text-primary-400 text-xs" />
+                        <span className="text-xs text-gray-400 font-medium">
+                          Tunis, Tunisia
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Quick Stats */}
+                    <div className="grid grid-cols-3 gap-3 mt-5 pt-5 border-t border-white/10">
+                      <div className="text-center">
+                        <div className="text-lg font-bold text-white">
+                          {yearsExperience}+
+                        </div>
+                        <div className="text-xs text-gray-400 mt-0.5">
+                          Years
+                        </div>
+                      </div>
+                      <div className="text-center border-x border-white/10">
+                        <div className="text-lg font-bold text-white">
+                          {projectsCount}+
+                        </div>
+                        <div className="text-xs text-gray-400 mt-0.5">
+                          Projects
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-lg font-bold text-white">7+</div>
+                        <div className="text-xs text-gray-400 mt-0.5">
+                          Certs
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Decorative Frame Elements */}
+                  <div className="absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 border-primary-400/60 rounded-tl-xl" />
+                  <div className="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-cyan-400/60 rounded-tr-xl" />
+                  <div className="absolute bottom-32 left-4 w-8 h-8 border-b-2 border-l-2 border-blue-400/60 rounded-bl-xl" />
+                  <div className="absolute bottom-32 right-4 w-8 h-8 border-b-2 border-r-2 border-primary-400/60 rounded-br-xl" />
+                </div>
+              </div>
+            </div>
+
+            {/* Tech Stack - Refined */}
+            <div className="mt-8 relative max-w-sm mx-auto lg:max-w-md">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500/30 to-cyan-500/30 rounded-[1.5rem] blur-md" />
+              <div className="relative bg-gradient-to-br from-gray-900/98 via-black/98 to-gray-900/98 backdrop-blur-xl border border-gray-700/50 rounded-[1.5rem] p-5 shadow-2xl">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-1 h-6 bg-gradient-to-b from-primary-400 to-cyan-400 rounded-full" />
+                    <h4 className="text-sm font-bold text-white tracking-wide">
+                      TECH STACK
+                    </h4>
+                  </div>
+                  {/* Progress Indicator */}
+                  <div className="flex gap-1">
+                    {[...Array(4)].map((_, i) => (
+                      <div
+                        key={i}
+                        className={`h-1 rounded-full transition-all duration-500 ${
+                          i === activeTech
+                            ? "w-6 bg-gradient-to-r from-primary-400 to-cyan-400"
+                            : "w-1 bg-gray-700"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tech Grid - Compact */}
+                <div className="grid grid-cols-2 gap-2.5">
                   {techStack.map((tech, index) => {
                     const Icon = tech.icon;
                     const isActive = index === activeTech;
                     return (
                       <div
                         key={index}
-                        className={`flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg transition-all duration-300 ${
-                          isActive
-                            ? "bg-gradient-to-r from-gray-700 to-gray-800 border border-primary-500/30"
-                            : "bg-gray-800/50"
-                        }`}
+                        className="relative group/tech cursor-pointer"
                       >
+                        {isActive && (
+                          <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500/50 to-cyan-500/50 rounded-xl blur-sm" />
+                        )}
                         <div
-                          className={`p-1.5 sm:p-2 rounded-lg ${isActive ? tech.color.replace("from-", "bg-gradient-to-br ") : "bg-gray-700"}`}
+                          className={`relative flex items-center gap-2 p-2.5 rounded-xl border transition-all duration-500 ${
+                            isActive
+                              ? "bg-gradient-to-br from-gray-800 to-gray-900 border-primary-500/50 shadow-lg"
+                              : "bg-gray-800/50 border-gray-700/30 hover:border-gray-600/50"
+                          }`}
                         >
-                          <Icon
-                            className={`text-base sm:text-lg ${isActive ? "text-white" : "text-gray-400"}`}
-                          />
+                          <div
+                            className={`p-1.5 rounded-lg transition-all duration-500 ${
+                              isActive
+                                ? `bg-gradient-to-br ${tech.color}`
+                                : "bg-gray-700/50"
+                            }`}
+                          >
+                            <Icon
+                              className={`text-base ${isActive ? "text-white" : "text-gray-400"}`}
+                            />
+                          </div>
+                          <span
+                            className={`text-xs font-semibold ${isActive ? "text-white" : "text-gray-400"}`}
+                          >
+                            {tech.label}
+                          </span>
+                          {isActive && (
+                            <div className="ml-auto w-1 h-1 rounded-full bg-primary-400 animate-pulse" />
+                          )}
                         </div>
-                        <span
-                          className={`font-medium text-sm sm:text-base ${isActive ? "text-white" : "text-gray-400"}`}
-                        >
-                          {tech.label}
-                        </span>
                       </div>
                     );
                   })}
@@ -401,89 +544,60 @@ const Hero = () => {
               </div>
             </div>
 
-            {/* Main Image with Futuristic Frame */}
-            <div className="relative mt-8 lg:mt-0">
-              {/* Outer Glow */}
-              <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-br from-primary-500/20 via-blue-500/20 to-cyan-500/20 rounded-3xl blur-xl" />
-
-              {/* Image Container */}
-              <div className="relative z-10 group">
-                {/* Animated Border */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 via-blue-500 to-cyan-500 rounded-3xl opacity-70 group-hover:opacity-100 animate-border-rotate" />
-
-                {/* Image */}
-                <div className="relative bg-gradient-to-br from-gray-900 to-black rounded-3xl p-1.5">
-                  <div className="relative overflow-hidden rounded-2xl">
-                    <img
-                      src={Naceurimage}
-                      alt="Naceur Keraani"
-                      className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700"
-                    />
-
-                    {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                    {/* Scan Lines Effect */}
-                    <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.3)_50%)] bg-[size:100%_4px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  </div>
-
-                  {/* Corner Accents */}
-                  <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-primary-400 rounded-tl-lg" />
-                  <div className="absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 border-blue-400 rounded-tr-lg" />
-                  <div className="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-cyan-400 rounded-bl-lg" />
-                  <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-primary-400 rounded-br-lg" />
+            {/* Contact Card - Sleek */}
+            <div className="mt-4 relative max-w-sm mx-auto lg:max-w-md">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500/30 to-cyan-500/30 rounded-[1.5rem] blur-md" />
+              <div className="relative bg-gradient-to-br from-gray-900/98 via-black/98 to-gray-900/98 backdrop-blur-xl border border-gray-700/50 rounded-[1.5rem] p-5 shadow-2xl">
+                {/* Header */}
+                <div className="flex items-center gap-2.5 mb-4">
+                  <div className="w-1 h-6 bg-gradient-to-b from-primary-400 to-cyan-400 rounded-full" />
+                  <h3 className="text-sm font-bold text-white tracking-wide">
+                    GET IN TOUCH
+                  </h3>
                 </div>
-              </div>
 
-              {/* Floating Elements Around Image - Hidden on mobile */}
-              <div className="hidden lg:block absolute -bottom-6 -left-6 w-32 h-32 bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-2xl" />
-              <div className="hidden lg:block absolute -top-6 -right-6 w-40 h-40 bg-gradient-to-tr from-blue-500/10 to-transparent rounded-full blur-2xl" />
-            </div>
-
-            {/* Contact Info - Modern Card */}
-            <div className="mt-8 sm:mt-10 relative">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-gray-700 to-gray-900 rounded-2xl blur opacity-50" />
-              <div className="relative bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-lg border border-gray-700/50 rounded-2xl p-4 sm:p-6 shadow-2xl">
-                <h3 className="text-lg sm:text-xl font-bold text-white mb-6 flex items-center gap-3">
-                  <div className="w-1 h-6 sm:h-8 bg-gradient-to-b from-primary-500 to-blue-500 rounded-full" />
-                  <span>Get In Touch</span>
-                </h3>
-
-                <div className="space-y-3 sm:space-y-4">
+                {/* Contact Options - Clean */}
+                <div className="space-y-2">
                   <a
                     href={`mailto:${infoData.email}`}
-                    className="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-gradient-to-r from-gray-800/50 to-gray-900/50 hover:from-primary-500/10 hover:to-blue-500/10 transition-all duration-300 border border-gray-700/50 hover:border-primary-500/30"
+                    className="group/link relative block"
                   >
-                    <div className="p-2 sm:p-3 bg-gradient-to-br from-primary-500/20 to-blue-500/20 rounded-lg group-hover:scale-110 transition-transform">
-                      <FiMail className="text-primary-400 text-sm sm:text-base" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-xs sm:text-sm text-gray-400">
-                        Email
+                    <div className="absolute -inset-px bg-gradient-to-r from-primary-500/0 to-cyan-500/0 group-hover/link:from-primary-500/30 group-hover/link:to-cyan-500/30 rounded-lg blur-sm transition-all duration-300" />
+                    <div className="relative flex items-center gap-3 p-3 rounded-lg bg-gray-800/40 border border-gray-700/30 group-hover/link:border-primary-500/50 group-hover/link:bg-gray-800/60 transition-all duration-300">
+                      <div className="p-2 bg-gradient-to-br from-primary-500/20 to-cyan-500/20 rounded-lg group-hover/link:scale-110 transition-transform duration-300">
+                        <FiMail className="text-primary-400 text-sm" />
                       </div>
-                      <div className="text-white font-medium text-sm sm:text-base group-hover:text-primary-300 transition-colors truncate">
-                        {infoData.email}
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs text-gray-500 font-medium">
+                          Email
+                        </div>
+                        <div className="text-sm text-white font-semibold truncate group-hover/link:text-primary-300 transition-colors">
+                          {infoData.email}
+                        </div>
                       </div>
+                      <FiChevronRight className="text-gray-600 group-hover/link:text-primary-400 group-hover/link:translate-x-0.5 transition-all text-sm flex-shrink-0" />
                     </div>
-                    <FiChevronRight className="text-gray-500 group-hover:text-primary-400 group-hover:translate-x-1 transition-all flex-shrink-0" />
                   </a>
 
                   <a
                     href={`tel:${infoData.phone.replace(/\s/g, "")}`}
-                    className="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-gradient-to-r from-gray-800/50 to-gray-900/50 hover:from-green-500/10 hover:to-emerald-500/10 transition-all duration-300 border border-gray-700/50 hover:border-green-500/30"
+                    className="group/link relative block"
                   >
-                    <div className="p-2 sm:p-3 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-lg group-hover:scale-110 transition-transform">
-                      <FiPhone className="text-green-400 text-sm sm:text-base" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-xs sm:text-sm text-gray-400">
-                        Phone
+                    <div className="absolute -inset-px bg-gradient-to-r from-green-500/0 to-emerald-500/0 group-hover/link:from-green-500/30 group-hover/link:to-emerald-500/30 rounded-lg blur-sm transition-all duration-300" />
+                    <div className="relative flex items-center gap-3 p-3 rounded-lg bg-gray-800/40 border border-gray-700/30 group-hover/link:border-green-500/50 group-hover/link:bg-gray-800/60 transition-all duration-300">
+                      <div className="p-2 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-lg group-hover/link:scale-110 transition-transform duration-300">
+                        <FiPhone className="text-green-400 text-sm" />
                       </div>
-                      <div className="text-white font-medium text-sm sm:text-base group-hover:text-green-300 transition-colors">
-                        {infoData.phone}
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs text-gray-500 font-medium">
+                          Phone
+                        </div>
+                        <div className="text-sm text-white font-semibold group-hover/link:text-green-300 transition-colors">
+                          {infoData.phone}
+                        </div>
                       </div>
+                      <FiChevronRight className="text-gray-600 group-hover/link:text-green-400 group-hover/link:translate-x-0.5 transition-all text-sm flex-shrink-0" />
                     </div>
-                    <FiChevronRight className="text-gray-500 group-hover:text-green-400 group-hover:translate-x-1 transition-all flex-shrink-0" />
                   </a>
                 </div>
               </div>

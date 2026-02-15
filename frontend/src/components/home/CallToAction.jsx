@@ -36,12 +36,12 @@ const CallToAction = () => {
       id: "email",
       icon: FiMail,
       title: "Email",
-      value: "naceur.keraani@gmail.com",
+      value: "info@naceur-keraani.com",
       gradient: "from-blue-500 to-cyan-500",
       delay: "24h",
       description: "Detailed discussions",
       actionLabel: "Send Email",
-      url: "mailto:naceur.keraani@gmail.com",
+      url: "mailto:info@naceur-keraani.com",
     },
     {
       id: "whatsapp",
@@ -163,7 +163,7 @@ const CallToAction = () => {
     } catch (error) {
       console.error("Error submitting form:", error);
       setSubmitError(
-        error.message || "Failed to send message. Please try again."
+        error.message || "Failed to send message. Please try again.",
       );
       toast.error("Failed to send message. Please try again.");
     } finally {
@@ -601,7 +601,7 @@ const CallToAction = () => {
                   onClick={() =>
                     window.open(
                       "https://calendly.com/naceurkeraani/30min",
-                      "_blank"
+                      "_blank",
                     )
                   }
                   className="group relative bg-gradient-to-r from-primary-500 to-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3"
