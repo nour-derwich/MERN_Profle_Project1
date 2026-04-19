@@ -16,9 +16,11 @@ const {
   toggleFeatured,
   getCourseStats,
   bulkCreateCourses,
+  uploadImage,
 } = require("../controllers/course.controller");
 
 const { protect, authorize } = require("../middleware/auth");
+const { upload } = require("../utils/uploadImage");
 
 // Public routes
 router.get("/", getAllCourses);
@@ -35,6 +37,8 @@ router.post("/:id/click", trackClick);
 // Protected admin routes
 router.use(protect);
 router.use(authorize("admin"));
+
+router.post("/upload-image", upload.single("image"), uploadImage);
 
 router.post("/", createCourse);
 router.post("/bulk", bulkCreateCourses);

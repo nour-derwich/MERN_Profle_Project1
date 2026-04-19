@@ -370,7 +370,5 @@ const CoursesBooksGrid = ({
   );
 };
 
-// Don't forget to install framer-motion if not already installed
-// npm install framer-motion
 
 export default CoursesBooksGrid;

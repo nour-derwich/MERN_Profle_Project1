@@ -30,7 +30,7 @@ const app = express();
 // ============================================
 // MIDDLEWARE
 // ============================================
-
+app.set("trust proxy", 1);
 // Security
 app.use(helmet());
 

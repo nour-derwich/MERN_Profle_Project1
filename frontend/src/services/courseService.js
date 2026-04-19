@@ -2,6 +2,29 @@ import api from "./api";
 
 export const courseService = {
   /**
+   * Upload course/book cover image to Cloudinary
+   */
+  uploadImage: async (imageFile) => {
+    try {
+      const formData = new FormData();
+      formData.append("image", imageFile);
+      const response = await api.post("/courses/upload-image", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        timeout: 60000,
+      });
+      return response.data;
+    } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        throw new Error("Cannot connect to server. Please check if the backend is running and try again.");
+      } else if (error.response?.status === 413) {
+        throw new Error("File too large. Please choose a smaller image.");
+      } else {
+        throw new Error(error.message || "Image upload failed. Please try again.");
+      }
+    }
+  },
+
+  /**
    * Get all courses with filters and pagination
    */
   getAll: async (filters = {}) => {

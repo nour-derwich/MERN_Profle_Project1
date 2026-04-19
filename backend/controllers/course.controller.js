@@ -256,3 +256,49 @@ exports.bulkCreateCourses = asyncHandler(async (req, res) => {
     data: createdCourses,
   });
 });
+
+// @desc    Upload course/book cover image to Cloudinary
+// @route   POST /api/courses/upload-image
+// @access  Private/Admin
+exports.uploadImage = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Please upload an image file",
+        details: "No file was received by the server",
+      });
+    }
+    if (!req.file.path) {
+      return res.status(500).json({
+        success: false,
+        message: "Image upload failed - no URL returned from Cloudinary",
+      });
+    }
+    res.json({
+      success: true,
+      message: "Image uploaded successfully",
+      url: req.file.path,
+      public_id: req.file.filename,
+      width: req.file.width,
+      height: req.file.height,
+      format: req.file.format,
+      size: req.file.size,
+    });
+  } catch (error) {
+    let statusCode = 500;
+    let errorMessage = "Error uploading image";
+    if (error.message.includes("File too large")) {
+      statusCode = 413;
+      errorMessage = "File too large. Maximum size is 5MB";
+    } else if (error.message.includes("Only image files")) {
+      statusCode = 400;
+      errorMessage = "Only image files are allowed (JPEG, PNG, WebP)";
+    }
+    res.status(statusCode).json({
+      success: false,
+      message: errorMessage,
+      details: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};

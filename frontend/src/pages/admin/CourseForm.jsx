@@ -64,7 +64,6 @@ const AdminCourseForm = () => {
   });
 
   const [errors, setErrors] = useState({});
-  console.log(setUploading);
 
   const categories = [
     "Machine Learning",
@@ -157,7 +156,7 @@ const AdminCourseForm = () => {
     }
   };
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -170,20 +169,35 @@ const AdminCourseForm = () => {
       return;
     }
 
-    // Validate file size (max 20MB)
-    if (file.size > 20 * 1024 * 1024) {
+    // Validate file size (max 5MB — matches backend limit)
+    if (file.size > 5 * 1024 * 1024) {
       setErrors((prev) => ({
         ...prev,
-        cover_image: "Image size should be less than 20MB",
+        cover_image: "Image size should be less than 5MB",
       }));
       return;
     }
 
-    // For now, just create a preview URL
+    // Show local blob preview immediately for responsive UX
     const previewUrl = URL.createObjectURL(file);
     setImagePreview(previewUrl);
-    setFormData((prev) => ({ ...prev, cover_image: previewUrl }));
     setErrors((prev) => ({ ...prev, cover_image: "" }));
+
+    // Upload file to Cloudinary via backend
+    try {
+      setUploading(true);
+      const result = await courseService.uploadImage(file);
+      setFormData((prev) => ({ ...prev, cover_image: result.url }));
+    } catch (error) {
+      setErrors((prev) => ({
+        ...prev,
+        cover_image: error.message || "Failed to upload image. Please try again.",
+      }));
+      setImagePreview(null);
+      setFormData((prev) => ({ ...prev, cover_image: "" }));
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleTagAdd = () => {
@@ -1022,7 +1036,7 @@ const AdminCourseForm = () => {
                 <div className="space-y-3">
                   <button
                     type="submit"
-                    disabled={loading}
+                    disabled={loading || uploading}
                     className="w-full flex items-center justify-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <FiSave />
