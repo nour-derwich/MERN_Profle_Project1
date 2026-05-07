@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   FiAlertCircle,
   FiArrowLeft,
@@ -133,7 +133,7 @@ const ProjectForm = () => {
     "Mobile Development",
     "Blockchain",
     "IoT",
-    "Python"
+    "Python",
   ];
 
   const complexityOptions = [
@@ -188,7 +188,7 @@ const ProjectForm = () => {
       console.error("❌ Backend connection failed:", error);
       setBackendStatus("disconnected");
       setError(
-        "Cannot connect to backend server. Please ensure the server is running on http://localhost:5000"
+        "Cannot connect to backend server. Please ensure the server is running on http://localhost:5000",
       );
     }
   };
@@ -269,7 +269,7 @@ const ProjectForm = () => {
       console.error("Error loading project:", error);
       setError(
         "Failed to load project: " +
-          (error.response?.data?.message || error.message)
+          (error.response?.data?.message || error.message),
       );
     } finally {
       setLoading(false);
@@ -280,7 +280,7 @@ const ProjectForm = () => {
     if (isEdit) {
       loadProject();
     }
-  }, [isEdit, loadProject]); 
+  }, [isEdit, loadProject]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -389,7 +389,7 @@ const ProjectForm = () => {
     // Check backend connection first
     if (backendStatus !== "connected") {
       alert(
-        "Backend server is not running. Please start the server and try again."
+        "Backend server is not running. Please start the server and try again.",
       );
       await checkBackendConnection();
       return;
@@ -475,7 +475,7 @@ const ProjectForm = () => {
         error.message.includes("ERR_NETWORK")
       ) {
         setError(
-          "Cannot connect to server. Please ensure:\n1. Backend server is running on http://localhost:5000\n2. No firewall is blocking the connection"
+          "Cannot connect to server. Please ensure:\n1. Backend server is running on http://localhost:5000\n2. No firewall is blocking the connection",
         );
         setBackendStatus("disconnected");
       } else if (
@@ -519,7 +519,7 @@ const ProjectForm = () => {
     // Basic validation
     if (!formData.title || !formData.description || !formData.category) {
       alert(
-        "Please fill in all required fields (Title, Description, Category)"
+        "Please fill in all required fields (Title, Description, Category)",
       );
       return;
     }
@@ -539,7 +539,7 @@ const ProjectForm = () => {
       console.error("Error saving project:", error);
       setError(
         "Failed to save project: " +
-          (error.response?.data?.message || error.message)
+          (error.response?.data?.message || error.message),
       );
       alert("Failed to save project. Please try again.");
     } finally {
@@ -740,7 +740,7 @@ const ProjectForm = () => {
                 placeholder="Extended project details for the detailed view..."
               />
             </div>
-          </div>
+          </div>,
         )}
 
         {/* Content Section - Goals, Features, Results */}
@@ -1016,7 +1016,7 @@ const ProjectForm = () => {
                 ))}
               </div>
             </div>
-          </div>
+          </div>,
         )}
 
         {/* Technologies Section */}
@@ -1067,7 +1067,7 @@ const ProjectForm = () => {
                   }
                   className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   placeholder="Add technology (e.g., React, Node.js)"
-                  required
+                  required={formData.technologies.length === 0}
                 />
                 <button
                   type="button"
@@ -1139,7 +1139,7 @@ const ProjectForm = () => {
                 ))}
               </div>
             </div>
-          </div>
+          </div>,
         )}
 
         {/* Links & Media Section */}
@@ -1263,7 +1263,7 @@ const ProjectForm = () => {
                 placeholder="https://youtube.com/watch?v=..."
               />
             </div>
-          </div>
+          </div>,
         )}
 
         {/* Stats & Details Section */}
@@ -1386,7 +1386,7 @@ const ProjectForm = () => {
                 min="1"
               />
             </div>
-          </div>
+          </div>,
         )}
 
         {/* Advanced Settings Section */}
@@ -1551,7 +1551,7 @@ const ProjectForm = () => {
                 placeholder="Comma-separated keywords (e.g., ai, machine learning, web app)"
               />
             </div>
-          </div>
+          </div>,
         )}
 
         {/* Action Buttons */}

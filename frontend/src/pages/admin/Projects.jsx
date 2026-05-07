@@ -113,7 +113,8 @@ const Projects = () => {
             alt={item.title}
             className="w-12 h-12 rounded-lg object-cover"
             onError={(e) => {
-              e.target.src = "/api/placeholder/48/48";
+              e.target.onerror = null;
+              e.target.src = "https://res.cloudinary.com/dilztw5uj/image/upload/w_48,h_48,c_fill,f_auto/portfolio/placeholder";
             }}
           />
           <div className="flex-1 min-w-0">

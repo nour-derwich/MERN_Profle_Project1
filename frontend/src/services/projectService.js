@@ -15,7 +15,7 @@ export const projectService = {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        timeout: 60000, // 60 seconds for file uploads
+        timeout: 300000, // 5 minutes for Cloudinary processing
         onUploadProgress: (progressEvent) => {
           const progress = Math.round(
             (progressEvent.loaded * 100) / progressEvent.total

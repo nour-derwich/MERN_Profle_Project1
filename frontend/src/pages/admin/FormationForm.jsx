@@ -239,14 +239,21 @@ const AdminFormationForm = () => {
 
     try {
       setUploading(true);
-      // For now, create a local URL preview - you'll need to implement actual upload
-      const imageUrl = URL.createObjectURL(file);
-      setFormData((prev) => ({ ...prev, cover_image: imageUrl }));
-      setImagePreview(imageUrl);
+      // Show blob preview immediately for responsive UX
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
       setErrors((prev) => ({ ...prev, cover_image: "" }));
+
+      // Upload to Cloudinary and store the real URL
+      const result = await formationService.uploadImage(file);
+      setFormData((prev) => ({ ...prev, cover_image: result.url }));
     } catch (error) {
       console.error("Error uploading image:", error);
-      setErrors((prev) => ({ ...prev, cover_image: "Failed to upload image" }));
+      setImagePreview("");
+      setErrors((prev) => ({
+        ...prev,
+        cover_image: error.message || "Failed to upload image",
+      }));
     } finally {
       setUploading(false);
     }

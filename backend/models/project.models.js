@@ -45,20 +45,24 @@ class Project {
       meta_keywords,
     } = projectData;
 
+    const slug = projectData.slug ||
+      title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') +
+      '-' + Date.now();
+
     const text = `
     INSERT INTO projects (
       title, description, short_description, full_description, cover_image,
-      demo_url, github_url, documentation_url, article_url, category, 
-      technologies, environment, video, complexity, status, featured, 
-      display_order, views_count, stars, forks, contributors, 
+      demo_url, github_url, documentation_url, article_url, category,
+      technologies, environment, video, complexity, status, featured,
+      display_order, views_count, stars, forks, contributors,
       development_time, dataset_size, last_updated, team_size, duration,
       architecture, goals, features, challenges, results, metrics,
       live_demo_available, source_code_available, documentation_available,
       api_available, open_source, tags, meta_description, meta_keywords,
-      created_at, updated_at
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, 
-    $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, 
-    $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, 
+      slug, created_at, updated_at
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,
+    $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28,
+    $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41,
     CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     RETURNING *
   `;
@@ -104,9 +108,10 @@ class Project {
       tags,
       meta_description,
       meta_keywords,
+      slug,
     ];
 
-    console.log("📝 SQL Columns count:", 40); // Should match number of columns
+    console.log("📝 SQL Columns count:", 41); // Should match number of columns
     console.log("📦 Values count:", values.length); // Should be 40 (without the duplicate)
 
     const result = await query(text, values);

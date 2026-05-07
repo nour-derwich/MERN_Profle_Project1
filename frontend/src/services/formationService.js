@@ -172,10 +172,11 @@ const formationService = {
       const formData = new FormData();
       formData.append("image", imageFile);
 
-      const response = await api.post("/upload", formData, {
+      const response = await api.post("/projects/upload-image", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        timeout: 300000,
       });
       return response.data;
     } catch (error) {

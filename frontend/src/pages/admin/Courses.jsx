@@ -109,9 +109,10 @@ const AdminCourses = () => {
       title: "Cover",
       render: (item) => (
         <img
-          src={item.cover_image || "https://via.placeholder.com/50"}
+          src={item.cover_image || "https://res.cloudinary.com/dilztw5uj/image/upload/w_48,h_48,c_fill,f_auto/portfolio/placeholder"}
           alt={item.title}
           className="w-12 h-12 rounded-lg object-cover"
+          onError={(e) => { e.target.onerror = null; e.target.src = "https://res.cloudinary.com/dilztw5uj/image/upload/w_48,h_48,c_fill,f_auto/portfolio/placeholder"; }}
         />
       ),
     },

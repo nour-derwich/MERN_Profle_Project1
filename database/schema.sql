@@ -67,6 +67,7 @@ CREATE TABLE projects (
     -- Project Content (Arrays)
     goals TEXT[],
     features TEXT[],
+    challenges JSONB[],
     results TEXT[],
     metrics JSONB,
     
