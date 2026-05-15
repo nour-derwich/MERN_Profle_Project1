@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from 'framer-motion';
+import api from '../../services/api';
 
 // Import components
 import ProjectsHero from '../../components/projects/ProjectsHero';
@@ -32,137 +33,65 @@ const Projects = () => {
   const [loading, setLoading] = useState(true); // Start with loading true
   const [error, setError] = useState(null);
 
-  // Mock data for fallback
-const mockProjects = useMemo(
-  () => [
-    {
-      id: 1,
-      title: "AI-Powered Trading Algorithm",
-      shortDescription:
-        "Proprietary ML algorithm for automated intraday trading with real-time analytics.",
-      fullDescription:
-        "Developed a sophisticated machine learning algorithm for automated intraday trading that combines multiple ML models for optimal decision-making. The system processes real-time market data, identifies patterns, and executes trades with minimal latency.",
-      category: "Machine Learning",
-      complexity: "Expert",
-      status: "completed",
-      technologies: [
-        "Python",
-        "PyTorch",
-        "Pandas",
-        "NumPy",
-        "Scikit-learn",
-        "FastAPI",
-        "Docker",
-        "PostgreSQL",
-        "Redis",
-        "AWS",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&q=80",
-      demoUrl: "https://demo-trading.example.com",
-      githubUrl: "https://github.com/username/trading-algorithm",
-      date: "January 2024",
-      lastUpdated: "2024-01-15",
-      featured: true,
-      stars: 342,
-      forks: 56,
-      views: "2.3K",
-      contributors: 1,
-      developmentTime: "6 months",
-      datasetSize: "5TB market data",
-      features: [
-        "Real-time market data processing at 1000+ events/second",
-        "Ensemble ML models (XGBoost, LSTM, Transformer)",
-        "Advanced risk management with Monte Carlo simulations",
-        "Automated backtesting framework",
-        "Real-time performance dashboard",
-      ],
-      challenges: [
-        {
-          description:
-            "Handling high-frequency data streams with sub-millisecond latency requirements",
-          solution:
-            "Implemented custom data pipeline using Redis Streams and optimized Python async/await patterns",
-        },
-        {
-          description:
-            "Balancing model accuracy vs inference speed for real-time decisions",
-          solution:
-            "Used model quantization and TensorRT optimization, achieving <10ms inference time",
-        },
-      ],
-      results: [
-        "Achieved 73% prediction accuracy on unseen data",
-        "Reduced decision latency to <50ms",
-        "Generated 28% annual ROI in backtesting",
-        "Successfully processed 10M+ daily market events",
-      ],
-      metrics: {
-        "Prediction Accuracy": "73%",
-        Latency: "50ms",
-        "Annual ROI": "28%",
-        "Events/Day": "10M+",
-      },
-      goals: [
-        "Create scalable trading system for multiple asset classes",
-        "Achieve sub-100ms end-to-end latency",
-        "Maintain >70% prediction accuracy",
-        "Implement robust risk management",
-      ],
-      architecture:
-        "Microservices architecture with separate data ingestion, model serving, and execution engines. Containerized with Docker and orchestrated with Kubernetes on AWS.",
-      documentationUrl: "https://docs-trading.example.com",
-      articleUrl: "https://blog.example.com/ai-trading-algorithm",
-    },
-  ],
-  []
-); 
 
- useEffect(() => {
-   const fetchProjects = async () => {
-     try {
-       setLoading(true);
-       setError(null);
+  const mapProject = (p) => ({
+    id: p.id,
+    title: p.title,
+    description: p.description,
+    shortDescription: p.short_description,
+    fullDescription: p.full_description,
+    image: p.cover_image,
+    demoUrl: p.demo_url,
+    githubUrl: p.github_url,
+    documentationUrl: p.documentation_url,
+    articleUrl: p.article_url,
+    category: p.category,
+    technologies: p.technologies || [],
+    complexity: p.complexity,
+    status: p.status,
+    featured: p.featured,
+    stars: p.stars,
+    forks: p.forks,
+    views: p.views_count,
+    contributors: p.contributors,
+    developmentTime: p.development_time,
+    datasetSize: p.dataset_size,
+    lastUpdated: p.last_updated,
+    date: p.created_at ? new Date(p.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : '',
+    architecture: p.architecture,
+    goals: p.goals || [],
+    features: p.features || [],
+    challenges: p.challenges || [],
+    results: p.results || [],
+    metrics: p.metrics || {},
+    slug: p.slug,
+    videoUrl: p.video || p.video_url,
+  });
 
-       // Try to fetch from API
-       // const response = await api.get('/projects');
-       // const data = response.data;
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await api.get('/projects');
+        const raw = response.data?.data;
+        if (Array.isArray(raw)) {
+          setProjects(raw.map(mapProject));
+        } else {
+          setProjects([]);
+        }
+      } catch (err) {
+        console.error("Error fetching projects:", err);
+        setError("Failed to load projects from server.");
+        setProjects([]);
+      } finally {
+        setLoading(false);
+        setIsVisible(true);
+      }
+    };
 
-       // For now, simulate API call with setTimeout
-       await new Promise((resolve) => setTimeout(resolve, 500));
-
-       // Simulate API response - replace this with actual API call
-       const data = mockProjects; // Replace with: const data = response.data || [];
-
-       // Ensure data is an array
-       if (Array.isArray(data)) {
-         setProjects(data);
-       } else if (data && Array.isArray(data.projects)) {
-         // If response has nested projects array
-         setProjects(data.projects);
-       } else if (data && typeof data === "object") {
-         // If it's a single object, wrap in array
-         setProjects([data]);
-       } else {
-         // If data is not in expected format, use mock data
-         setProjects(mockProjects);
-         setError("Received unexpected data format from API");
-       }
-     } catch (err) {
-       console.error("Error fetching projects:", err);
-       setError(
-         "Failed to load projects from server. Using sample data instead."
-       );
-       // Fallback to mock data
-       setProjects(mockProjects);
-     } finally {
-       setLoading(false);
-       setIsVisible(true);
-     }
-   };
-
-   fetchProjects();
- }, [mockProjects]);
+    fetchProjects();
+  }, []);
 
   // Calculate categories with counts - ensure projects is an array
   const categories = React.useMemo(() => {

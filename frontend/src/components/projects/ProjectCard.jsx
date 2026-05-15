@@ -14,6 +14,7 @@ import {
   FiGithub,
   FiHeart,
   FiLayers,
+  FiPlay,
   FiShare2,
   FiShield,
   FiStar,
@@ -388,9 +389,9 @@ const ProjectCard = ({
               )}
 
               {/* Live Demo */}
-              {(project.liveUrl || project.demo_url) && (
+              {(project.liveUrl || project.demoUrl || project.demo_url) && (
                 <a
-                  href={project.liveUrl || project.demo_url}
+                  href={project.liveUrl || project.demoUrl || project.demo_url}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
@@ -398,6 +399,20 @@ const ProjectCard = ({
                   title="Live Demo"
                 >
                   <FiExternalLink className="text-lg" />
+                </a>
+              )}
+
+              {/* Video Demo */}
+              {project.videoUrl && (
+                <a
+                  href={project.videoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="p-2 text-gray-400 hover:text-purple-400 transition-colors"
+                  title="Watch Video Demo"
+                >
+                  <FiPlay className="text-lg" />
                 </a>
               )}
 

@@ -19,6 +19,7 @@ import {
   FiStar,
   FiTrendingUp,
   FiUsers,
+  FiPlay,
   FiX,
   FiZap,
 } from "react-icons/fi";
@@ -71,6 +72,18 @@ const ProjectDetailModal = ({
   }, [selectedProject, favorites, bookmarks]);
 
   if (!selectedProject) return null;
+
+  const videoUrl = selectedProject.videoUrl || selectedProject.video;
+
+  const getYouTubeEmbedUrl = (url) => {
+    if (!url) return null;
+    const ytMatch = url.match(
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{11})/
+    );
+    return ytMatch ? `https://www.youtube.com/embed/${ytMatch[1]}` : null;
+  };
+
+  const youtubeEmbedUrl = getYouTubeEmbedUrl(videoUrl);
 
   const getTechIcon = (tech) => {
     const icons = {
@@ -431,6 +444,43 @@ const ProjectDetailModal = ({
                       "No detailed description available."}
                   </p>
 
+                  {/* Video Demo */}
+                  {videoUrl && (
+                    <div>
+                      <h3 className="text-xl font-semibold text-white mb-3 flex items-center gap-2">
+                        <FiPlay className="text-purple-400" />
+                        Video Demo
+                      </h3>
+                      {youtubeEmbedUrl ? (
+                        <div className="relative w-full rounded-xl overflow-hidden border border-purple-500/30 shadow-lg shadow-purple-500/10" style={{ paddingBottom: "56.25%" }}>
+                          <iframe
+                            className="absolute inset-0 w-full h-full"
+                            src={youtubeEmbedUrl}
+                            title="Project Video Demo"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                        </div>
+                      ) : (
+                        <a
+                          href={videoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-4 p-5 bg-gradient-to-br from-purple-500/10 to-violet-500/10 border border-purple-500/30 rounded-xl hover:border-purple-400/60 transition-all duration-300 group"
+                        >
+                          <div className="p-3 bg-gradient-to-br from-purple-500/20 to-violet-500/20 rounded-lg group-hover:from-purple-500/30 group-hover:to-violet-500/30 transition-all duration-300">
+                            <FiPlay className="text-purple-400 text-2xl group-hover:scale-110 transition-transform" />
+                          </div>
+                          <div>
+                            <p className="text-white font-semibold">Watch Demo Video</p>
+                            <p className="text-gray-400 text-sm mt-0.5 truncate max-w-xs">{videoUrl}</p>
+                          </div>
+                          <FiChevronRight className="ml-auto text-gray-500 group-hover:text-purple-400 group-hover:translate-x-1 transition-all" />
+                        </a>
+                      )}
+                    </div>
+                  )}
+
                   {/* Project Goals */}
                   {(selectedProject.goals || selectedProject.project_goals) && (
                     <div>
@@ -755,6 +805,30 @@ const ProjectDetailModal = ({
                         </div>
                       </a>
                     )}
+
+                    {videoUrl && (
+                      <a
+                        href={videoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-6 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-purple-500/20 rounded-xl hover:border-purple-500/50 transition-all duration-300 group"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="p-3 bg-gradient-to-br from-purple-500/20 to-violet-500/20 rounded-lg">
+                            <FiPlay className="text-purple-400 text-2xl" />
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="text-lg font-semibold text-white mb-1">
+                              Video Demo
+                            </h4>
+                            <p className="text-gray-400 text-sm">
+                              Watch the project walkthrough video
+                            </p>
+                          </div>
+                          <FiChevronRight className="text-gray-400 group-hover:text-purple-400 group-hover:translate-x-1 transition-all" />
+                        </div>
+                      </a>
+                    )}
                   </div>
                 </motion.div>
               )}
@@ -762,6 +836,19 @@ const ProjectDetailModal = ({
 
             {/* Action Buttons */}
             <div className="flex flex-wrap gap-4 mt-12 pt-8 border-t border-gray-700/50">
+              {videoUrl && (
+                <a
+                  href={videoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 min-w-[200px] px-8 py-4 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-xl font-bold hover:shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 hover:scale-105 flex items-center justify-center gap-3 group"
+                >
+                  <FiPlay />
+                  <span>Watch Video Demo</span>
+                  <FiChevronRight className="group-hover:translate-x-1 transition-transform" />
+                </a>
+              )}
+
               {(selectedProject.demoUrl || selectedProject.demo_url) && (
                 <a
                   href={selectedProject.demoUrl || selectedProject.demo_url}
