@@ -149,15 +149,14 @@ class Formation {
 
   static async findAll(filters = {}) {
     let text = `
-      SELECT
+      SELECT 
         f.*,
         (f.max_participants - f.current_participants) as spots_left,
         COALESCE(r.average_rating, 0) as rating,
-        COALESCE(r.reviews_count, 0) as reviews_count,
-        COUNT(*) OVER() as total_count
+        COALESCE(r.reviews_count, 0) as reviews_count
       FROM formations f
       LEFT JOIN (
-        SELECT
+        SELECT 
           formation_id,
           AVG(rating) as average_rating,
           COUNT(*) as reviews_count
@@ -171,13 +170,14 @@ class Formation {
     const values = [];
     let paramCount = 1;
 
-    // Status filter — draft is never public; all other statuses are visible
+    // Status filter (default to published if not specified)
     if (filters.status) {
       text += ` AND f.status = $${paramCount}`;
       values.push(filters.status);
       paramCount++;
     } else if (!filters.admin) {
-      text += ` AND f.status NOT IN ('draft', 'archived')`;
+      // If not admin, only show published formations
+      text += ` AND f.status = 'published'`;
     }
 
     // Category filter
@@ -272,23 +272,18 @@ class Formation {
 
     try {
       const result = await query(text, values);
-      const total = result.rows.length > 0 ? parseInt(result.rows[0].total_count) : 0;
 
-      const rows = result.rows.map((row) => {
-        const { total_count, ...rest } = row;
-        return {
-          ...rest,
-          program: Formation.parseJSONSafe(row.program, []),
-          modules: Formation.parseJSONSafe(row.modules, []),
-          testimonials: Formation.parseJSONSafe(row.testimonials, []),
-          features: row.features || [],
-          highlights: row.highlights || [],
-          learning_objectives: row.learning_objectives || [],
-          tags: row.tags || [],
-        };
-      });
-
-      return { rows, total };
+      // Parse JSON fields safely
+      return result.rows.map((row) => ({
+        ...row,
+        program: Formation.parseJSONSafe(row.program, []),
+        modules: Formation.parseJSONSafe(row.modules, []),
+        testimonials: Formation.parseJSONSafe(row.testimonials, []),
+        features: row.features || [],
+        highlights: row.highlights || [],
+        learning_objectives: row.learning_objectives || [],
+        tags: row.tags || [],
+      }));
     } catch (error) {
       console.error("Error in Formation.findAll:", error);
       throw error;
@@ -419,7 +414,7 @@ class Formation {
         // Handle array fields
         else if (
           ["features", "highlights", "learning_objectives", "tags"].includes(
-            key
+            key,
           )
         ) {
           fields.push(`${key} = $${paramCount}`);
@@ -558,11 +553,11 @@ class Formation {
   static async getCategories() {
     try {
       const text = `
-        SELECT
+        SELECT 
           category,
           COUNT(*) as count
         FROM formations
-        WHERE status NOT IN ('draft', 'archived')
+        WHERE status = 'published'
         GROUP BY category
         ORDER BY count DESC
       `;
@@ -577,11 +572,11 @@ class Formation {
   static async getLevels() {
     try {
       const text = `
-        SELECT
+        SELECT 
           level,
           COUNT(*) as count
         FROM formations
-        WHERE status NOT IN ('draft', 'archived')
+        WHERE status = 'published'
         GROUP BY level
         ORDER BY 
           CASE level

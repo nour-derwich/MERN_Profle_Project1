@@ -14,7 +14,7 @@ const Formations = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedLevel, setSelectedLevel] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
-  const [sortBy, setSortBy] = useState("recent");
+  const [sortBy, setSortBy] = useState("featured");
   const [viewMode, setViewMode] = useState("grid");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFormation, setSelectedFormation] = useState(null);
@@ -41,7 +41,7 @@ const Formations = () => {
   const [totalFormations, setTotalFormations] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const itemsPerPage = 50;
+  const itemsPerPage = 6;
 
   // Wrap the fetch functions in useCallback
   const fetchFormations = useCallback(async () => {
@@ -79,10 +79,6 @@ const Formations = () => {
           cover_image: formation.cover_image,
           category: formation.category,
           level: formation.level,
-          price: formation.price,
-          original_price: formation.original_price,
-          installment_price: formation.installment_price,
-          currency: formation.currency || "USD",
           duration_hours: formation.duration_hours,
           weeks_duration: formation.weeks_duration,
           hours_per_week: formation.hours_per_week,
@@ -108,9 +104,9 @@ const Formations = () => {
           reviews_count: formation.reviews_count,
           views_count: formation.views_count,
           spots_left:
-            formation.spots_left != null
-              ? formation.spots_left
-              : (formation.max_participants || 0) - (formation.current_participants || 0),
+            formation.spots_left ||
+            formation.max_participants - formation.current_participants,
+          // Handle array/JSON fields
           program:
             typeof formation.program === "string"
               ? JSON.parse(formation.program)
@@ -124,7 +120,9 @@ const Formations = () => {
               ? JSON.parse(formation.testimonials)
               : formation.testimonials || [],
           features: Array.isArray(formation.features) ? formation.features : [],
-          highlights: Array.isArray(formation.highlights) ? formation.highlights : [],
+          highlights: Array.isArray(formation.highlights)
+            ? formation.highlights
+            : [],
           learning_objectives: Array.isArray(formation.learning_objectives)
             ? formation.learning_objectives
             : [],
@@ -135,7 +133,7 @@ const Formations = () => {
         }));
 
         setFormations(transformedData);
-        setTotalFormations(response.total || transformedData.length);
+        setTotalFormations(response.count || transformedData.length);
       } else {
         setError(response.message || "Failed to load formations");
       }
@@ -143,7 +141,7 @@ const Formations = () => {
       console.error("Error fetching formations:", err);
       setError(
         err.response?.data?.message ||
-          "Failed to load formations. Please try again."
+          "Failed to load formations. Please try again.",
       );
     } finally {
       setIsLoading(false);
@@ -355,7 +353,7 @@ const Formations = () => {
         .includes(searchQuery.toLowerCase()) ||
       (Array.isArray(formation.tags) &&
         formation.tags.some((tag) =>
-          tag.toLowerCase().includes(searchQuery.toLowerCase())
+          tag.toLowerCase().includes(searchQuery.toLowerCase()),
         ));
 
     const matchesCategory =
@@ -399,7 +397,7 @@ const Formations = () => {
     setFavorites((prev) =>
       prev.includes(formationId)
         ? prev.filter((id) => id !== formationId)
-        : [...prev, formationId]
+        : [...prev, formationId],
     );
   };
 
@@ -487,7 +485,7 @@ const Formations = () => {
       alert(
         err.response?.data?.message ||
           err.message ||
-          "Failed to submit registration. Please try again."
+          "Failed to submit registration. Please try again.",
       );
     } finally {
       setIsSubmitting(false);
@@ -499,7 +497,7 @@ const Formations = () => {
     setSelectedCategory("all");
     setSelectedLevel("all");
     setSelectedStatus("all");
-    setSortBy("recent");
+    setSortBy("featured");
     setCurrentPage(1);
   };
 
@@ -531,65 +529,68 @@ const Formations = () => {
       const response = await formationService.getById(formation.id);
       if (response.success) {
         // Transform the API data
-        const d = response.data;
         const formationData = {
-          id: d.id,
-          title: d.title,
-          description: d.description,
-          short_description: d.short_description,
-          full_description: d.full_description,
-          cover_image: d.cover_image,
-          category: d.category,
-          level: d.level,
-          price: d.price,
-          original_price: d.original_price,
-          installment_price: d.installment_price,
-          currency: d.currency || "USD",
-          duration_hours: d.duration_hours,
-          weeks_duration: d.weeks_duration,
-          hours_per_week: d.hours_per_week,
-          max_participants: d.max_participants,
-          current_participants: d.current_participants,
-          start_date: d.start_date,
-          end_date: d.end_date,
-          schedule: d.schedule,
-          format: d.format || "Online",
-          location: d.location || "Online",
-          live_sessions: d.live_sessions,
-          status: d.status,
-          featured: d.featured || false,
-          instructor_name: d.instructor_name,
-          instructor_title: d.instructor_title,
-          instructor_bio: d.instructor_bio,
-          instructor_photo: d.instructor_photo,
-          instructor_rating: d.instructor_rating,
-          instructor_reviews: d.instructor_reviews,
-          instructor_students: d.instructor_students,
-          instructor_verified: d.instructor_verified,
-          rating: d.rating,
-          reviews_count: d.reviews_count,
-          views_count: d.views_count,
+          id: response.data.id,
+          title: response.data.title,
+          description: response.data.description,
+          short_description: response.data.short_description,
+          full_description: response.data.full_description,
+          cover_image: response.data.cover_image,
+          category: response.data.category,
+          level: response.data.level,
+          duration_hours: response.data.duration_hours,
+          weeks_duration: response.data.weeks_duration,
+          hours_per_week: response.data.hours_per_week,
+          max_participants: response.data.max_participants,
+          current_participants: response.data.current_participants,
+          start_date: response.data.start_date,
+          end_date: response.data.end_date,
+          schedule: response.data.schedule,
+          format: response.data.format || "Online",
+          location: response.data.location || "Online",
+          live_sessions: response.data.live_sessions,
+          status: response.data.status,
+          featured: response.data.featured || false,
+          instructor_name: response.data.instructor_name,
+          instructor_title: response.data.instructor_title,
+          instructor_bio: response.data.instructor_bio,
+          instructor_photo: response.data.instructor_photo,
+          instructor_rating: response.data.instructor_rating,
+          instructor_reviews: response.data.instructor_reviews,
+          instructor_students: response.data.instructor_students,
+          instructor_verified: response.data.instructor_verified,
+          rating: response.data.rating,
+          reviews_count: response.data.reviews_count,
+          views_count: response.data.views_count,
           spots_left:
-            d.spots_left != null
-              ? d.spots_left
-              : (d.max_participants || 0) - (d.current_participants || 0),
+            response.data.spots_left ||
+            response.data.max_participants - response.data.current_participants,
+          // Handle array/JSON fields
           program:
-            typeof d.program === "string" ? JSON.parse(d.program) : d.program || [],
+            typeof response.data.program === "string"
+              ? JSON.parse(response.data.program)
+              : response.data.program || [],
           modules:
-            typeof d.modules === "string" ? JSON.parse(d.modules) : d.modules || [],
+            typeof response.data.modules === "string"
+              ? JSON.parse(response.data.modules)
+              : response.data.modules || [],
           testimonials:
-            typeof d.testimonials === "string"
-              ? JSON.parse(d.testimonials)
-              : d.testimonials || [],
-          features: Array.isArray(d.features) ? d.features : [],
-          highlights: Array.isArray(d.highlights) ? d.highlights : [],
-          learning_objectives: Array.isArray(d.learning_objectives)
-            ? d.learning_objectives
+            typeof response.data.testimonials === "string"
+              ? JSON.parse(response.data.testimonials)
+              : response.data.testimonials || [],
+          features: Array.isArray(response.data.features)
+            ? response.data.features
             : [],
-          tags: Array.isArray(d.tags) ? d.tags : [],
-          prerequisites: d.prerequisites || "",
-          created_at: d.created_at,
-          updated_at: d.updated_at,
+          highlights: Array.isArray(response.data.highlights)
+            ? response.data.highlights
+            : [],
+          learning_objectives: Array.isArray(response.data.learning_objectives)
+            ? response.data.learning_objectives
+            : [],
+          tags: Array.isArray(response.data.tags) ? response.data.tags : [],
+          prerequisites: response.data.prerequisites || "",
+          created_at: response.data.created_at,
+          updated_at: response.data.updated_at,
         };
 
         setSelectedFormation(formationData);
@@ -644,8 +645,6 @@ const Formations = () => {
       </div>
     );
   }
-
-  
 
   // Main Formations List View
   return (

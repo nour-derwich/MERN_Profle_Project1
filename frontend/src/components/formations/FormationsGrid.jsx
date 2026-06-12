@@ -90,10 +90,10 @@ const FormationsGrid = ({
   // Calculate statistics
   const getStats = () => {
     const upcoming = filteredFormations.filter(
-      (f) => f.status === "upcoming"
+      (f) => f.status === "upcoming",
     ).length;
     const enrolling = filteredFormations.filter(
-      (f) => f.status === "enrolling"
+      (f) => f.status === "enrolling",
     ).length;
     const featured = filteredFormations.filter((f) => f.featured).length;
     const free = filteredFormations.filter((f) => f.price === 0).length;
@@ -122,9 +122,9 @@ const FormationsGrid = ({
           transition={{ duration: 0.7 }}
           className="mb-8"
         >
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            {/* Results Info + Quick Stats */}
-            <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            {/* Results Info */}
+            <div className="flex items-center gap-4">
               <div className="relative group">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
                 <div className="relative px-4 py-3 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-xl backdrop-blur-sm">
@@ -132,7 +132,7 @@ const FormationsGrid = ({
                     <FiUsers className="text-primary-400" />
                     <div>
                       <div className="text-2xl font-bold text-white">
-                        {totalFormations > 0 ? totalFormations : filteredFormations.length}
+                        {filteredFormations.length}
                       </div>
                       <div className="text-xs text-gray-500">
                         Formations Found
@@ -142,8 +142,9 @@ const FormationsGrid = ({
                 </div>
               </div>
 
+              {/* Quick Stats */}
               {filteredFormations.length > 0 && (
-                <div className="hidden md:flex items-center gap-2 flex-wrap">
+                <div className="hidden md:flex items-center gap-3">
                   {stats.enrolling > 0 && (
                     <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-lg">
                       <FiTrendingUp className="text-green-400" />
@@ -152,6 +153,7 @@ const FormationsGrid = ({
                       </span>
                     </div>
                   )}
+
                   {stats.upcoming > 0 && (
                     <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 rounded-lg">
                       <FiCalendar className="text-blue-400" />
@@ -160,6 +162,7 @@ const FormationsGrid = ({
                       </span>
                     </div>
                   )}
+
                   {stats.featured > 0 && (
                     <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-lg">
                       <FiAward className="text-yellow-400" />
@@ -172,40 +175,102 @@ const FormationsGrid = ({
               )}
             </div>
 
-            {/* Right side: count text + view toggle */}
-            <div className="flex items-center gap-4">
-              <div className="text-sm text-gray-500">
-                Showing {filteredFormations.length === 0 ? 0 : Math.min(startIndex + 1, filteredFormations.length)}–
-                {Math.min(endIndex, filteredFormations.length)} of{" "}
-                {filteredFormations.length}
-                {totalFormations > filteredFormations.length && ` of ${totalFormations} total`}
-              </div>
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => onPageChange && onPageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="p-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-lg text-gray-400 hover:text-white hover:border-primary-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                >
+                  <FiChevronLeft />
+                </button>
 
-              {onViewModeChange && (
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-400 hidden md:block">View:</span>
-                  <div className="flex bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-lg p-1">
-                    {[
-                      { id: "grid", icon: FiGrid, label: "Grid" },
-                      { id: "list", icon: FiList, label: "List" },
-                    ].map((mode) => (
-                      <button
-                        key={mode.id}
-                        onClick={() => onViewModeChange(mode.id)}
-                        className={`p-2 rounded transition-all duration-300 ${
-                          viewMode === mode.id
-                            ? "bg-gradient-to-r from-primary-500/20 to-blue-500/20 text-primary-400"
-                            : "text-gray-400 hover:text-white"
-                        }`}
-                        title={`${mode.label} View`}
-                      >
-                        <mode.icon className="text-lg" />
-                      </button>
-                    ))}
-                  </div>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(5, totalPages) }).map(
+                    (_, i) => {
+                      const pageNumber = i + 1;
+                      if (totalPages > 5 && currentPage > 3) {
+                        // Show dynamic page numbers for large page counts
+                        if (i === 0)
+                          return (
+                            <span key="first" className="px-1 text-gray-500">
+                              ...
+                            </span>
+                          );
+                        if (i === 4)
+                          return (
+                            <span key="last" className="px-1 text-gray-500">
+                              ...
+                            </span>
+                          );
+                      }
+
+                      return (
+                        <button
+                          key={pageNumber}
+                          onClick={() =>
+                            onPageChange && onPageChange(pageNumber)
+                          }
+                          className={`px-3 py-1 rounded-lg transition-all duration-300 ${
+                            currentPage === pageNumber
+                              ? "bg-gradient-to-r from-primary-500 to-blue-600 text-white"
+                              : "bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30"
+                          }`}
+                        >
+                          {pageNumber}
+                        </button>
+                      );
+                    },
+                  )}
                 </div>
-              )}
+
+                <button
+                  onClick={() => onPageChange && onPageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="p-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-lg text-gray-400 hover:text-white hover:border-primary-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                >
+                  <FiChevronRight />
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Grid/Layout Toggle */}
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-gray-500">
+              Showing {Math.min(startIndex + 1, filteredFormations.length)}-
+              {Math.min(endIndex, filteredFormations.length)} of{" "}
+              {filteredFormations.length} formations
+              {totalFormations > 0 && ` (${totalFormations} total)`}
             </div>
+
+            {onViewModeChange && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-400 hidden md:block">
+                  View:
+                </span>
+                <div className="flex bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-lg p-1">
+                  {[
+                    { id: "grid", icon: FiGrid, label: "Grid" },
+                    { id: "list", icon: FiList, label: "List" },
+                  ].map((mode) => (
+                    <button
+                      key={mode.id}
+                      onClick={() => onViewModeChange(mode.id)}
+                      className={`p-2 rounded transition-all duration-300 ${
+                        viewMode === mode.id
+                          ? "bg-gradient-to-r from-primary-500/20 to-blue-500/20 text-primary-400"
+                          : "text-gray-400 hover:text-white"
+                      }`}
+                      title={`${mode.label} View`}
+                    >
+                      <mode.icon className="text-lg" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </motion.div>
 

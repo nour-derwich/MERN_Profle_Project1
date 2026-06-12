@@ -35,13 +35,12 @@ exports.getAllFormations = asyncHandler(async (req, res) => {
     admin: admin === "true",
   };
 
-  const { rows, total } = await Formation.findAll(filters);
+  const formations = await Formation.findAll(filters);
 
   res.status(200).json({
     success: true,
-    count: rows.length,
-    total,
-    data: rows,
+    count: formations.length,
+    data: formations,
   });
 });
 
@@ -57,7 +56,7 @@ exports.getFormationById = asyncHandler(async (req, res, next) => {
   const staticRoutes = ["statuses", "categories", "levels", "stats", "export"];
   if (staticRoutes.includes(id)) {
     console.error(
-      `❌ ERROR: Static route "${id}" was routed to getFormationById!`
+      `❌ ERROR: Static route "${id}" was routed to getFormationById!`,
     );
     return res.status(404).json({
       success: false,

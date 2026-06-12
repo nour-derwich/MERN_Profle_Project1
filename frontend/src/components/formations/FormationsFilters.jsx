@@ -33,7 +33,7 @@ const FormationsFilters = ({
   setSelectedStatus,
   priceRange = 'all',
   setPriceRange,
-  sortBy = 'featured',
+  sortBy = 'recent',
   setSortBy,
   viewMode = 'grid',
   setViewMode,
@@ -79,15 +79,17 @@ const FormationsFilters = ({
           })));
         }
         
-        // Fetch statuses
+        // Fetch statuses — exclude draft/archived from public filter
         const statusesResponse = await formationService.getStatuses();
         if (statusesResponse.success && Array.isArray(statusesResponse.data)) {
-          setStatuses(statusesResponse.data.map(status => ({
-            value: status.status || 'unknown',
-            label: formatStatusLabel(status.status),
-            color: getStatusColor(status.status),
-            count: status.count || 0
-          })));
+          setStatuses(statusesResponse.data
+            .filter(s => !['draft', 'archived'].includes(s.status))
+            .map(status => ({
+              value: status.status || 'unknown',
+              label: formatStatusLabel(status.status),
+              color: getStatusColor(status.status),
+              count: status.count || 0
+            })));
         }
         
       } catch (error) {
