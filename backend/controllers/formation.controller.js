@@ -35,12 +35,13 @@ exports.getAllFormations = asyncHandler(async (req, res) => {
     admin: admin === "true",
   };
 
-  const formations = await Formation.findAll(filters);
+  const { rows, total } = await Formation.findAll(filters);
 
   res.status(200).json({
     success: true,
-    count: formations.length,
-    data: formations,
+    count: rows.length,
+    total,
+    data: rows,
   });
 });
 
