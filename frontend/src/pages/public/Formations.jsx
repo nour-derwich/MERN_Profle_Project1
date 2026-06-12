@@ -14,7 +14,7 @@ const Formations = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedLevel, setSelectedLevel] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
-  const [sortBy, setSortBy] = useState("featured");
+  const [sortBy, setSortBy] = useState("recent");
   const [viewMode, setViewMode] = useState("grid");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFormation, setSelectedFormation] = useState(null);
@@ -499,7 +499,7 @@ const Formations = () => {
     setSelectedCategory("all");
     setSelectedLevel("all");
     setSelectedStatus("all");
-    setSortBy("featured");
+    setSortBy("recent");
     setCurrentPage(1);
   };
 

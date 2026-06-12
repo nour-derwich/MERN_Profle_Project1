@@ -169,7 +169,9 @@ const LatestFormations = () => {
       level: getLevelDisplay(formation.level),
       duration: formatDuration(formation),
       startDate: formatStartDate(formation.start_date),
-      price: `${formation.currency || "$"}${formation.price || 0}`,
+      price: formation.price > 0
+        ? (formation.currency === "USD" ? `$${formation.price}` : `${formation.price} ${formation.currency || "USD"}`)
+        : "Free",
       spots: spotsLeft,
       enrolled: formation.current_participants || 0,
       rating: parseFloat(formation.rating) || 4.5,
@@ -433,11 +435,11 @@ const LatestFormations = () => {
                       {/* Main Card */}
                       <div className="relative h-full bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-3xl overflow-hidden backdrop-blur-sm hover:border-primary-500/30 transition-all duration-500 group-hover:scale-105">
                         {/* Image Section */}
-                        <div className="relative h-56 overflow-hidden">
+                        <div className="relative h-72 overflow-hidden bg-gray-900">
                           <img
                             src={formation.image}
                             alt={formation.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                            className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.src = getDefaultImage(
@@ -447,7 +449,7 @@ const LatestFormations = () => {
                           />
 
                           {/* Gradient Overlay */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/30 to-transparent" />
 
                           {/* Badge */}
                           <div
@@ -461,7 +463,7 @@ const LatestFormations = () => {
                             {formation.tech.slice(0, 3).map((Icon, index) => (
                               <div
                                 key={index}
-                                className="p-2 bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-sm border border-gray-700/50 rounded-lg"
+                                className="p-2 bg-gray-900/80 backdrop-blur-sm border border-gray-700/50 rounded-lg"
                               >
                                 <Icon className="text-lg text-gray-400" />
                               </div>
