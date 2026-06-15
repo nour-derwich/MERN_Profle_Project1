@@ -55,8 +55,10 @@ const Formations = () => {
         status: selectedStatus !== "all" ? selectedStatus : undefined,
         searchQuery: searchQuery || undefined,
         sortBy,
-        limit: itemsPerPage,
-        offset: (currentPage - 1) * itemsPerPage,
+        // Load the full published set; filtering, sorting and pagination
+        // are all handled client-side below so every formation is reachable.
+        limit: 1000,
+        offset: 0,
       };
 
       // Remove undefined filters
@@ -146,14 +148,7 @@ const Formations = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [
-    selectedCategory,
-    selectedLevel,
-    selectedStatus,
-    searchQuery,
-    sortBy,
-    currentPage,
-  ]);
+  }, [selectedCategory, selectedLevel, selectedStatus, searchQuery, sortBy]);
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -310,10 +305,15 @@ const Formations = () => {
     selectedLevel,
     selectedStatus,
     sortBy,
-    currentPage,
     searchQuery,
     fetchFormations,
   ]);
+
+  // Reset to the first page whenever the active filters/search change so the
+  // client-side pagination never lands on an out-of-range page.
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, selectedLevel, selectedStatus, sortBy, searchQuery]);
 
   // Status options
   const statuses = [

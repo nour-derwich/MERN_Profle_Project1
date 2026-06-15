@@ -24,10 +24,31 @@ import formationService from "../../services/formationService";
 const LatestFormations = () => {
   const [activeCategory, setActiveCategory] = useState("all");
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [itemsPerView, setItemsPerView] = useState(3);
   const [formations, setFormations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  // Keep the carousel in sync with the responsive card width
+  // (1 card on mobile, 2 on tablet, 3 on desktop)
+  useEffect(() => {
+    const computeItemsPerView = () => {
+      const width = window.innerWidth;
+      if (width >= 1024) return 3;
+      if (width >= 768) return 2;
+      return 1;
+    };
+
+    const handleResize = () => {
+      setItemsPerView(computeItemsPerView());
+      setCurrentSlide(0);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Fetch formations from backend
   useEffect(() => {
@@ -36,6 +57,7 @@ const LatestFormations = () => {
         setLoading(true);
         const response = await formationService.getAll({
           status: "published",
+          featured: "true",
           limit: 12,
           sortBy: "featured",
         });
@@ -185,20 +207,24 @@ const LatestFormations = () => {
     };
   };
 
+  // Home page only showcases featured formations (safety filter in case the
+  // API ignores the `featured` param)
+  const featuredFormations = formations.filter((f) => f.featured);
+
   // Map backend formations to display format
-  const displayFormations = formations
+  const displayFormations = featuredFormations
     .map(mapFormationData)
     .filter((f) => f !== null);
 
   // Extract unique categories from formations
   const categories = [
     { id: "all", label: "All Courses", count: displayFormations.length },
-    ...Array.from(new Set(formations.map((f) => f.category)))
+    ...Array.from(new Set(featuredFormations.map((f) => f.category)))
       .filter((category) => category)
       .map((category) => ({
         id: category.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
         label: category,
-        count: formations.filter((f) => f.category === category).length,
+        count: featuredFormations.filter((f) => f.category === category).length,
       })),
   ];
 
@@ -207,22 +233,28 @@ const LatestFormations = () => {
       ? displayFormations
       : displayFormations.filter((f) => f.categorySlug === activeCategory);
 
+  // Carousel paging derived from how many cards are actually visible
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredFormations.length / itemsPerView),
+  );
+  const hasCarousel = filteredFormations.length > itemsPerView;
+
+  // Keep the active page valid when the filter or viewport changes
+  const safeSlide = Math.min(currentSlide, totalPages - 1);
+
+  // Flush the last page to the end so there are no empty trailing gaps
+  const cardWidthPct = 100 / itemsPerView;
+  const maxOffsetCards = Math.max(0, filteredFormations.length - itemsPerView);
+  const offsetCards = Math.min(safeSlide * itemsPerView, maxOffsetCards);
+  const translatePct = offsetCards * cardWidthPct;
+
   const nextSlide = () => {
-    if (filteredFormations.length > 3) {
-      setCurrentSlide(
-        (prev) => (prev + 1) % Math.ceil(filteredFormations.length / 3),
-      );
-    }
+    setCurrentSlide((prev) => (prev + 1) % totalPages);
   };
 
   const prevSlide = () => {
-    if (filteredFormations.length > 3) {
-      setCurrentSlide(
-        (prev) =>
-          (prev - 1 + Math.ceil(filteredFormations.length / 3)) %
-          Math.ceil(filteredFormations.length / 3),
-      );
-    }
+    setCurrentSlide((prev) => (prev - 1 + totalPages) % totalPages);
   };
 
   const handleEnrollClick = (formationId) => {
@@ -383,7 +415,7 @@ const LatestFormations = () => {
             </span>
           </h3>
 
-          {filteredFormations.length > 3 && (
+          {hasCarousel && (
             <div className="flex items-center gap-4">
               <button
                 onClick={prevSlide}
@@ -419,7 +451,7 @@ const LatestFormations = () => {
             <div className="relative overflow-hidden">
               <div
                 className="flex transition-transform duration-500 ease-out"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                style={{ transform: `translateX(-${translatePct}%)` }}
               >
                 {filteredFormations.map((formation) => (
                   <div
@@ -573,18 +605,17 @@ const LatestFormations = () => {
             </div>
 
             {/* Course Indicators */}
-            {filteredFormations.length > 3 && (
+            {hasCarousel && (
               <div className="flex justify-center items-center gap-2 mt-8">
-                {Array.from({
-                  length: Math.ceil(filteredFormations.length / 3),
-                }).map((_, index) => (
+                {Array.from({ length: totalPages }).map((_, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentSlide(index)}
-                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                      index === currentSlide
+                    aria-label={`Go to page ${index + 1}`}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      index === safeSlide
                         ? "w-8 bg-gradient-to-r from-primary-500 to-blue-500"
-                        : "bg-gray-700 hover:bg-gray-600"
+                        : "w-2 bg-gray-700 hover:bg-gray-600"
                     }`}
                   />
                 ))}
