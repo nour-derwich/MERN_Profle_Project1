@@ -148,8 +148,8 @@ const Hero = () => {
 
   const infoData = {
     fullName: "Naceur Keraani",
-    position: "AI & Automation Engineer",
-    bio: "I am an AI & Automation Engineer specializing in the integration of industrial automation systems with artificial intelligence and data-driven technologies. I design and develop intelligent solutions that improve efficiency, reliability, and performance across industrial and real-world applications. My expertise includes PLC programming, industrial control systems, machine learning, and data analysis, allowing me to bridge the gap between physical systems and intelligent software. I focus on creating practical, scalable automation solutions that turn complex challenges into optimized processes.Driven by innovation, discipline, and continuous learning, I aim to build smart automation systems that deliver measurable impact and long-term value.",
+    position: "AI, Data Science & Automation Engineer",
+    bio: "I am an AI, Data Science & Automation Engineer specializing in developing intelligent solutions that transform data into actionable insights and automate complex business processes. By combining Python, Artificial Intelligence, Machine Learning, Generative AI, and workflow automation, I design and implement smart systems that improve operational efficiency, streamline workflows, and support data-driven decision-making.My focus is on building scalable AI-powered applications, predictive models, intelligent agents, and automated business solutions that connect data, systems, and AI technologies to solve real-world challenges and create measurable business value.",
     location: "Tunis, Tunisia",
     email: "info@naceur-keraani.com",
     phone: "+216 95 88 17 09",
@@ -402,7 +402,7 @@ const Hero = () => {
                   <div className="relative aspect-[3/4] overflow-hidden">
                     <img
                       src={Naceurimage}
-                      alt="Naceur Keraani - AI & Automation Engineer"
+                      alt="Naceur Keraani - AI, Data Science & Automation Engineer"
                       className="w-full h-full object-cover object-center transform group-hover/showcase:scale-110 transition-transform duration-[1500ms] ease-out"
                     />
 
@@ -423,7 +423,7 @@ const Hero = () => {
                         Naceur Keraani
                       </h3>
                       <p className="text-sm text-gray-300 font-medium">
-                        AI & Automation Engineer
+                        AI, Data Science & Automation Engineer
                       </p>
                       <div className="flex items-center gap-2 pt-1">
                         <div className="w-1 h-1 rounded-full bg-primary-400" />
